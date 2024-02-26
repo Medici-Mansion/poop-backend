@@ -8,12 +8,24 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export class User {
-    id: number;
+export enum UserRole {
+    ADMIN = "ADMIN",
+    USER = "USER"
+}
+
+export class Users {
+    id: string;
+    updatedAt: DateTime;
+    createdAt: DateTime;
+    nickname: string;
+    email: string;
+    password: string;
+    role: UserRole;
 }
 
 export abstract class IQuery {
-    abstract getUser(): User | Promise<User>;
+    abstract getAllUsers(): Users[] | Promise<Users[]>;
 }
 
+export type DateTime = any;
 type Nullable<T> = T | null;
