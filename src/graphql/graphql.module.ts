@@ -17,6 +17,7 @@ export class GraphqlModule {
             path: join(process.cwd(), 'src/graphql/schema.ts'),
             outputAs: 'class',
           },
+          introspection: true,
           playground: true,
           installSubscriptionHandlers: true,
           autoSchemaFile: join(process.cwd(), 'src/graphql/schema.gql'),
