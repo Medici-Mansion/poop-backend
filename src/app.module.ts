@@ -4,8 +4,9 @@ import { UsersModule } from '@/users/users.module'
 import { GraphqlModule } from '@/graphql/graphql.module'
 import Joi from '@hapi/joi'
 import { ConfigModule } from '@nestjs/config'
-import { DatabaseModule } from './database/database.module'
-import { CommonModule } from './common/common.module'
+import { DatabaseModule } from '@/database/database.module'
+import { CommonModule } from '@/common/common.module'
+import { AppController } from '@/app.controller'
 @Module({
   imports: [
     DatabaseModule,
@@ -32,7 +33,7 @@ import { CommonModule } from './common/common.module'
     GraphqlModule.register(),
     CommonModule,
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [],
 })
 export class AppModule {}
