@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common'
-import { AuthModule } from '@/auth/auth.module'
 import { UsersModule } from '@/users/users.module'
 import { GraphqlModule } from '@/graphql/graphql.module'
 import Joi from '@hapi/joi'
@@ -7,6 +6,7 @@ import { ConfigModule } from '@nestjs/config'
 import { DatabaseModule } from '@/database/database.module'
 import { CommonModule } from '@/common/common.module'
 import { AppController } from '@/app.controller'
+import { AuthModule } from './auth/auth.module'
 @Module({
   imports: [
     DatabaseModule,
@@ -28,10 +28,10 @@ import { AppController } from '@/app.controller'
         CA_CERT: Joi.string().required(),
       }),
     }),
-    AuthModule,
-    UsersModule,
     GraphqlModule.register(),
+    UsersModule,
     CommonModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [],

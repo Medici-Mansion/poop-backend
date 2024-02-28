@@ -9,7 +9,7 @@ import fastifyHelmet from '@fastify/helmet'
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
-    new FastifyAdapter({ logger: true }),
+    new FastifyAdapter(),
   )
 
   await app.register(fastifyHelmet, {

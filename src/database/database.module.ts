@@ -5,7 +5,6 @@ import { TypeOrmModule } from '@nestjs/typeorm'
   imports: [
     TypeOrmModule.forRootAsync({
       useFactory() {
-        console.log(process.env.CA_CERT)
         return {
           type: 'postgres',
           host: process.env.DB_HOST,
@@ -20,7 +19,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'
             ca: process.env.CA_CERT,
           },
           logging: process.env.NODE_ENV !== 'production',
-          entities: [__dirname + './../**/**.entity{.ts,.js}'],
+          entities: [__dirname + './../**/**.model{.ts,.js}'],
         }
       },
     }),
