@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 import { UsersModule } from '@/users/users.module'
 import { GraphqlModule } from '@/graphql/graphql.module'
-import Joi from '@hapi/joi'
+import Joi from 'joi'
 import { ConfigModule } from '@nestjs/config'
 import { DatabaseModule } from '@/database/database.module'
 import { CommonModule } from '@/common/common.module'
