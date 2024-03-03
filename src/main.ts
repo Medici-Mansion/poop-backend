@@ -5,6 +5,8 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify'
 import fastifyHelmet from '@fastify/helmet'
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+import { VersioningType } from '@nestjs/common'
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -35,6 +37,23 @@ async function bootstrap() {
       },
     },
   })
+
+  app
+    .enableVersioning({
+      type: VersioningType.URI,
+      prefix: 'v',
+      defaultVersion: '1',
+    })
+    .setGlobalPrefix('api')
+
+  const config = new DocumentBuilder()
+    .setTitle('POOP API')
+    .setDescription('POOP API 문서입니다.')
+    .setVersion('0.0.1')
+    .build()
+
+  const document = SwaggerModule.createDocument(app, config)
+  SwaggerModule.setup('/api-docs', app, document)
 
   app.enableCors({
     credentials: true,

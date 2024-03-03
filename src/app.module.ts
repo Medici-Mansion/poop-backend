@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common'
 import { UsersModule } from '@/users/users.module'
-import { GraphqlModule } from '@/graphql/graphql.module'
 import Joi from 'joi'
 import { ConfigModule } from '@nestjs/config'
 import { DatabaseModule } from '@/database/database.module'
@@ -28,7 +27,6 @@ import { AuthModule } from './auth/auth.module'
         CA_CERT: Joi.string().required(),
       }),
     }),
-    GraphqlModule.register(),
     UsersModule,
     CommonModule,
     AuthModule,
