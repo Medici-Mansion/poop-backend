@@ -1,46 +1,57 @@
 import { CommonModel } from '@/common/models/common.model'
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm'
-
-export enum PROVIDER {
-  KAKAO = 'KAKAO',
-  APPLE = 'APPLE',
-  GOOGLE = 'GOOGLE',
-}
+import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany } from 'typeorm'
+import bcrypt from 'bcrypt'
+import { InternalServerErrorException } from '@nestjs/common'
+import { Gender } from '@/common/common.const'
+import { Profiles } from '@/profiles/models/profiles.model'
 
 @Entity({ name: 'users' })
 export class Users extends CommonModel {
   @Column({ comment: '사용자 이름' })
   name: string
 
-  @Column({ comment: '사용자 이메일' })
+  @Column({ comment: '로그인 시 사용되는 계정', length: 16 })
+  accountId: string
+
+  @Column({ comment: '로그인 시 사용되는 비밀번호', length: 16 })
+  password: string
+
+  @Column({ comment: '사용자 이메일', nullable: true })
   email: string
 
-  @OneToMany(() => Accounts, (accounts) => accounts.userId, {
-    createForeignKeyConstraints: false,
-  })
-  accounts: Accounts[]
-}
+  @Column({ comment: '사용자 전화번호', nullable: true })
+  phone: string
 
-@Entity({ name: 'accounts' })
-export class Accounts extends CommonModel {
-  @Column()
-  type: string
+  @Column({ type: 'timestamp' })
+  birthday: string
 
-  @Column()
-  provider: string
+  @Column({ type: 'enum', enum: Gender, default: Gender.NONE })
+  gender: Gender
 
-  @Column()
-  providerAccountId: string
+  @Column({ default: false })
+  verified: boolean
 
-  @Column()
-  refreshToken: string
+  @OneToMany(() => Profiles, (profiles) => profiles.user)
+  profiles: Profiles[]
 
-  @Column({ name: 'userId', comment: '릴레이션 컬럼' })
-  userId: string
+  @BeforeInsert()
+  @BeforeUpdate()
+  async hashPassword(): Promise<void> {
+    if (this.password) {
+      try {
+        this.password = await bcrypt.hash(this.password, 10)
+      } catch (err) {
+        throw new InternalServerErrorException()
+      }
+    }
+  }
 
-  @ManyToOne(() => Users, (users) => users.accounts, {
-    createForeignKeyConstraints: false,
-  })
-  @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
-  users: Users
+  async checkPassword(aPassword: string): Promise<boolean> {
+    try {
+      const passwordCurrent = await bcrypt.compare(aPassword, this.password)
+      return passwordCurrent
+    } catch (e) {
+      throw new InternalServerErrorException()
+    }
+  }
 }

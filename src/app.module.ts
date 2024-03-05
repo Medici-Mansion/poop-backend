@@ -6,6 +6,7 @@ import { DatabaseModule } from '@/database/database.module'
 import { CommonModule } from '@/common/common.module'
 import { AppController } from '@/app.controller'
 import { AuthModule } from './auth/auth.module'
+import { ProfilesModule } from './profiles/profiles.module';
 @Module({
   imports: [
     DatabaseModule,
@@ -30,6 +31,7 @@ import { AuthModule } from './auth/auth.module'
     UsersModule,
     CommonModule,
     AuthModule,
+    ProfilesModule,
   ],
   controllers: [AppController],
   providers: [],
