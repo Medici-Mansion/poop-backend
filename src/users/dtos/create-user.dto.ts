@@ -6,36 +6,15 @@ import {
   IsOptional,
   IsPhoneNumber,
   IsUUID,
-  Matches,
-  MaxLength,
-  MinLength,
 } from 'class-validator'
 import { Users } from '@/users/models/users.model'
+import { IsAccountId } from '@/shared/validators/is-account-id.validator'
+import { IsAccountPassword } from '@/shared/validators/is-account-password.validator'
 
 export class CreateUserDTO {
-  @ApiProperty({
-    description: '사용자 아이디',
-    example: 'poopcoco123',
-    maxLength: 16,
-    minLength: 6,
-  })
-  @IsNotEmpty({ message: '아이디는 필수에요.' })
-  @Matches(/^[A-Za-z0-9]*$/, {
-    message: '아이디에 특수문자를 사용할 수 없어요.',
-  })
-  @MaxLength(16, { message: '아이디는 최대 16자까지 가능해요.' })
-  @MinLength(6, { message: '아이디는 6자 이상이여야 해요.' })
+  @IsAccountId()
   id: string
-
-  @ApiProperty({
-    description: '사용자 비밀번호',
-    example: 'poop!@#123',
-    minLength: 6,
-    maxLength: 16,
-  })
-  @IsNotEmpty({ message: '비밀번호는 필수에요.' })
-  @MaxLength(16, { message: '비밀번호는 최대 16자까지 가능해요.' })
-  @MinLength(6, { message: '비밀번호는 6자 이상이여야 해요.' })
+  @IsAccountPassword()
   password: string
 
   @ApiProperty({

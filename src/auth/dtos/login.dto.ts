@@ -1,0 +1,19 @@
+import { IsAccountId } from '@/shared/validators/is-account-id.validator'
+import { ApiProperty } from '@nestjs/swagger'
+import { IsNotEmpty, MaxLength, MinLength } from 'class-validator'
+
+export class LoginRequestDTO {
+  @IsAccountId()
+  id: string
+
+  @ApiProperty({
+    description: '사용자 비밀번호',
+    example: 'poop!@#123',
+    minLength: 6,
+    maxLength: 16,
+  })
+  @IsNotEmpty({ message: '비밀번호는 필수에요.' })
+  @MaxLength(16, { message: '비밀번호는 최대 16자까지 가능해요.' })
+  @MinLength(6, { message: '비밀번호는 6자 이상이여야 해요.' })
+  password: string
+}

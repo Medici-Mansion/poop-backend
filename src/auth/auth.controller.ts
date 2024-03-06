@@ -1,7 +1,17 @@
 import { FastifyReply } from 'fastify'
-import { AuthService } from '@/auth/auth.service'
+import { Body, Controller, Post, Put, Res } from '@nestjs/common'
+import {
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger'
+
 import { Public } from '@/shared/decorators/public.decorator'
 import { Transaction } from '@/shared/decorators/transaction.decorator'
+
+import { AuthService } from '@/auth/auth.service'
+
 import {
   CreateUserDTO,
   CreateUserResponseDTO,
@@ -10,13 +20,7 @@ import {
   VerifyCodeDTO,
   VerifyingCodeResponseDTO,
 } from '@/verifications/dtos/verify-code.dto'
-import { Body, Controller, Post, Put, Res } from '@nestjs/common'
-import {
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiOperation,
-  ApiTags,
-} from '@nestjs/swagger'
+import { LoginRequestDTO } from '@/auth/dtos/login.dto'
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -59,6 +63,38 @@ export class AuthController {
   ): Promise<VerifyingCodeResponseDTO> {
     const token = await this.authService.verifyingCode(verifyCodeDTO)
 
+    response.setCookie('access_token', token.accessToken, {
+      path: '/',
+      maxAge: 60 * 60,
+      secure: true,
+      httpOnly: true,
+      sameSite: 'lax',
+    })
+    response.setCookie('refresh_token', token.refreshToken, {
+      path: '/',
+      maxAge: 60 * 60 * 24 * 30,
+      secure: true,
+      httpOnly: true,
+      sameSite: 'lax',
+    })
+    return token
+  }
+
+  @ApiOperation({
+    description:
+      '아이디와 패스워드를 통해 로그인합니다. 엑세스토큰과 리프레시토큰을 응답하며, 쿠키에 자동저장됩니다.',
+    summary: '로그인',
+  })
+  @ApiOkResponse({
+    type: VerifyingCodeResponseDTO,
+    description: '로그인 성공 시 토큰이 발행됩니다.',
+  })
+  @Post('login')
+  async login(
+    @Body() loginRequestDTO: LoginRequestDTO,
+    @Res({ passthrough: true }) response: FastifyReply,
+  ): Promise<VerifyingCodeResponseDTO> {
+    const token = await this.authService.login(loginRequestDTO)
     response.setCookie('access_token', token.accessToken, {
       path: '/',
       maxAge: 60 * 60,

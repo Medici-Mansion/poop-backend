@@ -1,20 +1,30 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { validateOrReject } from 'class-validator'
+
 import { TokenPayload, TokenType } from '@/shared/interfaces/token.interface'
+
 import { UsersService } from '@/users/users.service'
 import { VerificationsService } from '@/verifications/verifications.service'
-import { CreateUserDTO } from '@/users/dtos/create-user.dto'
 import { BaseService } from '@/shared/services/base.service'
+
 import { Users } from '@/users/models/users.model'
+
+import {
+  CreateUserDTO,
+  CreateUserResponseDTO,
+} from '@/users/dtos/create-user.dto'
 import {
   VerifyCodeDTO,
   VerifyingCodeResponseDTO,
 } from '@/verifications/dtos/verify-code.dto'
+import { LoginRequestDTO } from '@/auth/dtos/login.dto'
 
 @Injectable()
 export class AuthService extends BaseService {
@@ -36,7 +46,7 @@ export class AuthService extends BaseService {
     }
   }
 
-  sign(sid: string, tokenType: TokenType = 'ACCESS') {
+  sign(sid: string, tokenType: TokenType = 'ACCESS'): string {
     try {
       const token: TokenPayload = {
         sid,
@@ -57,7 +67,7 @@ export class AuthService extends BaseService {
     }
   }
 
-  async signup(createUserDTO: CreateUserDTO) {
+  async signup(createUserDTO: CreateUserDTO): Promise<CreateUserResponseDTO> {
     /**
      * 1. 유저생성
      * 2. 인증코드 전송 (이메일 / 모바일)
@@ -67,16 +77,44 @@ export class AuthService extends BaseService {
     return user
   }
 
-  async verifyingCode(verifyCodeDTO: VerifyCodeDTO) {
+  async verifyingCode(
+    verifyCodeDTO: VerifyCodeDTO,
+  ): Promise<VerifyingCodeResponseDTO> {
     const isValidUser =
       await this.verificationsService.verifyingCode(verifyCodeDTO)
 
     await this.getManager()
       .getRepository(Users)
       .update(isValidUser.id, { verified: () => 'TRUE' })
+
+    return this.publishToken(isValidUser.id)
+  }
+
+  async login(
+    loginRequestDTO: LoginRequestDTO,
+  ): Promise<VerifyingCodeResponseDTO> {
+    const usersRepository = this.getManager().getRepository(Users)
+    const foundUser = await usersRepository.findOne({
+      where: {
+        id: loginRequestDTO.id,
+      },
+    })
+
+    if (!foundUser) throw new NotFoundException()
+
+    const validPassword = await foundUser.checkPassword(
+      loginRequestDTO.password,
+    )
+
+    if (!validPassword) throw new BadRequestException()
+
+    return this.publishToken(foundUser.id)
+  }
+
+  private publishToken(id: string): VerifyingCodeResponseDTO {
     const token = {
-      accessToken: this.sign(isValidUser.id),
-      refreshToken: this.sign(isValidUser.id, 'REFRESH'),
+      accessToken: this.sign(id),
+      refreshToken: this.sign(id, 'REFRESH'),
     }
 
     return new VerifyingCodeResponseDTO(token)
