@@ -1,5 +1,5 @@
 import { FastifyReply } from 'fastify'
-import { Body, Controller, Post, Put, Res } from '@nestjs/common'
+import { Body, Controller, Get, Post, Put, Query, Res } from '@nestjs/common'
 import {
   ApiCreatedResponse,
   ApiOkResponse,
@@ -21,6 +21,7 @@ import {
   VerifyingCodeResponseDTO,
 } from '@/verifications/dtos/verify-code.dto'
 import { LoginRequestDTO } from '@/auth/dtos/login.dto'
+import { GetUserByVidDTO } from '@/verifications/dtos/get-user-by-vid.dto'
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -41,6 +42,20 @@ export class AuthController {
     return this.authService.signup(createUserDTO)
   }
 
+  @ApiOperation({
+    summary: '인증번호 요청 API',
+    description: 'VID와 매칭되는 매체를 통해 인증번호를 전송받는다',
+  })
+  @ApiOkResponse({
+    type: Boolean,
+    description: '선택한 매체를 통해 인증번호 전송',
+  })
+  @Public()
+  @Get('verify')
+  async requestVerificationCode(@Query() getUserByVidDTO: GetUserByVidDTO) {
+    return this.authService.requestVerificationCode(getUserByVidDTO)
+  }
+
   /**
    *
    * @param {VerifyCodeDTO} verifyCodeDTO
@@ -55,7 +70,7 @@ export class AuthController {
     description: '엑세스 토큰. 유효시간 1시간\n리프레시 토큰. 유효시간 30일',
   })
   @Public()
-  @Post()
+  @Post('verify')
   @Transaction()
   async verifyingCode(
     @Body() verifyCodeDTO: VerifyCodeDTO,

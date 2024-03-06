@@ -14,5 +14,7 @@ declare namespace NodeJS {
     readonly ACCESS_EXPIRES_IN: string
     readonly COOKIE_SECRET: string
     readonly SALT: string
+    readonly COOL_SMS_KEY: string
+    readonly COOL_SMS_SECRET: string
   }
 }

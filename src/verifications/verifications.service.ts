@@ -1,9 +1,17 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
-import { Verification } from './models/verification.model'
-import { BaseService } from '@/shared/services/base.service'
-import { VerifyCodeDTO } from '@/verifications/dtos/verify-code.dto'
-import { Users } from '@/users/models/users.model'
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common'
 import { FindOptionsWhere } from 'typeorm'
+
+import { Verification } from './models/verification.model'
+import { Users } from '@/users/models/users.model'
+
+import { BaseService } from '@/shared/services/base.service'
+
+import { VerifyCodeDTO } from '@/verifications/dtos/verify-code.dto'
+import { GetUserByVidDTO } from '@/verifications/dtos/get-user-by-vid.dto'
 
 @Injectable()
 export class VerificationsService extends BaseService {
@@ -22,15 +30,14 @@ export class VerificationsService extends BaseService {
     return newVerification
   }
 
-  async verifyingCode(verifyCodeDTO: VerifyCodeDTO) {
+  async getUserByVid(getUserByVidDTO: GetUserByVidDTO) {
     const userWhereCond: FindOptionsWhere<Users> = {
-      [verifyCodeDTO.type.toLowerCase()]: verifyCodeDTO.vid,
+      [getUserByVidDTO.type.toLowerCase()]: getUserByVidDTO.vid,
       verified: false,
     }
     const repository = this.getManager().getRepository(Verification)
     const foundUserVerification = await repository.findOne({
       where: {
-        code: verifyCodeDTO.code,
         user: {
           ...userWhereCond,
         },
@@ -39,10 +46,22 @@ export class VerificationsService extends BaseService {
         user: true,
       },
     })
+    if (!foundUserVerification) {
+      throw new NotFoundException()
+    }
+    return foundUserVerification
+  }
+
+  async verifyingCode(verifyCodeDTO: VerifyCodeDTO) {
+    const foundUserVerification = await this.getUserByVid(verifyCodeDTO)
 
     if (!foundUserVerification) {
       throw new NotFoundException()
     }
+    if (foundUserVerification.code !== verifyCodeDTO.code) {
+      throw new ForbiddenException()
+    }
+
     const foundUser = foundUserVerification.user
 
     return foundUser

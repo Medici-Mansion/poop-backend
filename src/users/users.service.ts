@@ -9,6 +9,14 @@ export class UsersService extends BaseService {
     super()
   }
 
+  async getUserById(id: string) {
+    return this.getManager().getRepository(Users).findOne({
+      where: {
+        id,
+      },
+    })
+  }
+
   async createUser(createUserDTO: CreateUserDTO) {
     const repository = this.getManager().getRepository(Users)
     const existUser = await repository.findOne({

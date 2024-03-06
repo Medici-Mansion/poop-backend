@@ -72,29 +72,9 @@ export class CreateUserResponseDTO {
   })
   birthday: string
 
-  @ApiProperty({
-    description: '사용자 전화번호',
-    example: '010-9336-7663',
-    nullable: true,
-  })
-  @IsOptional()
-  @IsPhoneNumber('KR', { message: '유효하지 않은 번호에요.' })
-  phone: string
-
-  @ApiProperty({
-    description: '사용자 이메일',
-    example: 'akdfhr2@gmail.com',
-    nullable: true,
-  })
-  @IsOptional()
-  @IsEmail({}, { message: '유효하지 않은 번호에요.' })
-  email: string
-
   constructor(user: Users) {
     this.id = user.id
     this.accountId = user.accountId
     this.birthday = user.birthday
-    this.email = user.email
-    this.phone = user.phone
   }
 }

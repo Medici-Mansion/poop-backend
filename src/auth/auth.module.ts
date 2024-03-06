@@ -1,9 +1,13 @@
 import { Global, Module } from '@nestjs/common'
 import { JwtModule } from '@nestjs/jwt'
-import { AuthService } from '@/auth/auth.service'
-import { AuthController } from '@/auth/auth.controller'
-import { UsersModule } from '@/users/users.module'
+
 import { VerificationsModule } from '@/verifications/verifications.module'
+import { ExternalsModule } from '@/externals/externals.module'
+import { UsersModule } from '@/users/users.module'
+
+import { AuthService } from '@/auth/auth.service'
+
+import { AuthController } from '@/auth/auth.controller'
 
 @Global()
 @Module({
@@ -13,6 +17,7 @@ import { VerificationsModule } from '@/verifications/verifications.module'
     }),
     UsersModule,
     VerificationsModule,
+    ExternalsModule,
   ],
   providers: [AuthService],
   controllers: [AuthController],
