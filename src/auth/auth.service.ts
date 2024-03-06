@@ -23,10 +23,12 @@ import {
   CreateUserResponseDTO,
 } from '@/users/dtos/create-user.dto'
 import {
+  VerificationType,
   VerifyCodeDTO,
   VerifyingCodeResponseDTO,
 } from '@/verifications/dtos/verify-code.dto'
 import { LoginRequestDTO } from '@/auth/dtos/login.dto'
+import { EmailTemplateName } from '@/shared/constants/common.constants'
 
 @Injectable()
 export class AuthService extends BaseService {
@@ -50,10 +52,24 @@ export class AuthService extends BaseService {
     const foundVerification =
       await this.verificationsService.getUserByVid(getUserByVidDTO)
 
-    await this.externalsService.sendSMS(
-      `POOP! \n 인증코드: ${foundVerification.code}`,
-      getUserByVidDTO.vid,
-    )
+    if (getUserByVidDTO.type === VerificationType.PHONE) {
+      await this.externalsService.sendSMS(
+        `POOP! \n 인증코드: ${foundVerification.code}`,
+        getUserByVidDTO.vid,
+      )
+    } else if (getUserByVidDTO.type === VerificationType.EMAIL) {
+      await this.externalsService.sendEmail(
+        '[PooP!] 계정인증코드입니다.',
+        getUserByVidDTO.vid,
+        EmailTemplateName.CONFIRM_EMAIL,
+        [
+          {
+            key: 'code',
+            value: foundVerification.code,
+          },
+        ],
+      )
+    }
     return true
   }
 

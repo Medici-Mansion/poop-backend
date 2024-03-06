@@ -25,6 +25,8 @@ import Joi from 'joi'
         SALT: Joi.string().required(),
         COOL_SMS_KEY: Joi.string().required(),
         COOL_SMS_SECRET: Joi.string().required(),
+        MAILGUN_DOMAIN: Joi.string().required(),
+        MAILGUN_API_KEY: Joi.string().required(),
       }),
     }),
   ],

@@ -16,5 +16,7 @@ declare namespace NodeJS {
     readonly SALT: string
     readonly COOL_SMS_KEY: string
     readonly COOL_SMS_SECRET: string
+    readonly MAILGUN_DOMAIN: string
+    readonly MAILGUN_API_KEY: string
   }
 }
