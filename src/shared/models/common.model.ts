@@ -1,6 +1,7 @@
 import {
   BaseEntity,
   CreateDateColumn,
+  DeleteDateColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
@@ -9,9 +10,12 @@ export class CommonModel extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string
 
-  @UpdateDateColumn()
+  @CreateDateColumn({ comment: '생성일자' })
+  createdAt: Date
+
+  @UpdateDateColumn({ comment: '수정일자' })
   updatedAt: Date
 
-  @CreateDateColumn()
-  createdAt: Date
+  @DeleteDateColumn({ comment: '삭제일자' })
+  deletedAt: Date
 }

@@ -1,5 +1,5 @@
-import { Gender } from '@/common/common.const'
-import { CommonModel } from '@/common/models/common.model'
+import { Gender } from '@/shared/constants/common.constants'
+import { CommonModel } from '@/shared/models/common.model'
 import { Users } from '@/users/models/users.model'
 
 import { Column, Entity, ManyToOne } from 'typeorm'

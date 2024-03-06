@@ -1,19 +1,16 @@
-import { CommonModel } from '@/common/models/common.model'
+import { CommonModel } from '@/shared/models/common.model'
 import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany } from 'typeorm'
 import bcrypt from 'bcrypt'
 import { InternalServerErrorException } from '@nestjs/common'
-import { Gender } from '@/common/common.const'
 import { Profiles } from '@/profiles/models/profiles.model'
+import { Gender } from '@/shared/constants/common.constants'
 
 @Entity({ name: 'users' })
 export class Users extends CommonModel {
-  @Column({ comment: '사용자 이름' })
-  name: string
-
   @Column({ comment: '로그인 시 사용되는 계정', length: 16 })
   accountId: string
 
-  @Column({ comment: '로그인 시 사용되는 비밀번호', length: 16 })
+  @Column({ comment: '로그인 시 사용되는 비밀번호' })
   password: string
 
   @Column({ comment: '사용자 이메일', nullable: true })
@@ -22,7 +19,7 @@ export class Users extends CommonModel {
   @Column({ comment: '사용자 전화번호', nullable: true })
   phone: string
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: 'date' })
   birthday: string
 
   @Column({ type: 'enum', enum: Gender, default: Gender.NONE })
@@ -31,7 +28,10 @@ export class Users extends CommonModel {
   @Column({ default: false })
   verified: boolean
 
-  @OneToMany(() => Profiles, (profiles) => profiles.user)
+  @OneToMany(() => Profiles, (profiles) => profiles.user, {
+    createForeignKeyConstraints: false,
+    cascade: true,
+  })
   profiles: Profiles[]
 
   @BeforeInsert()

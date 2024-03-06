@@ -1,18 +1,18 @@
-import { CommonModel } from '@/common/models/common.model'
+import { CommonModel } from '@/shared/models/common.model'
 import { BeforeInsert, Column, Entity, JoinColumn, OneToOne } from 'typeorm'
-import { Users } from './users.model'
+import { Users } from '@/users/models/users.model'
 
 @Entity()
 export class Verification extends CommonModel {
   private readonly codeLength = 6
 
-  @Column()
-  code: number
+  @Column({ type: 'varchar' })
+  code: string
 
   @Column({ type: 'uuid' })
   userId: string
 
-  @OneToOne((type) => Users, { onDelete: 'CASCADE' })
+  @OneToOne((type) => Users, { cascade: ['soft-remove'] })
   @JoinColumn()
   user: Users
 
@@ -22,7 +22,7 @@ export class Verification extends CommonModel {
     this.code = code
   }
 
-  generateRandomString(): number {
+  protected generateRandomString(): string {
     // THINK: 무작위 코드 생성 시 문자열 포함하는 방향은?
     // const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
     const characters = '0123456789'
@@ -33,6 +33,6 @@ export class Verification extends CommonModel {
       result += characters.charAt(randomIndex)
     }
 
-    return +result
+    return result
   }
 }

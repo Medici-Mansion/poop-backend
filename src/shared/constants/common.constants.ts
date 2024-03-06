@@ -1,3 +1,5 @@
+export const MANAGER_KEY = 'COMMON_MANAGER_KEY'
+
 export enum Provider {
   KAKAO = 'KAKAO',
   APPLE = 'APPLE',
@@ -10,3 +12,5 @@ export enum Gender {
   FEMALE = 'FEMALE',
   NONE = 'NONE',
 }
+
+export const TOKEN_KEY = 'x-poop-ci'

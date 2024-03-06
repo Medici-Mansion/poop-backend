@@ -10,5 +10,9 @@ declare namespace NodeJS {
     readonly DB_NAME: string
     readonly SSL_MODE: string
     readonly CA_CERT: string
+    readonly REFRESH_EXPIRES_IN: string
+    readonly ACCESS_EXPIRES_IN: string
+    readonly COOKIE_SECRET: string
+    readonly SALT: string
   }
 }

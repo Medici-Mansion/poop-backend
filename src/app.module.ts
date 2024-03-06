@@ -3,10 +3,10 @@ import { UsersModule } from '@/users/users.module'
 import Joi from 'joi'
 import { ConfigModule } from '@nestjs/config'
 import { DatabaseModule } from '@/database/database.module'
-import { CommonModule } from '@/common/common.module'
 import { AppController } from '@/app.controller'
-import { AuthModule } from './auth/auth.module'
-import { ProfilesModule } from './profiles/profiles.module';
+import { AuthModule } from '@/auth/auth.module'
+import { ProfilesModule } from '@/profiles/profiles.module'
+import { VerificationsModule } from './verifications/verifications.module'
 @Module({
   imports: [
     DatabaseModule,
@@ -26,12 +26,16 @@ import { ProfilesModule } from './profiles/profiles.module';
         DB_PWD: Joi.string().required(),
         DB_NAME: Joi.string().required(),
         CA_CERT: Joi.string().required(),
+        COOKIE_SECRET: Joi.string().required(),
+        REFRESH_EXPIRES_IN: Joi.string().required(),
+        ACCESS_EXPIRES_IN: Joi.string().required(),
+        SALT: Joi.string().required(),
       }),
     }),
     UsersModule,
-    CommonModule,
     AuthModule,
     ProfilesModule,
+    VerificationsModule,
   ],
   controllers: [AppController],
   providers: [],

@@ -4,9 +4,11 @@ import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify'
-import fastifyHelmet from '@fastify/helmet'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
-import { VersioningType } from '@nestjs/common'
+import { ValidationPipe, VersioningType } from '@nestjs/common'
+import fastifyHelmet from '@fastify/helmet'
+import fastifyCookie from '@fastify/cookie'
+import fastifyCsrfProtection from '@fastify/csrf-protection'
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -14,30 +16,15 @@ async function bootstrap() {
     new FastifyAdapter(),
   )
 
-  await app.register(fastifyHelmet, {
-    contentSecurityPolicy: {
-      directives: {
-        'apollo-require-preflight': 'true',
-        defaultSrc: [`'self'`, 'unpkg.com'],
-        styleSrc: [
-          `'self'`,
-          `'unsafe-inline'`,
-          'cdn.jsdelivr.net',
-          'fonts.googleapis.com',
-          'unpkg.com',
-        ],
-        fontSrc: [`'self'`, 'fonts.gstatic.com', 'data:'],
-        imgSrc: [`'self'`, 'data:', 'cdn.jsdelivr.net'],
-        scriptSrc: [
-          `'self'`,
-          `https: 'unsafe-inline'`,
-          `cdn.jsdelivr.net`,
-          `'unsafe-eval'`,
-        ],
-      },
-    },
-  })
+  app.useGlobalPipes(new ValidationPipe())
 
+  await app.register(fastifyCsrfProtection, { cookieOpts: { signed: true } })
+
+  await app.register(fastifyHelmet)
+
+  await app.register(fastifyCookie, {
+    secret: process.env.COOKIE_SECRET,
+  })
   app
     .enableVersioning({
       type: VersioningType.URI,
