@@ -107,6 +107,9 @@ export class AuthService extends BaseService {
     )
 
     if (!validPassword) throw new BadRequestException()
+    // TODO: 커스텀에러를 통해 인증되지 않은 계정의 로그인 요청 분기 필요합니다.
+    if (!foundUser.verified)
+      throw new ForbiddenException('인증되지 않은 계정입니다.')
 
     return this.publishToken(foundUser.id)
   }
