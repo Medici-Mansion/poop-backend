@@ -15,11 +15,10 @@ import { TypeOrmModule } from '@nestjs/typeorm'
           synchronize: process.env.NODE_ENV !== 'production',
           schema: 'development',
           ssl: {
-            // ca: readFileSync(join(process.cwd(), 'cert/ca-certificate.crt')),
             ca: process.env.CA_CERT,
           },
           logging: process.env.NODE_ENV !== 'production',
-          entities: [__dirname + './../**/**.model{.ts,.js}'],
+          entities: [__dirname + './../**/**.model.{ts,js}'],
         }
       },
     }),

@@ -6,23 +6,28 @@ import { Column, Entity, ManyToOne } from 'typeorm'
 
 @Entity()
 export class Profiles extends CommonModel {
-  @Column({ nullable: true })
+  @Column({ nullable: true, comment: '프로필 메인 아바타 이미지 주소' })
   avatarUrl: string
 
-  @Column({ length: 12 })
+  @Column({ length: 12, comment: '프로필 이름' })
   name: string
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: 'timestamp', comment: '프로필 생일 ( 반려동물 생일 )' })
   birthday: string
 
-  @Column({ type: 'enum', enum: Gender, default: Gender.NONE })
+  @Column({
+    type: 'enum',
+    enum: Gender,
+    default: Gender.NONE,
+    comment: '프로필(반려동물) 성뱔',
+  })
   gender: Gender
 
   // TODO: 릴레이션을 통한 품종 1:N 매핑 필요
-  @Column()
+  @Column({ comment: '반려동물 품종' })
   breed: string
 
-  @Column({ type: 'uuid' })
+  @Column({ type: 'uuid', comment: '프로필과 매핑된 사용자 아이디(PK)' })
   userId: string
 
   @ManyToOne((type) => Users, { onDelete: 'CASCADE' })

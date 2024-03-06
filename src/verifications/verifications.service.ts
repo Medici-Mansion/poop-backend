@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common'
 import { FindOptionsWhere } from 'typeorm'
 
-import { Verification } from './models/verification.model'
+import { Verification } from '@/verifications/models/verification.model'
 import { Users } from '@/users/models/users.model'
 
 import { BaseService } from '@/shared/services/base.service'

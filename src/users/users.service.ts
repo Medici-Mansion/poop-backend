@@ -1,7 +1,11 @@
-import { CreateUserDTO, CreateUserResponseDTO } from './dtos/create-user.dto'
 import { ConflictException, Injectable } from '@nestjs/common'
-import { Users } from './models/users.model'
+import { Users } from '@/users/models/users.model'
 import { BaseService } from '@/shared/services/base.service'
+
+import {
+  CreateUserDTO,
+  CreateUserResponseDTO,
+} from '@/users/dtos/create-user.dto'
 
 @Injectable()
 export class UsersService extends BaseService {

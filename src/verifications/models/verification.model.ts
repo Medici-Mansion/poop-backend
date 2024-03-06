@@ -1,5 +1,5 @@
-import { CommonModel } from '@/shared/models/common.model'
 import { BeforeInsert, Column, Entity, JoinColumn, OneToOne } from 'typeorm'
+import { CommonModel } from '@/shared/models/common.model'
 import { Users } from '@/users/models/users.model'
 
 @Entity()

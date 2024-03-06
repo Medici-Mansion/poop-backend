@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common'
-import { ExternalsService } from '@/externals/externals.service'
 import { HttpModule } from '@nestjs/axios'
+
+import { ExternalsService } from '@/externals/externals.service'
 
 @Module({
   imports: [HttpModule],

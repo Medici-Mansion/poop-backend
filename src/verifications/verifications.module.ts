@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common'
+
 import { VerificationsService } from '@/verifications/verifications.service'
-import { VerificationsController } from './verifications.controller'
+
+import { VerificationsController } from '@/verifications/verifications.controller'
 
 @Module({
   controllers: [VerificationsController],

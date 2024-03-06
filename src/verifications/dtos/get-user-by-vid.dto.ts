@@ -1,7 +1,9 @@
-import { IsEmailOrPhoneNumber } from '@/shared/validators/is-email-or-phone.validator'
-import { VerificationType } from '@/verifications/dtos/verify-code.dto'
 import { ApiProperty } from '@nestjs/swagger'
 import { IsEnum } from 'class-validator'
+
+import { VerificationType } from '@/verifications/dtos/verify-code.dto'
+
+import { IsEmailOrPhoneNumber } from '@/shared/validators/is-email-or-phone.validator'
 
 export class GetUserByVidDTO {
   @ApiProperty({

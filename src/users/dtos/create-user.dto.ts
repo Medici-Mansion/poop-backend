@@ -1,4 +1,3 @@
-import { IsOnlyDate } from '@/shared/validators/is-date-string.validator'
 import { ApiProperty } from '@nestjs/swagger'
 import {
   IsEmail,
@@ -7,9 +6,12 @@ import {
   IsPhoneNumber,
   IsUUID,
 } from 'class-validator'
+
 import { Users } from '@/users/models/users.model'
+
 import { IsAccountId } from '@/shared/validators/is-account-id.validator'
 import { IsAccountPassword } from '@/shared/validators/is-account-password.validator'
+import { IsOnlyDate } from '@/shared/validators/is-date-string.validator'
 
 export class CreateUserDTO {
   @IsAccountId()

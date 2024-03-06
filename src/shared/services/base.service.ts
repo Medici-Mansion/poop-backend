@@ -1,9 +1,10 @@
+import { Inject } from '@nestjs/common'
+import { REQUEST } from '@nestjs/core'
 import { InjectDataSource } from '@nestjs/typeorm'
 import { DataSource, EntityManager } from 'typeorm'
 import { FastifyRequest } from 'fastify'
+
 import { MANAGER_KEY } from '@/shared/constants/common.constants'
-import { Inject } from '@nestjs/common'
-import { REQUEST } from '@nestjs/core'
 
 export class BaseService {
   @InjectDataSource()

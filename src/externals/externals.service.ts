@@ -2,8 +2,10 @@ import { HttpService } from '@nestjs/axios'
 import { Injectable } from '@nestjs/common'
 import FormData from 'form-data'
 import CoolsmsMessageService from 'coolsms-node-sdk'
-import { EmailVars } from './interfaces/mail.interface'
+
 import { EmailTemplateName } from '@/shared/constants/common.constants'
+
+import { EmailVars } from '@/externals/interfaces/mail.interface'
 
 @Injectable()
 export class ExternalsService {

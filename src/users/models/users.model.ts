@@ -1,9 +1,11 @@
-import { CommonModel } from '@/shared/models/common.model'
-import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany } from 'typeorm'
-import bcrypt from 'bcrypt'
 import { InternalServerErrorException } from '@nestjs/common'
-import { Profiles } from '@/profiles/models/profiles.model'
+import bcrypt from 'bcrypt'
+import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany } from 'typeorm'
+
 import { Gender } from '@/shared/constants/common.constants'
+
+import { CommonModel } from '@/shared/models/common.model'
+import { Profiles } from '@/profiles/models/profiles.model'
 
 @Entity({ name: 'users' })
 export class Users extends CommonModel {

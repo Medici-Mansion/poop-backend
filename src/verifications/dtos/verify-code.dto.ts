@@ -1,7 +1,8 @@
-import { AuthTokenResponse } from '@/shared/interfaces/token.interface'
-import { IsEmailOrPhoneNumber } from '@/shared/validators/is-email-or-phone.validator'
 import { ApiProperty } from '@nestjs/swagger'
 import { IsEnum, IsString, Length } from 'class-validator'
+import { AuthTokenResponse } from '@/shared/interfaces/token.interface'
+
+import { IsEmailOrPhoneNumber } from '@/shared/validators/is-email-or-phone.validator'
 
 export enum VerificationType {
   EMAIL = 'EMAIL',
