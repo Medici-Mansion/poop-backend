@@ -15,6 +15,9 @@ export class Users extends CommonModel {
   @Column({ comment: '로그인 시 사용되는 비밀번호' })
   password: string
 
+  @Column({ comment: '사용자 성명', nullable: true })
+  name: string
+
   @Column({ comment: '사용자 이메일', nullable: true })
   email: string
 

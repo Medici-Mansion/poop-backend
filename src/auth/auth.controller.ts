@@ -1,5 +1,14 @@
 import { FastifyReply } from 'fastify'
-import { Body, Controller, Get, Post, Put, Query, Res } from '@nestjs/common'
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Post,
+  Put,
+  Query,
+  Res,
+} from '@nestjs/common'
 import {
   ApiCreatedResponse,
   ApiOkResponse,
@@ -39,6 +48,8 @@ export class AuthController {
   @Put('signup')
   @Transaction()
   async createUser(@Body() createUserDTO: CreateUserDTO) {
+    if (!createUserDTO.email && !createUserDTO.phone)
+      throw new BadRequestException()
     return this.authService.signup(createUserDTO)
   }
 

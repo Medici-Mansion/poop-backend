@@ -1,9 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger'
 import {
   IsEmail,
+  IsEnum,
   IsNotEmpty,
   IsOptional,
   IsPhoneNumber,
+  IsString,
   IsUUID,
 } from 'class-validator'
 
@@ -12,6 +14,7 @@ import { Users } from '@/users/models/users.model'
 import { IsAccountId } from '@/shared/validators/is-account-id.validator'
 import { IsAccountPassword } from '@/shared/validators/is-account-password.validator'
 import { IsOnlyDate } from '@/shared/validators/is-date-string.validator'
+import { Gender } from '@/shared/constants/common.constants'
 
 export class CreateUserDTO {
   @IsAccountId()
@@ -27,6 +30,21 @@ export class CreateUserDTO {
     message: '잘못된 날짜에요.',
   })
   birthday: string
+
+  @ApiProperty({
+    description: '사용자 성명',
+    example: '댕댕이',
+  })
+  @IsString({ message: '이름은 필수에요.' })
+  name: string
+
+  @ApiProperty({
+    description: '사용자 성별',
+    type: Gender,
+    enum: Gender,
+  })
+  @IsEnum(Gender, { message: '유효하지 않은 성별이에요.' })
+  gender: Gender
 
   @ApiProperty({
     description: '사용자 전화번호',
