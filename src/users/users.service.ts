@@ -14,11 +14,13 @@ export class UsersService extends BaseService {
   }
 
   async getUserById(id: string) {
-    return this.getManager().getRepository(Users).findOne({
-      where: {
-        id,
-      },
-    })
+    return this.getManager()
+      .getRepository(Users)
+      .findOne({
+        where: {
+          accountId: id,
+        },
+      })
   }
 
   async createUser(createUserDTO: CreateUserDTO) {
