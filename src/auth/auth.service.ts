@@ -51,7 +51,7 @@ export class AuthService extends BaseService {
   async requestVerificationCode(getUserByVidDTO: GetUserByVidDTO) {
     const foundVerification =
       await this.verificationsService.getUserByVid(getUserByVidDTO)
-
+    foundVerification.code = foundVerification.getNewCode()
     if (getUserByVidDTO.type === VerificationType.PHONE) {
       await this.externalsService.sendSMS(
         `POOP! \n 인증코드: ${foundVerification.code}`,
@@ -70,6 +70,7 @@ export class AuthService extends BaseService {
         ],
       )
     }
+    await foundVerification.save()
     return true
   }
 
@@ -81,7 +82,9 @@ export class AuthService extends BaseService {
 
     await this.getManager()
       .getRepository(Users)
-      .update(isValidUser.id, { verified: () => 'TRUE' })
+      .update(isValidUser.id, {
+        verified: () => 'NOW()',
+      })
 
     return this.publishToken(isValidUser.id)
   }
@@ -89,7 +92,9 @@ export class AuthService extends BaseService {
   async login(
     loginRequestDTO: LoginRequestDTO,
   ): Promise<VerifyingCodeResponseDTO> {
-    const foundUser = await this.usersService.getUserById(loginRequestDTO.id)
+    const foundUser = await this.usersService.getUserByAccountId(
+      loginRequestDTO.id,
+    )
 
     if (!foundUser) throw new NotFoundException()
 
@@ -108,17 +113,17 @@ export class AuthService extends BaseService {
   verify(token: string): TokenPayload {
     try {
       return this.jwtService.verify<TokenPayload>(token, {
-        secret: process.env.JWT_SECRET,
+        secret: this.configService.get('JWT_SECRET'),
       })
     } catch (e) {
       throw new UnauthorizedException()
     }
   }
 
-  sign(sid: string, tokenType: TokenType = 'ACCESS'): string {
+  sign(uid: string, tokenType: TokenType = 'ACCESS'): string {
     try {
       const token: TokenPayload = {
-        sid,
+        uid,
       }
 
       validateOrReject(token)
@@ -126,20 +131,24 @@ export class AuthService extends BaseService {
       return this.jwtService.sign(token, {
         expiresIn:
           tokenType === 'ACCESS'
-            ? process.env.ACCESS_EXPIRES_IN
-            : process.env.REFRESH_EXPIRES_IN,
-        secret: process.env.JWT_SECRET,
+            ? this.configService.get('ACCESS_EXPIRES_IN')
+            : this.configService.get('REFRESH_EXPIRES_IN'),
+        secret: this.configService.get('JWT_SECRET'),
       })
     } catch (error) {
       throw new ForbiddenException()
     }
   }
 
-  private publishToken(id: string): VerifyingCodeResponseDTO {
+  private async publishToken(id: string): Promise<VerifyingCodeResponseDTO> {
     const token = {
       accessToken: this.sign(id),
       refreshToken: this.sign(id, 'REFRESH'),
     }
+
+    await this.getManager().getRepository(Users).update(id, {
+      refreshToken: token.refreshToken,
+    })
 
     return new VerifyingCodeResponseDTO(token)
   }

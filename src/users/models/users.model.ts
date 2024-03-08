@@ -15,8 +15,12 @@ export class Users extends CommonModel {
   @Column({ comment: '로그인 시 사용되는 비밀번호' })
   password: string
 
-  @Column({ comment: '사용자 성명', nullable: true })
-  name: string
+  @Column({
+    comment: '사용자 이름, 멀티프로필 관리번호로 사용됩니다 중복불가',
+    unique: true,
+    length: 16,
+  })
+  nickname: string
 
   @Column({ comment: '사용자 이메일', nullable: true })
   email: string
@@ -30,14 +34,17 @@ export class Users extends CommonModel {
   @Column({ type: 'enum', enum: Gender, default: Gender.NONE })
   gender: Gender
 
-  @Column({ default: false })
-  verified: boolean
+  @Column({ type: 'date', nullable: true })
+  verified: string
 
   @OneToMany(() => Profiles, (profiles) => profiles.user, {
     createForeignKeyConstraints: false,
     cascade: true,
   })
   profiles: Profiles[]
+
+  @Column({ comment: '리프레시 토큰', nullable: true })
+  refreshToken: string
 
   @BeforeInsert()
   @BeforeUpdate()

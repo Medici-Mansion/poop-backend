@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common'
-import { FindOptionsWhere } from 'typeorm'
+import { FindOptionsWhere, IsNull } from 'typeorm'
 
 import { Verification } from '@/verifications/models/verification.model'
 import { Users } from '@/users/models/users.model'
@@ -33,7 +33,7 @@ export class VerificationsService extends BaseService {
   async getUserByVid(getUserByVidDTO: GetUserByVidDTO) {
     const userWhereCond: FindOptionsWhere<Users> = {
       [getUserByVidDTO.type.toLowerCase()]: getUserByVidDTO.vid,
-      verified: false,
+      verified: IsNull(),
     }
     const repository = this.getManager().getRepository(Verification)
     const foundUserVerification = await repository.findOne({
@@ -46,6 +46,7 @@ export class VerificationsService extends BaseService {
         user: true,
       },
     })
+
     if (!foundUserVerification) {
       throw new NotFoundException()
     }

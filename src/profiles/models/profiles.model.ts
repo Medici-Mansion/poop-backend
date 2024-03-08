@@ -2,7 +2,7 @@ import { Gender } from '@/shared/constants/common.constants'
 import { CommonModel } from '@/shared/models/common.model'
 import { Users } from '@/users/models/users.model'
 
-import { Column, Entity, ManyToOne } from 'typeorm'
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm'
 
 @Entity()
 export class Profiles extends CommonModel {
@@ -19,7 +19,7 @@ export class Profiles extends CommonModel {
     type: 'enum',
     enum: Gender,
     default: Gender.NONE,
-    comment: '프로필(반려동물) 성뱔',
+    comment: '프로필(반려동물) 성별',
   })
   gender: Gender
 
@@ -27,9 +27,13 @@ export class Profiles extends CommonModel {
   @Column({ comment: '반려동물 품종' })
   breed: string
 
-  @Column({ type: 'uuid', comment: '프로필과 매핑된 사용자 아이디(PK)' })
+  @Column({ comment: '프로필과 매핑된 사용자 아이디' })
   userId: string
 
-  @ManyToOne((type) => Users, { onDelete: 'CASCADE' })
+  @ManyToOne((type) => Users, (users) => users.nickname, {
+    onDelete: 'CASCADE',
+    createForeignKeyConstraints: false,
+  })
+  @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
   user: Users
 }

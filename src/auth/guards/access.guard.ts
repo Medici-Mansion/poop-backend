@@ -25,15 +25,13 @@ export class AccessGuard implements CanActivate {
     if (isPublic) return true
     const request = context.switchToHttp().getRequest() as FastifyRequest
 
-    const token = (
-      (request.cookies[TOKEN_KEY] || request.headers[TOKEN_KEY]) as string
-    )?.replace('Bearer ', '')
+    const token = request.headers[TOKEN_KEY] as string
     if (!token) {
       throw new UnauthorizedException()
     }
     const payload = this.authService.verify(token)
 
-    request['user'] = payload
+    request['token'] = payload
     return true
   }
 }

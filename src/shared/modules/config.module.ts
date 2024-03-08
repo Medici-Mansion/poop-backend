@@ -1,12 +1,15 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule as BaseConfigModule } from '@nestjs/config'
 import Joi from 'joi'
+
+import { Env } from '@/shared/interfaces/env.interface'
+
 @Module({
   imports: [
     BaseConfigModule.forRoot({
       isGlobal: true,
       envFilePath: `.env.${process.env.NODE_ENV}`,
-      validationSchema: Joi.object<Required<typeof process.env>>({
+      validationSchema: Joi.object<Required<Env>>({
         NODE_ENV: Joi.valid(
           ...['production', 'development', 'test'],
         ).required(),
@@ -27,6 +30,9 @@ import Joi from 'joi'
         COOL_SMS_SECRET: Joi.string().required(),
         MAILGUN_DOMAIN: Joi.string().required(),
         MAILGUN_API_KEY: Joi.string().required(),
+        CLOUDINARY_API_KEY: Joi.string().required(),
+        CLOUDINARY_API_SECRET: Joi.string().required(),
+        CLOUDINARY_CLOUD_NAME: Joi.string().required(),
       }),
     }),
   ],

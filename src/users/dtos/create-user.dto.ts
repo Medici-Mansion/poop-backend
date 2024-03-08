@@ -7,6 +7,7 @@ import {
   IsPhoneNumber,
   IsString,
   IsUUID,
+  MaxLength,
 } from 'class-validator'
 
 import { Users } from '@/users/models/users.model'
@@ -36,7 +37,8 @@ export class CreateUserDTO {
     example: '댕댕이',
   })
   @IsString({ message: '이름은 필수에요.' })
-  name: string
+  @MaxLength(16, { message: '이름은 16글자 이상으로 작성해주세요.' })
+  nickname: string
 
   @ApiProperty({
     description: '사용자 성별',
@@ -48,7 +50,7 @@ export class CreateUserDTO {
 
   @ApiProperty({
     description: '사용자 전화번호',
-    example: '010-9336-7663',
+    example: '01093367663',
   })
   @IsOptional()
   @IsPhoneNumber('KR', { message: '유효하지 않은 번호에요.' })

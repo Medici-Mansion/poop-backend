@@ -1,4 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common'
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common'
 import { Users } from '@/users/models/users.model'
 import { BaseService } from '@/shared/services/base.service'
 
@@ -14,13 +18,27 @@ export class UsersService extends BaseService {
   }
 
   async getUserById(id: string) {
-    return this.getManager()
-      .getRepository(Users)
-      .findOne({
-        where: {
-          accountId: id,
-        },
-      })
+    const foundUser = await this.getManager().getRepository(Users).findOne({
+      where: {
+        id,
+      },
+    })
+
+    if (!foundUser) throw new NotFoundException()
+
+    return foundUser
+  }
+
+  async getUserByAccountId(accountId: string) {
+    const foundUser = await this.getManager().getRepository(Users).findOne({
+      where: {
+        accountId,
+      },
+    })
+
+    if (!foundUser) throw new NotFoundException()
+
+    return foundUser
   }
 
   async createUser(createUserDTO: CreateUserDTO) {
@@ -34,14 +52,11 @@ export class UsersService extends BaseService {
     if (existUser) {
       throw new ConflictException()
     }
-    const { birthday, email, id, password, phone } = createUserDTO
+    const { id, ...newUserData } = createUserDTO
     const newUser = await repository.save(
       repository.create({
         accountId: id,
-        password,
-        birthday,
-        email,
-        phone,
+        ...newUserData,
       }),
     )
 

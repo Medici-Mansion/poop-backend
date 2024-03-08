@@ -12,7 +12,10 @@ export class Verification extends CommonModel {
   @Column({ type: 'uuid' })
   userId: string
 
-  @OneToOne((type) => Users, { cascade: ['soft-remove'] })
+  @OneToOne((type) => Users, {
+    cascade: ['soft-remove'],
+    createForeignKeyConstraints: false,
+  })
   @JoinColumn()
   user: Users
 
@@ -20,6 +23,10 @@ export class Verification extends CommonModel {
   createCode(): void {
     const code = this.generateRandomString()
     this.code = code
+  }
+
+  getNewCode() {
+    return this.generateRandomString()
   }
 
   protected generateRandomString(): string {

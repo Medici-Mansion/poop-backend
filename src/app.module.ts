@@ -7,8 +7,11 @@ import { ProfilesModule } from '@/profiles/profiles.module'
 import { VerificationsModule } from './verifications/verifications.module'
 import { ConfigModule } from '@/shared/modules/config.module'
 import { ExternalsModule } from '@/externals/externals.module'
+import { NestjsFormDataModule } from 'nestjs-form-data'
+
 @Module({
   imports: [
+    NestjsFormDataModule.config({ isGlobal: true, autoDeleteFile: true }),
     DatabaseModule,
     ConfigModule,
     UsersModule,

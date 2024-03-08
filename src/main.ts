@@ -9,6 +9,8 @@ import { ValidationPipe, VersioningType } from '@nestjs/common'
 import fastifyHelmet from '@fastify/helmet'
 import fastifyCookie from '@fastify/cookie'
 import fastifyCsrfProtection from '@fastify/csrf-protection'
+import fastifyMultipart from '@fastify/multipart'
+import { TOKEN_KEY } from './shared/constants/common.constants'
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -16,10 +18,20 @@ async function bootstrap() {
     new FastifyAdapter(),
   )
 
-  app.useGlobalPipes(new ValidationPipe())
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      enableDebugMessages: true,
+      transform: true,
+    }),
+  )
 
   await app.register(fastifyCsrfProtection, { cookieOpts: { signed: true } })
 
+  app.register(fastifyMultipart, {
+    logLevel: 'debug',
+    limits: { fileSize: 10000000 }, // 10MBi
+  })
   await app.register(fastifyHelmet)
 
   await app.register(fastifyCookie, {
@@ -37,6 +49,7 @@ async function bootstrap() {
     .setTitle('POOP API')
     .setDescription('POOP API 문서입니다.')
     .setVersion('0.0.1')
+    .addSecurity(TOKEN_KEY, { type: 'apiKey', in: 'header', name: TOKEN_KEY })
     .build()
 
   const document = SwaggerModule.createDocument(app, config)

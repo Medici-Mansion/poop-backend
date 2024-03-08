@@ -13,6 +13,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'
           password: process.env.DB_PWD,
           database: process.env.DB_NAME,
           synchronize: process.env.NODE_ENV !== 'production',
+          // synchronize: false,
           schema: 'development',
           ssl: {
             ca: process.env.CA_CERT,

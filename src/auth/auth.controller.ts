@@ -4,6 +4,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
   Post,
   Put,
   Query,
@@ -39,7 +40,7 @@ export class AuthController {
   @ApiOperation({
     summary: '회원가입 / 사용자 생성',
     description:
-      '사용자 생성, 회원가입 용도로 사용됩니다. \n 정상응답 시 인증코드가 발송됩니다.',
+      '사용자 생성, 회원가입 용도로 사용됩니다. 정상응답 시 인증코드가 발송됩니다.',
   })
   @ApiCreatedResponse({
     type: CreateUserResponseDTO,
@@ -63,6 +64,7 @@ export class AuthController {
   })
   @Public()
   @Get('verify')
+  @Transaction()
   async requestVerificationCode(@Query() getUserByVidDTO: GetUserByVidDTO) {
     return this.authService.requestVerificationCode(getUserByVidDTO)
   }
@@ -81,6 +83,7 @@ export class AuthController {
     description: '엑세스 토큰. 유효시간 1시간\n리프레시 토큰. 유효시간 30일',
   })
   @Public()
+  @HttpCode(200)
   @Post('verify')
   @Transaction()
   async verifyingCode(
@@ -116,6 +119,7 @@ export class AuthController {
     description: '로그인 성공 시 토큰이 발행됩니다.',
   })
   @Post('login')
+  @HttpCode(200)
   async login(
     @Body() loginRequestDTO: LoginRequestDTO,
     @Res({ passthrough: true }) response: FastifyReply,

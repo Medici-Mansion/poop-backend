@@ -6,5 +6,5 @@ export interface AuthTokenResponse {
 }
 
 export interface TokenPayload {
-  sid: string
+  uid: string
 }
