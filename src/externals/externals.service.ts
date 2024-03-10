@@ -1,14 +1,18 @@
 import { HttpService } from '@nestjs/axios'
 import { Injectable, OnModuleInit } from '@nestjs/common'
 import FormData from 'form-data'
+import { MemoryStoredFile } from 'nestjs-form-data'
 import CoolsmsMessageService from 'coolsms-node-sdk'
+
+import { BaseService } from '@/shared/services/base.service'
+import { CloudinaryService } from '@/externals/modules/cloudinary/cloudinary.service'
+import { InfluxDBService } from '@/externals/modules/influxdb/influxDB.service'
 
 import { EmailTemplateName } from '@/shared/constants/common.constants'
 
 import { EmailVars } from '@/externals/interfaces/mail.interface'
-import { BaseService } from '@/shared/services/base.service'
-import { CloudinaryService } from './modules/cloudinary/cloudinary.service'
-import { MemoryStoredFile } from 'nestjs-form-data'
+
+import { LogRequestDTO } from '@/externals/modules/influxdb/dtos/log-request.dto'
 
 @Injectable()
 export class ExternalsService extends BaseService implements OnModuleInit {
@@ -17,6 +21,7 @@ export class ExternalsService extends BaseService implements OnModuleInit {
   constructor(
     private readonly httpService: HttpService,
     private readonly cloudinaryService: CloudinaryService,
+    private readonly influxDBService: InfluxDBService,
   ) {
     super()
   }
@@ -65,5 +70,9 @@ export class ExternalsService extends BaseService implements OnModuleInit {
 
   async uploadFiles(files: MemoryStoredFile[], folder: string = '') {
     return this.cloudinaryService.uploadFiles(files, folder)
+  }
+
+  async logResponse(logRequestDTO: LogRequestDTO) {
+    return this.influxDBService.logRequest(logRequestDTO)
   }
 }

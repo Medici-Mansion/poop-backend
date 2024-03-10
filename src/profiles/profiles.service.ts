@@ -7,6 +7,9 @@ import { ExternalsService } from '@/externals/externals.service'
 import { BaseService } from '@/shared/services/base.service'
 
 import { CreateProfileDTO } from '@/profiles/dtos/create-profile.dto'
+import { GetProfileDTO } from './dtos/get-profile.dto'
+import { LoginProfileDTO } from './dtos/login-profile.dto'
+import { Users } from '@/users/models/users.model'
 
 @Injectable()
 export class ProfilesService extends BaseService {
@@ -32,6 +35,27 @@ export class ProfilesService extends BaseService {
         userId,
       }),
     )
+    return true
+  }
+
+  async getMyProfileList(userId: string) {
+    const profiles = await this.getManager().find(Profiles, {
+      where: {
+        userId,
+      },
+      relations: {
+        user: true,
+      },
+    })
+    return profiles.map((profile) => new GetProfileDTO(profile))
+  }
+
+  async loginProfile(userId: string, loginProfileDTO: LoginProfileDTO) {
+    const user = await this.usersService.getUserById(userId)
+    await this.getManager().update(Users, user.id, {
+      latestProfileId: loginProfileDTO.profileId,
+    })
+
     return true
   }
 }

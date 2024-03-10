@@ -20,4 +20,7 @@ export interface Env {
   readonly CLOUDINARY_API_KEY: string
   readonly CLOUDINARY_CLOUD_NAME: string
   readonly CLOUDINARY_API_SECRET: string
+  readonly INFLUXDB_TOKEN: string
+  readonly INFLUXDB_HOST: string
+  readonly INFLUXDB_NAME: string
 }

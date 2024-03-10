@@ -6,7 +6,6 @@ import {
   IsOptional,
   IsPhoneNumber,
   IsString,
-  IsUUID,
   MaxLength,
 } from 'class-validator'
 
@@ -16,6 +15,8 @@ import { IsAccountId } from '@/shared/validators/is-account-id.validator'
 import { IsAccountPassword } from '@/shared/validators/is-account-password.validator'
 import { IsOnlyDate } from '@/shared/validators/is-date-string.validator'
 import { Gender } from '@/shared/constants/common.constants'
+import { IsUserId } from '@/shared/validators/is-user-id.validator'
+import { IsYYYYMMDD } from '@/shared/validators/is-YYYY-MM-DD.validator'
 
 export class CreateUserDTO {
   @IsAccountId()
@@ -66,14 +67,7 @@ export class CreateUserDTO {
 }
 
 export class CreateUserResponseDTO {
-  @ApiProperty({
-    description: '사용자 PK',
-    example: 'poopcoco123',
-    maxLength: 16,
-    minLength: 6,
-  })
-  @IsNotEmpty()
-  @IsUUID('all')
+  @IsUserId()
   id: string
 
   @ApiProperty({
@@ -85,13 +79,7 @@ export class CreateUserResponseDTO {
   @IsNotEmpty({ message: '아이디는 필수에요.' })
   accountId: string
 
-  @ApiProperty({
-    description: '사용자 생일',
-    example: '1995-01-04',
-  })
-  @IsOnlyDate({
-    message: '잘못된 날짜에요.',
-  })
+  @IsYYYYMMDD()
   birthday: string
 
   constructor(user: Users) {

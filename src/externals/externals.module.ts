@@ -2,10 +2,12 @@ import { Module } from '@nestjs/common'
 import { HttpModule } from '@nestjs/axios'
 
 import { ExternalsService } from '@/externals/externals.service'
-import { CloudinaryModule } from './modules/cloudinary/cloudinary.module'
+
+import { CloudinaryModule } from '@/externals/modules/cloudinary/cloudinary.module'
+import { InfluxdbModule } from '@/externals/modules/influxdb/influxdb.module'
 
 @Module({
-  imports: [HttpModule, CloudinaryModule],
+  imports: [HttpModule, CloudinaryModule, InfluxdbModule],
   providers: [ExternalsService],
   exports: [ExternalsService],
 })

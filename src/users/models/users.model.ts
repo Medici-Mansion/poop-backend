@@ -1,6 +1,14 @@
 import { InternalServerErrorException } from '@nestjs/common'
 import bcrypt from 'bcrypt'
-import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany } from 'typeorm'
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+} from 'typeorm'
 
 import { Gender } from '@/shared/constants/common.constants'
 
@@ -28,14 +36,24 @@ export class Users extends CommonModel {
   @Column({ comment: '사용자 전화번호', nullable: true })
   phone: string
 
+  @Column({ comment: '먀지막 접속한 프로필 아이디', nullable: true })
+  latestProfileId: string
+
   @Column({ type: 'date' })
   birthday: string
 
   @Column({ type: 'enum', enum: Gender, default: Gender.NONE })
   gender: Gender
 
-  @Column({ type: 'date', nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   verified: string
+
+  @OneToOne(() => Profiles, {
+    createForeignKeyConstraints: false,
+    nullable: true,
+  })
+  @JoinColumn({ name: 'latestProfileId', referencedColumnName: 'id' })
+  latestJoinProfile?: Profiles
 
   @OneToMany(() => Profiles, (profiles) => profiles.user, {
     createForeignKeyConstraints: false,

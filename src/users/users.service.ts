@@ -18,11 +18,16 @@ export class UsersService extends BaseService {
   }
 
   async getUserById(id: string) {
-    const foundUser = await this.getManager().getRepository(Users).findOne({
-      where: {
-        id,
-      },
-    })
+    const foundUser = await this.getManager()
+      .getRepository(Users)
+      .findOne({
+        where: {
+          id,
+        },
+        relations: {
+          latestJoinProfile: true,
+        },
+      })
 
     if (!foundUser) throw new NotFoundException()
 
