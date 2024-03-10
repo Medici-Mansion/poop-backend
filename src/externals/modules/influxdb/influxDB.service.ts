@@ -17,14 +17,16 @@ export class InfluxDBService extends BaseService {
     })
   }
 
-  async logRequest(LogRequestDTO: LogRequestDTO) {
+  async logRequest(logRequestDTO: LogRequestDTO) {
     const point = Point.measurement('log_response')
-
-    Object.entries(LogRequestDTO).forEach(([key, value]) => {
-      point.setTag(key, value)
-    })
-    console.log(point, '!!', process.env.INFLUXDB_NAME)
-
+      .setTag('api', logRequestDTO.originalUrl)
+      .setTag('hostname', logRequestDTO.hostname)
+      .setTag('method', logRequestDTO.method)
+      .setTag('userAgent', logRequestDTO.userAgent)
+      .setTag('ip', logRequestDTO.ip)
+      .setIntegerField('statusCode', logRequestDTO.statusCode)
+      .setIntegerField('contentLength', logRequestDTO.contentLength)
+      .setIntegerField('responseTime', logRequestDTO.responseTime)
     await this.influxDB.write(point, process.env.INFLUXDB_NAME)
     await this.influxDB.close()
     return true
