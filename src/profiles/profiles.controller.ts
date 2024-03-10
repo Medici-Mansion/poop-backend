@@ -1,4 +1,5 @@
-import { Body, Controller, Put, UseGuards } from '@nestjs/common'
+import { ExtractLatestProfile } from './../shared/decorators/latest-profile.decorator'
+import { Body, Controller, Get, Post, Put, UseGuards } from '@nestjs/common'
 import { FormDataRequest } from 'nestjs-form-data'
 import {
   ApiConsumes,
@@ -18,6 +19,10 @@ import { TokenPayload } from '@/shared/interfaces/token.interface'
 
 import { CreateProfileDTO } from '@/profiles/dtos/create-profile.dto'
 import { Transaction } from '@/shared/decorators/transaction.decorator'
+import { Profiles } from './models/profiles.model'
+
+import { LatestProfile } from '@/shared/decorators/latest-profile.decorator'
+import { LoginProfileDTO } from './dtos/login-profile.dto'
 
 @ApiPoopSecurity()
 @ApiTags('Profiles')
@@ -42,5 +47,24 @@ export class ProfilesController {
     @Body() createProfileDTO: CreateProfileDTO,
   ) {
     return this.profilesService.createProfile(uid, createProfileDTO)
+  }
+
+  @Get()
+  getProfileList(@UserId() { uid }: TokenPayload) {
+    return this.profilesService.getMyProfileList(uid)
+  }
+
+  @Get('latest')
+  @LatestProfile()
+  getLatestProfile(@ExtractLatestProfile() profile: Profiles) {
+    return profile
+  }
+
+  @Post('login')
+  loginProfile(
+    @UserId() { uid }: TokenPayload,
+    @Body() loginProfileDTO: LoginProfileDTO,
+  ) {
+    return this.profilesService.loginProfile(uid, loginProfileDTO)
   }
 }
