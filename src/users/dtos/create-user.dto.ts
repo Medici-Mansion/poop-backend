@@ -52,6 +52,7 @@ export class CreateUserDTO {
   @ApiProperty({
     description: '사용자 전화번호',
     example: '01093367663',
+    nullable: true,
   })
   @IsOptional()
   @IsPhoneNumber('KR', { message: '유효하지 않은 번호에요.' })
@@ -60,6 +61,7 @@ export class CreateUserDTO {
   @ApiProperty({
     description: '사용자 이메일',
     example: 'akdfhr2@gmail.com',
+    nullable: true,
   })
   @IsOptional()
   @IsEmail({}, { message: '유효하지 않은 번호에요.' })

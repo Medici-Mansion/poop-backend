@@ -11,6 +11,7 @@ import fastifyCookie from '@fastify/cookie'
 import fastifyCsrfProtection from '@fastify/csrf-protection'
 import fastifyMultipart from '@fastify/multipart'
 import { TOKEN_KEY } from '@/shared/constants/common.constant'
+import { GlobalExceptionFilter } from './shared/global.filter'
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -18,6 +19,7 @@ async function bootstrap() {
     new FastifyAdapter(),
   )
 
+  app.useGlobalFilters(new GlobalExceptionFilter())
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

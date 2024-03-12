@@ -49,9 +49,20 @@ export class UsersService extends BaseService {
   async createUser(createUserDTO: CreateUserDTO) {
     const repository = this.getManager().getRepository(Users)
     const existUser = await repository.findOne({
-      where: {
-        accountId: createUserDTO.id,
-      },
+      where: [
+        {
+          accountId: createUserDTO.id,
+        },
+        {
+          nickname: createUserDTO.nickname,
+        },
+        {
+          phone: createUserDTO.phone,
+        },
+        {
+          email: createUserDTO.email,
+        },
+      ],
     })
 
     if (existUser) {

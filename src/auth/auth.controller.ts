@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { FastifyReply } from 'fastify'
 import {
   BadRequestException,
@@ -22,10 +23,7 @@ import { Transaction } from '@/shared/decorators/transaction.decorator'
 
 import { AuthService } from '@/auth/auth.service'
 
-import {
-  CreateUserDTO,
-  CreateUserResponseDTO,
-} from '@/users/dtos/create-user.dto'
+import { CreateUserDTO } from '@/users/dtos/create-user.dto'
 import {
   VerifyCodeDTO,
   VerifyingCodeResponseDTO,
@@ -43,12 +41,12 @@ export class AuthController {
       '사용자 생성, 회원가입 용도로 사용됩니다. 정상응답 시 인증코드가 발송됩니다.',
   })
   @ApiCreatedResponse({
-    type: CreateUserResponseDTO,
+    type: Boolean,
   })
   @Public()
   @Put('signup')
   @Transaction()
-  async createUser(@Body() createUserDTO: CreateUserDTO) {
+  async createUser(@Body() createUserDTO: CreateUserDTO): Promise<boolean> {
     if (!createUserDTO.email && !createUserDTO.phone)
       throw new BadRequestException()
     return this.authService.signup(createUserDTO)
@@ -79,34 +77,15 @@ export class AuthController {
     description: '인증코드를 통한 계정정보 인증',
   })
   @ApiOkResponse({
-    type: VerifyingCodeResponseDTO,
-    description: '엑세스 토큰. 유효시간 1시간\n리프레시 토큰. 유효시간 30일',
+    type: Boolean,
+    description: '인증코드 검증 완료 처리',
   })
   @Public()
   @HttpCode(200)
   @Post('verify')
   @Transaction()
-  async verifyingCode(
-    @Body() verifyCodeDTO: VerifyCodeDTO,
-    @Res({ passthrough: true }) response: FastifyReply,
-  ): Promise<VerifyingCodeResponseDTO> {
-    const token = await this.authService.verifyingCode(verifyCodeDTO)
-
-    response.setCookie('access_token', token.accessToken, {
-      path: '/',
-      maxAge: 60 * 60,
-      secure: true,
-      httpOnly: true,
-      sameSite: 'lax',
-    })
-    response.setCookie('refresh_token', token.refreshToken, {
-      path: '/',
-      maxAge: 60 * 60 * 24 * 30,
-      secure: true,
-      httpOnly: true,
-      sameSite: 'lax',
-    })
-    return token
+  async verifyingCode(@Body() verifyCodeDTO: VerifyCodeDTO): Promise<boolean> {
+    return this.authService.verifyingCode(verifyCodeDTO)
   }
 
   @ApiOperation({
@@ -140,5 +119,19 @@ export class AuthController {
       sameSite: 'lax',
     })
     return token
+  }
+
+  @ApiOperation({
+    summary: '인증번호 요청 API (비밀번호찾기)',
+    description: 'VID와 매칭되는 매체를 통해 인증번호를 전송받는다',
+  })
+  @ApiOkResponse({
+    type: Boolean,
+    description: '선택한 매체를 통해 인증번호 전송',
+  })
+  @Get('change-password-code')
+  @Transaction()
+  getChangePasswordCode(@Query() getUserByVidDTO: GetUserByVidDTO) {
+    return this.authService.getChangePasswordCode(getUserByVidDTO)
   }
 }

@@ -25,10 +25,6 @@ export class Verification extends CommonModel {
     this.code = code
   }
 
-  getNewCode() {
-    return this.generateRandomString()
-  }
-
   protected generateRandomString(): string {
     // THINK: 무작위 코드 생성 시 문자열 포함하는 방향은?
     // const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'

@@ -47,6 +47,9 @@ export class Users extends CommonModel {
   @Column({ type: 'timestamp', nullable: true })
   verified: string
 
+  @Column({ comment: '리프레시 토큰', nullable: true })
+  refreshToken: string
+
   @OneToOne(() => Profiles, {
     createForeignKeyConstraints: false,
     nullable: true,
@@ -59,9 +62,6 @@ export class Users extends CommonModel {
     cascade: true,
   })
   profiles: Profiles[]
-
-  @Column({ comment: '리프레시 토큰', nullable: true })
-  refreshToken: string
 
   @BeforeInsert()
   @BeforeUpdate()

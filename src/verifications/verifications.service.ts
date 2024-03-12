@@ -15,6 +15,7 @@ import { GetUserByVidDTO } from '@/verifications/dtos/get-user-by-vid.dto'
 
 @Injectable()
 export class VerificationsService extends BaseService {
+  private readonly codeLength = 6
   constructor() {
     super()
   }
@@ -63,8 +64,23 @@ export class VerificationsService extends BaseService {
       throw new ForbiddenException()
     }
 
-    const foundUser = foundUserVerification.user
+    return foundUserVerification
+  }
+  async removeVerification(id: string) {
+    return this.getManager().getRepository(Verification).softRemove({ id })
+  }
 
-    return foundUser
+  generateRandomString(): string {
+    // THINK: 무작위 코드 생성 시 문자열 포함하는 방향은?
+    // const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+    const characters = '0123456789'
+    let result = ''
+
+    for (let i = 0; i < this.codeLength; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length)
+      result += characters.charAt(randomIndex)
+    }
+
+    return result
   }
 }

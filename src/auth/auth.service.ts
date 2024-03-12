@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { validateOrReject } from 'class-validator'
+import { FindOptionsWhere } from 'typeorm'
 
 import { TokenPayload, TokenType } from '@/shared/interfaces/token.interface'
 
@@ -18,10 +19,7 @@ import { BaseService } from '@/shared/services/base.service'
 
 import { Users } from '@/users/models/users.model'
 
-import {
-  CreateUserDTO,
-  CreateUserResponseDTO,
-} from '@/users/dtos/create-user.dto'
+import { CreateUserDTO } from '@/users/dtos/create-user.dto'
 import {
   VerificationType,
   VerifyCodeDTO,
@@ -29,6 +27,7 @@ import {
 } from '@/verifications/dtos/verify-code.dto'
 import { LoginRequestDTO } from '@/auth/dtos/login.dto'
 import { EmailTemplateName } from '@/shared/constants/common.constant'
+import { Verification } from '@/verifications/models/verification.model'
 
 @Injectable()
 export class AuthService extends BaseService {
@@ -41,17 +40,17 @@ export class AuthService extends BaseService {
     super()
   }
 
-  async signup(createUserDTO: CreateUserDTO): Promise<CreateUserResponseDTO> {
+  async signup(createUserDTO: CreateUserDTO): Promise<boolean> {
     const user = await this.usersService.createUser(createUserDTO)
     await this.verificationsService.createVerification(user.id)
 
-    return user
+    return true
   }
 
   async requestVerificationCode(getUserByVidDTO: GetUserByVidDTO) {
     const foundVerification =
       await this.verificationsService.getUserByVid(getUserByVidDTO)
-    foundVerification.code = foundVerification.getNewCode()
+    foundVerification.code = this.verificationsService.generateRandomString()
     if (getUserByVidDTO.type === VerificationType.PHONE) {
       await this.externalsService.sendSMS(
         `POOP! \n 인증코드: ${foundVerification.code}`,
@@ -74,19 +73,19 @@ export class AuthService extends BaseService {
     return true
   }
 
-  async verifyingCode(
-    verifyCodeDTO: VerifyCodeDTO,
-  ): Promise<VerifyingCodeResponseDTO> {
-    const isValidUser =
+  async verifyingCode(verifyCodeDTO: VerifyCodeDTO): Promise<boolean> {
+    const foundVerification =
       await this.verificationsService.verifyingCode(verifyCodeDTO)
 
     await this.getManager()
       .getRepository(Users)
-      .update(isValidUser.id, {
+      .update(foundVerification.user.id, {
         verified: () => 'NOW()',
       })
 
-    return this.publishToken(isValidUser.id)
+    await this.verificationsService.removeVerification(foundVerification.id)
+
+    return true
   }
 
   async login(
@@ -108,6 +107,66 @@ export class AuthService extends BaseService {
       throw new ForbiddenException('인증되지 않은 계정입니다.')
 
     return this.publishToken(foundUser.id)
+  }
+
+  /**
+   * TODO: 리펙토링 필요
+   * 이미 인증된 경우 or 인증되지 않은 경우 모두 사용 가능 해야 함
+   * @param getUserByVidDTO
+   * @returns
+   */
+  async getChangePasswordCode(getUserByVidDTO: GetUserByVidDTO) {
+    const userWhereCond: FindOptionsWhere<Users> = {
+      [getUserByVidDTO.type.toLowerCase()]: getUserByVidDTO.vid,
+    }
+    const repository = this.getManager().getRepository(Verification)
+    let foundUserVerification = await repository.findOne({
+      where: {
+        user: {
+          ...userWhereCond,
+        },
+      },
+      relations: {
+        user: true,
+      },
+    })
+
+    if (!foundUserVerification) {
+      const foundUser = await this.getManager()
+        .getRepository(Users)
+        .findOne({ where: { ...userWhereCond } })
+      if (!foundUser) throw new NotFoundException()
+
+      const newVerification =
+        await this.verificationsService.createVerification(foundUser.id)
+      foundUserVerification = {
+        ...newVerification,
+        user: foundUser,
+      } as Verification
+    }
+
+    foundUserVerification.code =
+      this.verificationsService.generateRandomString()
+    if (getUserByVidDTO.type === VerificationType.PHONE) {
+      await this.externalsService.sendSMS(
+        `POOP! \n 인증코드: ${foundUserVerification.code}`,
+        getUserByVidDTO.vid,
+      )
+    } else if (getUserByVidDTO.type === VerificationType.EMAIL) {
+      await this.externalsService.sendEmail(
+        '[PooP!] 계정인증코드입니다.',
+        getUserByVidDTO.vid,
+        EmailTemplateName.CONFIRM_EMAIL,
+        [
+          {
+            key: 'code',
+            value: foundUserVerification.code,
+          },
+        ],
+      )
+    }
+    await foundUserVerification.save()
+    return true
   }
 
   verify(token: string): TokenPayload {
