@@ -102,7 +102,7 @@ export class AuthService extends BaseService {
       loginRequestDTO.password,
     )
 
-    if (!validPassword) throw new BadRequestException()
+    if (!validPassword) throw new BadRequestException('비밀번호가 다릅니다.')
     // TODO: 커스텀에러를 통해 인증되지 않은 계정의 로그인 요청 분기 필요합니다.
     if (!foundUser.verified)
       throw new ForbiddenException('인증되지 않은 계정입니다.')

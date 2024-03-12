@@ -1,28 +1,38 @@
 import { ExtractLatestProfile } from './../shared/decorators/latest-profile.decorator'
-import { Body, Controller, Get, Post, Put, UseGuards } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common'
 import { FormDataRequest } from 'nestjs-form-data'
 import {
   ApiConsumes,
   ApiCreatedResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger'
 
 import { AccessGuard } from '@/auth/guards/access.guard'
 
+import { Profiles } from './models/profiles.model'
+
 import { UserId } from '@/shared/decorators/user-id.decorator'
 import { ApiPoopSecurity } from '@/shared/decorators/api-poop-security.decorator'
+import { Transaction } from '@/shared/decorators/transaction.decorator'
+import { LatestProfile } from '@/shared/decorators/latest-profile.decorator'
 
 import { ProfilesService } from '@/profiles/profiles.service'
 
 import { TokenPayload } from '@/shared/interfaces/token.interface'
 
 import { CreateProfileDTO } from '@/profiles/dtos/create-profile.dto'
-import { Transaction } from '@/shared/decorators/transaction.decorator'
-import { Profiles } from './models/profiles.model'
-
-import { LatestProfile } from '@/shared/decorators/latest-profile.decorator'
-import { LoginProfileDTO } from './dtos/login-profile.dto'
+import { LoginProfileDTO } from '@/profiles/dtos/login-profile.dto'
+import { GetProfileDTO, ProfileDTO } from '@/profiles/dtos/get-profile.dto'
 
 @ApiPoopSecurity()
 @ApiTags('Profiles')
@@ -30,6 +40,23 @@ import { LoginProfileDTO } from './dtos/login-profile.dto'
 @UseGuards(AccessGuard)
 export class ProfilesController {
   constructor(private readonly profilesService: ProfilesService) {}
+
+  @Post()
+  @ApiOperation({
+    summary: '프로필 사용하기',
+    description: '사용할 프로필을 선택합니다.',
+  })
+  @HttpCode(200)
+  @ApiOkResponse({
+    type: Boolean,
+    status: '2XX',
+  })
+  loginProfile(
+    @UserId() { uid }: TokenPayload,
+    @Body() loginProfileDTO: LoginProfileDTO,
+  ) {
+    return this.profilesService.loginProfile(uid, loginProfileDTO)
+  }
 
   @Put()
   @ApiConsumes('multipart/form-data')
@@ -50,21 +77,27 @@ export class ProfilesController {
   }
 
   @Get()
+  @ApiOperation({
+    summary: '나의 프로필 목록 조회',
+    description: '내가 만든 프로필 목록을 조회한다',
+  })
+  @ApiOkResponse({
+    type: [GetProfileDTO],
+  })
   getProfileList(@UserId() { uid }: TokenPayload) {
     return this.profilesService.getMyProfileList(uid)
   }
 
   @Get('latest')
+  @ApiOperation({
+    summary: '최근 접속 프로필 조회',
+    description: '최근 접속한 프로필을 조회한다',
+  })
+  @ApiOkResponse({
+    type: ProfileDTO,
+  })
   @LatestProfile()
   getLatestProfile(@ExtractLatestProfile() profile: Profiles) {
     return profile
-  }
-
-  @Post('login')
-  loginProfile(
-    @UserId() { uid }: TokenPayload,
-    @Body() loginProfileDTO: LoginProfileDTO,
-  ) {
-    return this.profilesService.loginProfile(uid, loginProfileDTO)
   }
 }

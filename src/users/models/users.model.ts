@@ -16,7 +16,7 @@ import { Gender } from '@/shared/constants/common.constant'
 
 @Entity({ name: 'users' })
 export class Users extends CommonModel {
-  @Column({ comment: '로그인 시 사용되는 계정', length: 16 })
+  @Column({ comment: '로그인 시 사용되는 계정', length: 20 })
   accountId: string
 
   @Column({ comment: '로그인 시 사용되는 비밀번호' })
@@ -25,7 +25,7 @@ export class Users extends CommonModel {
   @Column({
     comment: '사용자 이름, 멀티프로필 관리번호로 사용됩니다 중복불가',
     unique: true,
-    length: 16,
+    length: 20,
   })
   nickname: string
 

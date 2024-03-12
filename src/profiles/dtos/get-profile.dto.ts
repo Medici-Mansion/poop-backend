@@ -7,7 +7,7 @@ import { IsYYYYMMDD } from '@/shared/validators/is-YYYY-MM-DD.validator'
 import { IsUserId } from '@/shared/validators/is-user-id.validator'
 import { Gender } from '@/shared/constants/common.constant'
 
-export class GetProfileDTO {
+export class ProfileDTO {
   @IsUserId()
   id: string
 
@@ -42,7 +42,7 @@ export class GetProfileDTO {
   @ApiProperty({ title: '최근 접속한 프로필 여부' })
   isLatestLoginProfile: boolean
 
-  constructor(profile: Profiles) {
+  constructor(profile: Profiles & { isLatestLoginProfile?: boolean }) {
     this.id = profile.id
     this.createdAt = profile.createdAt
     this.updatedAt = profile.updatedAt
@@ -51,6 +51,13 @@ export class GetProfileDTO {
     this.birthday = profile.birthday
     this.gender = profile.gender
     this.breed = profile.breed
+    this.isLatestLoginProfile = profile.isLatestLoginProfile
+  }
+}
+
+export class GetProfileDTO extends ProfileDTO {
+  constructor(profile: Profiles) {
+    super(profile)
     this.isLatestLoginProfile = !!(
       profile?.user?.latestProfileId &&
       profile.user.latestProfileId === profile.id

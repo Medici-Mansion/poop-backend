@@ -9,7 +9,7 @@ export class Profiles extends CommonModel {
   @Column({ nullable: true, comment: '프로필 메인 아바타 이미지 주소' })
   avatarUrl: string
 
-  @Column({ length: 12, comment: '프로필 이름' })
+  @Column({ length: 13, comment: '프로필 이름' })
   name: string
 
   @Column({ type: 'timestamp', comment: '프로필 생일 ( 반려동물 생일 )' })
