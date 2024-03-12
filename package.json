@@ -2,8 +2,8 @@
   "name": "root",
   "private": true,
   "workspaces": [
-    "packages/*",
-    "apps/*"
+    "apps/*",
+    "packages/*"
   ],
   "scripts": {
     "dev": "lerna run start:dev",
