@@ -11,7 +11,7 @@ import { InfluxDBService } from '@/externals/modules/influxdb/influxDB.service'
 import { EmailVars } from '@/externals/interfaces/mail.interface'
 
 import { LogRequestDTO } from '@/externals/modules/influxdb/dtos/log-request.dto'
-import { EmailTemplateName } from '@poop/common'
+import { EmailTemplateName } from '@/shared/constants/common.constant'
 
 @Injectable()
 export class ExternalsService extends BaseService implements OnModuleInit {

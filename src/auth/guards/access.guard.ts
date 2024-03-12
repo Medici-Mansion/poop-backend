@@ -8,7 +8,7 @@ import { Observable } from 'rxjs'
 import { AuthService } from '../auth.service'
 import { Reflector } from '@nestjs/core'
 import { FastifyRequest } from 'fastify'
-import { TOKEN_KEY } from '@poop/common'
+import { TOKEN_KEY } from '@/shared/constants/common.constant'
 
 @Injectable()
 export class AccessGuard implements CanActivate {

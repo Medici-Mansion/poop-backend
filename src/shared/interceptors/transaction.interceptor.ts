@@ -7,7 +7,7 @@ import {
 import { FastifyRequest } from 'fastify'
 import { Observable, catchError, concatMap, finalize } from 'rxjs'
 import { DataSource } from 'typeorm'
-import { MANAGER_KEY } from '@poop/common'
+import { MANAGER_KEY } from '@/shared/constants/common.constant'
 
 @Injectable()
 export class TransactionInterceptor implements NestInterceptor {

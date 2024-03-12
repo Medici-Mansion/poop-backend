@@ -16,7 +16,7 @@ import { IsAccountPassword } from '@/shared/validators/is-account-password.valid
 import { IsOnlyDate } from '@/shared/validators/is-date-string.validator'
 import { IsUserId } from '@/shared/validators/is-user-id.validator'
 import { IsYYYYMMDD } from '@/shared/validators/is-YYYY-MM-DD.validator'
-import { Gender } from '@poop/common'
+import { Gender } from '@/shared/constants/common.constant'
 
 export class CreateUserDTO {
   @IsAccountId()

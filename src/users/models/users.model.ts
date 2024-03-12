@@ -12,7 +12,7 @@ import {
 
 import { CommonModel } from '@/shared/models/common.model'
 import { Profiles } from '@/profiles/models/profiles.model'
-import { Gender } from '@poop/common'
+import { Gender } from '@/shared/constants/common.constant'
 
 @Entity({ name: 'users' })
 export class Users extends CommonModel {

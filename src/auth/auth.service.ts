@@ -28,7 +28,7 @@ import {
   VerifyingCodeResponseDTO,
 } from '@/verifications/dtos/verify-code.dto'
 import { LoginRequestDTO } from '@/auth/dtos/login.dto'
-import { EmailTemplateName } from '@poop/common'
+import { EmailTemplateName } from '@/shared/constants/common.constant'
 
 @Injectable()
 export class AuthService extends BaseService {

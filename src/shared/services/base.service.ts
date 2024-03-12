@@ -6,7 +6,7 @@ import { DataSource, EntityManager } from 'typeorm'
 import { FastifyRequest } from 'fastify'
 
 import { Env } from '@/shared/interfaces/env.interface'
-import { MANAGER_KEY } from '@poop/common'
+import { MANAGER_KEY } from '@/shared/constants/common.constant'
 
 export class BaseService {
   @InjectDataSource()

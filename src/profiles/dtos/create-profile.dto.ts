@@ -1,7 +1,7 @@
+import { Gender } from '@/shared/constants/common.constant'
 import { IsOnlyDate } from '@/shared/validators/is-date-string.validator'
 import { MaxImageSize } from '@/shared/validators/max-image-size.validator'
 import { ApiProperty } from '@nestjs/swagger'
-import { Gender } from '@poop/common'
 import { IsEnum, IsString } from 'class-validator'
 import {
   HasMimeType,

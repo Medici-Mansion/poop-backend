@@ -10,7 +10,7 @@ import fastifyHelmet from '@fastify/helmet'
 import fastifyCookie from '@fastify/cookie'
 import fastifyCsrfProtection from '@fastify/csrf-protection'
 import fastifyMultipart from '@fastify/multipart'
-import { TOKEN_KEY } from '@poop/common'
+import { TOKEN_KEY } from '@/shared/constants/common.constant'
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
