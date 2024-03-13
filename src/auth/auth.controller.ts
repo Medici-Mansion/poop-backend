@@ -18,7 +18,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger'
 
-import { Public } from '@/shared/decorators/public.decorator'
 import { Transaction } from '@/shared/decorators/transaction.decorator'
 
 import { AuthService } from '@/auth/auth.service'
@@ -43,7 +42,6 @@ export class AuthController {
   @ApiCreatedResponse({
     type: Boolean,
   })
-  @Public()
   @Put('signup')
   @Transaction()
   async createUser(@Body() createUserDTO: CreateUserDTO): Promise<boolean> {
@@ -60,7 +58,6 @@ export class AuthController {
     type: Boolean,
     description: '선택한 매체를 통해 인증번호 전송',
   })
-  @Public()
   @Get('verify')
   @Transaction()
   async requestVerificationCode(@Query() getUserByVidDTO: GetUserByVidDTO) {
@@ -70,7 +67,7 @@ export class AuthController {
   /**
    *
    * @param {VerifyCodeDTO} verifyCodeDTO
-   * @description 인증 완료 시 로그인동작과 같은 응답 반환
+   * @description
    */
   @ApiOperation({
     summary: '인증번호 검증 API',
@@ -80,7 +77,6 @@ export class AuthController {
     type: Boolean,
     description: '인증코드 검증 완료 처리',
   })
-  @Public()
   @HttpCode(200)
   @Post('verify')
   @Transaction()
@@ -123,15 +119,32 @@ export class AuthController {
 
   @ApiOperation({
     summary: '인증번호 요청 API (비밀번호찾기)',
-    description: 'VID와 매칭되는 매체를 통해 인증번호를 전송받는다',
+    description:
+      'VID와 매칭되는 매체를 통해 인증번호를 전송받는다 1시간의 제한시간이 있으며, 유효시간이 지나면 인증이 불가능하다',
   })
   @ApiOkResponse({
     type: Boolean,
     description: '선택한 매체를 통해 인증번호 전송',
   })
-  @Get('change-password-code')
+  @Get('password-code')
   @Transaction()
   getChangePasswordCode(@Query() getUserByVidDTO: GetUserByVidDTO) {
     return this.authService.getChangePasswordCode(getUserByVidDTO)
+  }
+
+  @ApiOperation({
+    summary: '인증번호 검증 API (비밀번호찾기)',
+    description: '인증코드를 통한 계정정보 인증',
+  })
+  @ApiOkResponse({
+    type: Boolean,
+    description:
+      '인증코드 검증 완료 처리 (비밀번호찾기) 응답으로 16자리 문자열이 오는데, 비밀번호 변경 시 해당 문자열을 함께 던져야함',
+  })
+  @HttpCode(200)
+  @Post('password-code')
+  @Transaction()
+  verifyChangePasswordCode(@Body() verifyCodeDTO: VerifyCodeDTO) {
+    return this.authService.verifyChangePasswordCode(verifyCodeDTO)
   }
 }

@@ -22,8 +22,8 @@ import { Users } from '@/users/models/users.model'
 import { CreateUserDTO } from '@/users/dtos/create-user.dto'
 import {
   VerificationType,
-  VerifyCodeDTO,
   VerifyingCodeResponseDTO,
+  VerifyCodeDTO,
 } from '@/verifications/dtos/verify-code.dto'
 import { LoginRequestDTO } from '@/auth/dtos/login.dto'
 import { EmailTemplateName } from '@/shared/constants/common.constant'
@@ -151,6 +151,34 @@ export class AuthService extends BaseService {
     }
     await this.redis.set(foundUser.id, code, 'EX', 60 * 60)
     return true
+  }
+
+  async verifyChangePasswordCode(verifyCodeDTO: VerifyCodeDTO) {
+    const userWhereCond: FindOptionsWhere<Users> = {
+      [verifyCodeDTO.type.toLowerCase()]: verifyCodeDTO.vid,
+    }
+    const repository = this.getManager().getRepository(Users)
+    const foundUser = await repository.findOne({
+      where: {
+        ...userWhereCond,
+      },
+    })
+
+    if (!foundUser) {
+      throw new NotFoundException()
+    }
+
+    const code = await this.redis.get(foundUser.id)
+    if (!code) throw new NotFoundException()
+    if (code !== verifyCodeDTO.code) throw new UnauthorizedException()
+
+    const changePasswordKey = this.verificationsService.generateRandomString({
+      onlyString: true,
+      length: 16,
+    })
+    await this.redis.del(foundUser.id)
+    await this.redis.set(changePasswordKey, foundUser.id)
+    return changePasswordKey
   }
 
   verify(token: string): TokenPayload {

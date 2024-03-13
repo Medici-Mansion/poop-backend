@@ -15,7 +15,6 @@ import { GetUserByVidDTO } from '@/verifications/dtos/get-user-by-vid.dto'
 
 @Injectable()
 export class VerificationsService extends BaseService {
-  private readonly codeLength = 6
   constructor() {
     super()
   }
@@ -70,13 +69,20 @@ export class VerificationsService extends BaseService {
     return this.getManager().getRepository(Verification).softRemove({ id })
   }
 
-  generateRandomString(): string {
+  generateRandomString(options?: {
+    onlyString?: boolean
+    length?: number
+  }): string {
+    const { onlyString, length } = options
     // THINK: 무작위 코드 생성 시 문자열 포함하는 방향은?
-    // const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-    const characters = '0123456789'
+    const codeLength = length ?? 6
+
+    const characters = onlyString
+      ? 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+      : '0123456789'
     let result = ''
 
-    for (let i = 0; i < this.codeLength; i++) {
+    for (let i = 0; i < codeLength; i++) {
       const randomIndex = Math.floor(Math.random() * characters.length)
       result += characters.charAt(randomIndex)
     }

@@ -17,22 +17,26 @@ export class LoggingMiddleware implements NestMiddleware {
     const { ip, method, originalUrl, hostname } = req
     const userAgent = req.headers['user-agent'] || ''
     res.on('finish', () => {
-      const { statusCode } = res
-      const contentLength = (res.getHeader('content-length') || '') as string
-      const responseTime = Date.now() - start
-      this.logger.log(
-        `${method} ${originalUrl} ${statusCode} ${contentLength} - ${userAgent} ${ip}`,
-      )
-      this.externalsService.logResponse({
-        contentLength,
-        ip,
-        method,
-        originalUrl,
-        statusCode,
-        userAgent,
-        responseTime,
-        hostname,
-      })
+      try {
+        const { statusCode } = res
+        const contentLength = (res.getHeader('content-length') || '') as string
+        const responseTime = Date.now() - start
+        this.logger.log(
+          `${method} ${originalUrl} ${statusCode} ${contentLength} - ${userAgent} ${ip}`,
+        )
+        this.externalsService.logResponse({
+          contentLength,
+          ip,
+          method,
+          originalUrl,
+          statusCode,
+          userAgent,
+          responseTime,
+          hostname,
+        })
+      } catch (err) {
+        console.log(`[LOG ERROR]: ${err}`)
+      }
     })
 
     next()
