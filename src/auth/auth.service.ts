@@ -170,6 +170,7 @@ export class AuthService extends BaseService {
       throw new NotFoundException()
     }
 
+    // TODO: redisService를 통해 값 가져오는 매소드 구성
     const code = await this.redis.get(foundUser.id)
     if (!code) throw new NotFoundException()
     if (code !== verifyCodeDTO.code) throw new UnauthorizedException()
@@ -178,8 +179,10 @@ export class AuthService extends BaseService {
       onlyString: true,
       length: 16,
     })
-    await this.redis.del(foundUser.id)
-    await this.redis.set(changePasswordKey, foundUser.id)
+    await Promise.all([
+      this.redis.del(foundUser.id),
+      this.redis.set(changePasswordKey, foundUser.id, 'EX', 60 * 60),
+    ])
     return changePasswordKey
   }
 

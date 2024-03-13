@@ -55,9 +55,7 @@ export class CreateUserDTO {
     example: '01093367663',
     nullable: true,
   })
-  @Transform(({ value }) => (value === '' ? undefined : value), {
-    toClassOnly: true,
-  })
+  @Transform(({ value }) => (value === '' ? undefined : value))
   @IsOptional()
   @IsPhoneNumber('KR', { message: '유효하지 않은 번호에요.' })
   phone: string
@@ -67,9 +65,7 @@ export class CreateUserDTO {
     example: 'akdfhr2@gmail.com',
     nullable: true,
   })
-  @Transform(({ value }) => (value === '' ? null : value), {
-    toClassOnly: true,
-  })
+  @Transform(({ value }) => (value === '' ? null : value))
   @IsOptional()
   @IsEmail({}, { message: '유효하지 않은 이메일이에요.' })
   email: string
