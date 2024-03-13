@@ -37,8 +37,8 @@ export class CreateUserDTO {
     description: '사용자 성명',
     example: '댕댕이',
   })
-  @IsString({ message: '이름은 필수에요.' })
-  @MaxLength(16, { message: '이름은 16글자 이상으로 작성해주세요.' })
+  @IsString({ message: '닉네임은 필수에요.' })
+  @MaxLength(16, { message: '닉네임은 16글자 이상으로 작성할 수 없어요.' })
   nickname: string
 
   @ApiProperty({

@@ -27,7 +27,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
           statusCode: status,
           timestamp: new Date().toISOString(),
           path: request.url,
-          error,
+          ...(error ?? {}),
         },
       })
     } else {
@@ -37,9 +37,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
           statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
           timestamp: new Date().toISOString(),
           path: request.url,
-          error: {
-            message: 'Internal server error',
-          },
+          message: 'Internal server error',
         },
       })
     }

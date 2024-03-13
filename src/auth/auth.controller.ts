@@ -137,7 +137,11 @@ export class AuthController {
     description: '인증코드를 통한 계정정보 인증',
   })
   @ApiOkResponse({
-    type: Boolean,
+    schema: {
+      type: 'string',
+      example: 'ERJ492WE338EWEQ1',
+      description: '비밀번호 변경 요청 시 전달해야할 토큰',
+    },
     description:
       '인증코드 검증 완료 처리 (비밀번호찾기) 응답으로 16자리 문자열이 오는데, 비밀번호 변경 시 해당 문자열을 함께 던져야함',
   })
