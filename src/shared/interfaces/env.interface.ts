@@ -23,4 +23,7 @@ export interface Env {
   readonly INFLUXDB_TOKEN: string
   readonly INFLUXDB_HOST: string
   readonly INFLUXDB_NAME: string
+  readonly REDIS_HOST: string
+  readonly REDIS_PORT: string
+  readonly REDIS_PWD: string
 }

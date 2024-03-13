@@ -27,7 +27,8 @@ import {
 } from '@/verifications/dtos/verify-code.dto'
 import { LoginRequestDTO } from '@/auth/dtos/login.dto'
 import { EmailTemplateName } from '@/shared/constants/common.constant'
-import { Verification } from '@/verifications/models/verification.model'
+import { InjectRedis } from '@liaoliaots/nestjs-redis'
+import { Redis } from 'ioredis'
 
 @Injectable()
 export class AuthService extends BaseService {
@@ -36,6 +37,7 @@ export class AuthService extends BaseService {
     private readonly usersService: UsersService,
     private readonly verificationsService: VerificationsService,
     private readonly externalsService: ExternalsService,
+    @InjectRedis() private readonly redis: Redis,
   ) {
     super()
   }
@@ -84,7 +86,6 @@ export class AuthService extends BaseService {
       })
 
     await this.verificationsService.removeVerification(foundVerification.id)
-
     return true
   }
 
@@ -119,37 +120,20 @@ export class AuthService extends BaseService {
     const userWhereCond: FindOptionsWhere<Users> = {
       [getUserByVidDTO.type.toLowerCase()]: getUserByVidDTO.vid,
     }
-    const repository = this.getManager().getRepository(Verification)
-    let foundUserVerification = await repository.findOne({
+    const repository = this.getManager().getRepository(Users)
+    const foundUser = await repository.findOne({
       where: {
-        user: {
-          ...userWhereCond,
-        },
-      },
-      relations: {
-        user: true,
+        ...userWhereCond,
       },
     })
 
-    if (!foundUserVerification) {
-      const foundUser = await this.getManager()
-        .getRepository(Users)
-        .findOne({ where: { ...userWhereCond } })
-      if (!foundUser) throw new NotFoundException()
-
-      const newVerification =
-        await this.verificationsService.createVerification(foundUser.id)
-      foundUserVerification = {
-        ...newVerification,
-        user: foundUser,
-      } as Verification
+    if (!foundUser) {
+      throw new NotFoundException()
     }
-
-    foundUserVerification.code =
-      this.verificationsService.generateRandomString()
+    const code = this.verificationsService.generateRandomString()
     if (getUserByVidDTO.type === VerificationType.PHONE) {
       await this.externalsService.sendSMS(
-        `POOP! \n 인증코드: ${foundUserVerification.code}`,
+        `POOP! \n 인증코드: ${code}`,
         getUserByVidDTO.vid,
       )
     } else if (getUserByVidDTO.type === VerificationType.EMAIL) {
@@ -160,12 +144,12 @@ export class AuthService extends BaseService {
         [
           {
             key: 'code',
-            value: foundUserVerification.code,
+            value: code,
           },
         ],
       )
     }
-    await foundUserVerification.save()
+    await this.redis.set(foundUser.id, code, 'EX', 60 * 60)
     return true
   }
 
