@@ -1,5 +1,3 @@
-import { GetUserByVidDTO } from '../verifications/dtos/get-user-by-vid.dto'
-import { ExternalsService } from '@/externals/externals.service'
 import {
   BadRequestException,
   ForbiddenException,
@@ -9,6 +7,8 @@ import {
 } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { validateOrReject } from 'class-validator'
+import { InjectRedis } from '@liaoliaots/nestjs-redis'
+import { Redis } from 'ioredis'
 import { FindOptionsWhere } from 'typeorm'
 
 import { TokenPayload, TokenType } from '@/shared/interfaces/token.interface'
@@ -16,6 +16,7 @@ import { TokenPayload, TokenType } from '@/shared/interfaces/token.interface'
 import { UsersService } from '@/users/users.service'
 import { VerificationsService } from '@/verifications/verifications.service'
 import { BaseService } from '@/shared/services/base.service'
+import { ExternalsService } from '@/externals/externals.service'
 
 import { Users } from '@/users/models/users.model'
 
@@ -26,9 +27,10 @@ import {
   VerifyCodeDTO,
 } from '@/verifications/dtos/verify-code.dto'
 import { LoginRequestDTO } from '@/auth/dtos/login.dto'
+import { GetUserByVidDTO } from '@/verifications/dtos/get-user-by-vid.dto'
+import { RefreshDTO } from './dtos/refresh.dto'
+
 import { EmailTemplateName } from '@/shared/constants/common.constant'
-import { InjectRedis } from '@liaoliaots/nestjs-redis'
-import { Redis } from 'ioredis'
 
 @Injectable()
 export class AuthService extends BaseService {
@@ -179,6 +181,18 @@ export class AuthService extends BaseService {
     await this.redis.del(foundUser.id)
     await this.redis.set(changePasswordKey, foundUser.id)
     return changePasswordKey
+  }
+
+  async refresh(refreshDTO: RefreshDTO) {
+    const verifiedToken = this.verify(refreshDTO.refreshToken)
+
+    const foundUser = await this.usersService.getUserById(verifiedToken.uid)
+    if (foundUser.refreshToken !== refreshDTO.refreshToken)
+      throw new UnauthorizedException()
+
+    const newToken = await this.publishToken(foundUser.id)
+
+    return newToken
   }
 
   verify(token: string): TokenPayload {

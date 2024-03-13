@@ -29,6 +29,7 @@ import {
 } from '@/verifications/dtos/verify-code.dto'
 import { LoginRequestDTO } from '@/auth/dtos/login.dto'
 import { GetUserByVidDTO } from '@/verifications/dtos/get-user-by-vid.dto'
+import { RefreshDTO } from '@/auth/dtos/refresh.dto'
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -115,6 +116,20 @@ export class AuthController {
       sameSite: 'lax',
     })
     return token
+  }
+
+  @ApiOperation({
+    summary: '새로운 토큰발급',
+    description: 'refresh token을 통해 새로운 토큰을 발급한다',
+  })
+  @ApiOkResponse({
+    type: VerifyingCodeResponseDTO,
+    description: '성공 시 토큰이 발행됩니다.',
+  })
+  @HttpCode(200)
+  @Post('refresh')
+  refresh(@Body() refreshDTO: RefreshDTO) {
+    return this.authService.refresh(refreshDTO)
   }
 
   @ApiOperation({

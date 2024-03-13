@@ -73,7 +73,7 @@ export class VerificationsService extends BaseService {
     onlyString?: boolean
     length?: number
   }): string {
-    const { onlyString, length } = options
+    const { onlyString, length } = options ?? {}
     // THINK: 무작위 코드 생성 시 문자열 포함하는 방향은?
     const codeLength = length ?? 6
 
