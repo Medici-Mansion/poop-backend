@@ -46,7 +46,7 @@ export class AuthController {
   @Transaction()
   async createUser(@Body() createUserDTO: CreateUserDTO): Promise<boolean> {
     if (!createUserDTO.email && !createUserDTO.phone)
-      throw new BadRequestException()
+      throw new BadRequestException(['이메일 또는 전화번호는 필수에요.'])
     return this.authService.signup(createUserDTO)
   }
 

@@ -17,6 +17,7 @@ import { IsOnlyDate } from '@/shared/validators/is-date-string.validator'
 import { IsUserId } from '@/shared/validators/is-user-id.validator'
 import { IsYYYYMMDD } from '@/shared/validators/is-YYYY-MM-DD.validator'
 import { Gender } from '@/shared/constants/common.constant'
+import { Transform } from 'class-transformer'
 
 export class CreateUserDTO {
   @IsAccountId()
@@ -54,6 +55,9 @@ export class CreateUserDTO {
     example: '01093367663',
     nullable: true,
   })
+  @Transform(({ value }) => (value === '' ? undefined : value), {
+    toClassOnly: true,
+  })
   @IsOptional()
   @IsPhoneNumber('KR', { message: '유효하지 않은 번호에요.' })
   phone: string
@@ -63,8 +67,11 @@ export class CreateUserDTO {
     example: 'akdfhr2@gmail.com',
     nullable: true,
   })
+  @Transform(({ value }) => (value === '' ? null : value), {
+    toClassOnly: true,
+  })
   @IsOptional()
-  @IsEmail({}, { message: '유효하지 않은 번호에요.' })
+  @IsEmail({}, { message: '유효하지 않은 이메일이에요.' })
   email: string
 }
 

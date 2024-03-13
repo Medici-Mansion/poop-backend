@@ -25,6 +25,8 @@ async function bootstrap() {
       whitelist: true,
       enableDebugMessages: true,
       transform: true,
+      stopAtFirstError: true,
+      skipUndefinedProperties: true,
     }),
   )
 
