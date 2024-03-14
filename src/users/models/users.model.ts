@@ -1,17 +1,17 @@
-import { InternalServerErrorException } from '@nestjs/common'
-import bcrypt from 'bcrypt'
 import {
   BeforeInsert,
-  BeforeUpdate,
   Column,
   Entity,
   JoinColumn,
   OneToMany,
   OneToOne,
 } from 'typeorm'
+import bcrypt from 'bcrypt'
+import { InternalServerErrorException } from '@nestjs/common'
 
 import { CommonModel } from '@/shared/models/common.model'
 import { Profiles } from '@/profiles/models/profiles.model'
+
 import { Gender } from '@/shared/constants/common.constant'
 
 @Entity({ name: 'users' })
@@ -29,10 +29,10 @@ export class Users extends CommonModel {
   })
   nickname: string
 
-  @Column({ comment: '사용자 이메일', nullable: true })
+  @Column({ comment: '사용자 이메일', nullable: true, unique: true })
   email: string
 
-  @Column({ comment: '사용자 전화번호', nullable: true })
+  @Column({ comment: '사용자 전화번호', nullable: true, unique: true })
   phone: string
 
   @Column({ comment: '먀지막 접속한 프로필 아이디', nullable: true })
@@ -64,7 +64,6 @@ export class Users extends CommonModel {
   profiles: Profiles[]
 
   @BeforeInsert()
-  @BeforeUpdate()
   async hashPassword(): Promise<void> {
     if (this.password) {
       try {

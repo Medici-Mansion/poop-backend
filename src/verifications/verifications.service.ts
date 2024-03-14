@@ -11,7 +11,7 @@ import { Users } from '@/users/models/users.model'
 import { BaseService } from '@/shared/services/base.service'
 
 import { VerifyCodeDTO } from '@/verifications/dtos/verify-code.dto'
-import { GetUserByVidDTO } from '@/verifications/dtos/get-user-by-vid.dto'
+import { GetUserByVidDTO } from '@/users/dtos/get-user-by-vid.dto'
 
 @Injectable()
 export class VerificationsService extends BaseService {

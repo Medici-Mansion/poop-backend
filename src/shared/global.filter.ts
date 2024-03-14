@@ -14,6 +14,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<FastifyReply>()
     const request = ctx.getRequest()
 
+    console.log(`[GLOBAL FILTER LOG]: ${exception}`)
     if (exception instanceof HttpException) {
       const status = exception.getStatus()
       const exceptionResponse = exception.getResponse()

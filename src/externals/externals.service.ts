@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios'
-import { Injectable, OnModuleInit } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import FormData from 'form-data'
 import { MemoryStoredFile } from 'nestjs-form-data'
 import CoolsmsMessageService from 'coolsms-node-sdk'
@@ -11,11 +11,18 @@ import { InfluxDBService } from '@/externals/modules/influxdb/influxDB.service'
 import { EmailVars } from '@/externals/interfaces/mail.interface'
 
 import { LogRequestDTO } from '@/externals/modules/influxdb/dtos/log-request.dto'
+
 import { EmailTemplateName } from '@/shared/constants/common.constant'
 
 @Injectable()
-export class ExternalsService extends BaseService implements OnModuleInit {
-  private coolsmsMessageService: CoolsmsMessageService
+export class ExternalsService extends BaseService {
+  private coolsmsMessageService: CoolsmsMessageService =
+    new CoolsmsMessageService(
+      process.env.COOL_SMS_KEY,
+      process.env.COOL_SMS_SECRET,
+      // this.configService.get('COOL_SMS_KEY'),
+      // this.configService.get('COOL_SMS_SECRET'),
+    )
 
   constructor(
     private readonly httpService: HttpService,
@@ -23,12 +30,6 @@ export class ExternalsService extends BaseService implements OnModuleInit {
     private readonly influxDBService: InfluxDBService,
   ) {
     super()
-  }
-  onModuleInit() {
-    this.coolsmsMessageService = new CoolsmsMessageService(
-      this.configService.get('COOL_SMS_KEY'),
-      this.configService.get('COOL_SMS_SECRET'),
-    )
   }
 
   /**

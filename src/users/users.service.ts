@@ -3,17 +3,24 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common'
+import { FindOptionsWhereProperty } from 'typeorm'
+import bcrypt from 'bcrypt'
+
 import { Users } from '@/users/models/users.model'
+
 import { BaseService } from '@/shared/services/base.service'
+import { RedisService } from '@/redis/redis.service'
 
 import {
   CreateUserDTO,
   CreateUserResponseDTO,
 } from '@/users/dtos/create-user.dto'
+import { GetUserByVidDTO } from '@/users/dtos/get-user-by-vid.dto'
+import { PatchPasswordDTO } from '@/users/dtos/patch-password.dto'
 
 @Injectable()
 export class UsersService extends BaseService {
-  constructor() {
+  constructor(private readonly redisService: RedisService) {
     super()
   }
 
@@ -77,5 +84,41 @@ export class UsersService extends BaseService {
     )
 
     return new CreateUserResponseDTO(newUser)
+  }
+
+  async changePassword(patchPasswordDTO: PatchPasswordDTO) {
+    const { id, key } = await this.redisService.getChangePasswordCode(
+      patchPasswordDTO.code,
+    )
+    if (!id) throw new NotFoundException()
+    await this.getManager().update(Users, id, {
+      password: await this.hashPassword(patchPasswordDTO.password),
+    })
+
+    await this.redisService.removeByKey(key)
+
+    return true
+  }
+
+  async getUserByVid(getUserByVidDTO: GetUserByVidDTO) {
+    const userWhereCond: FindOptionsWhereProperty<Users> = {
+      [getUserByVidDTO.type.toLowerCase()]: getUserByVidDTO.vid,
+    }
+    const repository = this.getManager().getRepository(Users)
+    const foundUser = await repository.findOne({
+      where: {
+        ...userWhereCond,
+      },
+    })
+
+    if (!foundUser) {
+      throw new NotFoundException()
+    }
+
+    return foundUser
+  }
+
+  async hashPassword(newPassword: string) {
+    return bcrypt.hash(newPassword, 10)
   }
 }

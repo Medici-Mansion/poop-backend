@@ -16,8 +16,6 @@ export class BaseService {
   @Inject(ConfigService)
   private readonly config: ConfigService<Env>
 
-  constructor() {}
-
   get configService() {
     return this.config
   }

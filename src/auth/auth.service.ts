@@ -7,9 +7,6 @@ import {
 } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { validateOrReject } from 'class-validator'
-import { InjectRedis } from '@liaoliaots/nestjs-redis'
-import { Redis } from 'ioredis'
-import { FindOptionsWhere } from 'typeorm'
 
 import { TokenPayload, TokenType } from '@/shared/interfaces/token.interface'
 
@@ -17,6 +14,7 @@ import { UsersService } from '@/users/users.service'
 import { VerificationsService } from '@/verifications/verifications.service'
 import { BaseService } from '@/shared/services/base.service'
 import { ExternalsService } from '@/externals/externals.service'
+import { RedisService } from '@/redis/redis.service'
 
 import { Users } from '@/users/models/users.model'
 
@@ -27,7 +25,7 @@ import {
   VerifyCodeDTO,
 } from '@/verifications/dtos/verify-code.dto'
 import { LoginRequestDTO } from '@/auth/dtos/login.dto'
-import { GetUserByVidDTO } from '@/verifications/dtos/get-user-by-vid.dto'
+import { GetUserByVidDTO } from '@/users/dtos/get-user-by-vid.dto'
 import { RefreshDTO } from './dtos/refresh.dto'
 
 import { EmailTemplateName } from '@/shared/constants/common.constant'
@@ -39,7 +37,7 @@ export class AuthService extends BaseService {
     private readonly usersService: UsersService,
     private readonly verificationsService: VerificationsService,
     private readonly externalsService: ExternalsService,
-    @InjectRedis() private readonly redis: Redis,
+    private readonly redisService: RedisService,
   ) {
     super()
   }
@@ -99,15 +97,14 @@ export class AuthService extends BaseService {
     )
 
     if (!foundUser) throw new NotFoundException()
-
+    if (!foundUser.verified)
+      throw new ForbiddenException('인증되지 않은 계정입니다.')
     const validPassword = await foundUser.checkPassword(
       loginRequestDTO.password,
     )
 
     if (!validPassword) throw new BadRequestException('비밀번호가 다릅니다.')
     // TODO: 커스텀에러를 통해 인증되지 않은 계정의 로그인 요청 분기 필요합니다.
-    if (!foundUser.verified)
-      throw new ForbiddenException('인증되지 않은 계정입니다.')
 
     return this.publishToken(foundUser.id)
   }
@@ -119,19 +116,7 @@ export class AuthService extends BaseService {
    * @returns
    */
   async getChangePasswordCode(getUserByVidDTO: GetUserByVidDTO) {
-    const userWhereCond: FindOptionsWhere<Users> = {
-      [getUserByVidDTO.type.toLowerCase()]: getUserByVidDTO.vid,
-    }
-    const repository = this.getManager().getRepository(Users)
-    const foundUser = await repository.findOne({
-      where: {
-        ...userWhereCond,
-      },
-    })
-
-    if (!foundUser) {
-      throw new NotFoundException()
-    }
+    const foundUser = await this.usersService.getUserByVid(getUserByVidDTO)
     const code = this.verificationsService.generateRandomString()
     if (getUserByVidDTO.type === VerificationType.PHONE) {
       await this.externalsService.sendSMS(
@@ -151,27 +136,15 @@ export class AuthService extends BaseService {
         ],
       )
     }
-    await this.redis.set(foundUser.id, code, 'EX', 60 * 60)
+    await this.redisService.setPasswordCode(foundUser.id, code)
     return true
   }
 
   async verifyChangePasswordCode(verifyCodeDTO: VerifyCodeDTO) {
-    const userWhereCond: FindOptionsWhere<Users> = {
-      [verifyCodeDTO.type.toLowerCase()]: verifyCodeDTO.vid,
-    }
-    const repository = this.getManager().getRepository(Users)
-    const foundUser = await repository.findOne({
-      where: {
-        ...userWhereCond,
-      },
-    })
-
-    if (!foundUser) {
-      throw new NotFoundException()
-    }
+    const foundUser = await this.usersService.getUserByVid(verifyCodeDTO)
 
     // TODO: redisService를 통해 값 가져오는 매소드 구성
-    const code = await this.redis.get(foundUser.id)
+    const code = await this.redisService.findById(foundUser.id)
     if (!code) throw new NotFoundException()
     if (code !== verifyCodeDTO.code) throw new UnauthorizedException()
 
@@ -179,10 +152,11 @@ export class AuthService extends BaseService {
       onlyString: true,
       length: 16,
     })
-    await Promise.all([
-      this.redis.del(foundUser.id),
-      this.redis.set(changePasswordKey, foundUser.id, 'EX', 60 * 60),
-    ])
+    await this.redisService.setChangePasswordCode(
+      foundUser.id,
+      changePasswordKey,
+    )
+
     return changePasswordKey
   }
 

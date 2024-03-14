@@ -28,7 +28,7 @@ import {
   VerifyingCodeResponseDTO,
 } from '@/verifications/dtos/verify-code.dto'
 import { LoginRequestDTO } from '@/auth/dtos/login.dto'
-import { GetUserByVidDTO } from '@/verifications/dtos/get-user-by-vid.dto'
+import { GetUserByVidDTO } from '@/users/dtos/get-user-by-vid.dto'
 import { RefreshDTO } from '@/auth/dtos/refresh.dto'
 
 @Controller('auth')

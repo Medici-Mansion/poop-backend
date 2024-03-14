@@ -19,6 +19,7 @@ import { RedisModule } from '@/redis/redis.module'
 
 @Module({
   imports: [
+    RedisModule,
     NestjsFormDataModule.config({ isGlobal: true, autoDeleteFile: true }),
     DatabaseModule,
     ConfigModule,
@@ -27,7 +28,6 @@ import { RedisModule } from '@/redis/redis.module'
     ProfilesModule,
     VerificationsModule,
     ExternalsModule,
-    RedisModule,
   ],
   providers: [
     {
