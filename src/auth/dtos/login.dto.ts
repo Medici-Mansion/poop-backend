@@ -1,9 +1,32 @@
-import { IsAccountId } from '@/shared/validators/is-account-id.validator'
 import { ApiProperty } from '@nestjs/swagger'
-import { IsNotEmpty, MaxLength, MinLength } from 'class-validator'
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator'
+
+export enum LoginType {
+  NICKNAME = 'nickname',
+  PHONE = 'phone',
+  EMAIL = 'email',
+}
 
 export class LoginRequestDTO {
-  @IsAccountId()
+  @ApiProperty({
+    description: '로그인 타입',
+    enum: LoginType,
+    example: LoginType.EMAIL,
+  })
+  @IsEnum(LoginType)
+  loginType: LoginType
+
+  @ApiProperty({
+    description: '로그인에 사용할 아이디',
+    example: 'akdfhr2@gmail.com',
+  })
+  @IsString()
   id: string
 
   @ApiProperty({

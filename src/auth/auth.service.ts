@@ -29,6 +29,7 @@ import { GetUserByVidDTO } from '@/users/dtos/get-user-by-vid.dto'
 import { RefreshDTO } from './dtos/refresh.dto'
 
 import { EmailTemplateName } from '@/shared/constants/common.constant'
+import { FindOptionsWhereProperty } from 'typeorm'
 
 @Injectable()
 export class AuthService extends BaseService {
@@ -92,9 +93,12 @@ export class AuthService extends BaseService {
   async login(
     loginRequestDTO: LoginRequestDTO,
   ): Promise<VerifyingCodeResponseDTO> {
-    const foundUser = await this.usersService.getUserByAccountId(
-      loginRequestDTO.id,
-    )
+    const userWhereCond: FindOptionsWhereProperty<Users> = {
+      [loginRequestDTO.loginType]: loginRequestDTO.id,
+    }
+    const foundUser = await this.getManager().getRepository(Users).findOne({
+      where: userWhereCond,
+    })
 
     if (!foundUser) throw new NotFoundException()
     if (!foundUser.verified)
