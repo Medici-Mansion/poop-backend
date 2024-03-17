@@ -21,6 +21,6 @@ export class BaseService {
   }
 
   protected getManager(): EntityManager {
-    return this.request[MANAGER_KEY] ?? this.dataSource.manager
+    return this.request?.[MANAGER_KEY] ?? this.dataSource.manager
   }
 }

@@ -35,7 +35,6 @@ export class UsersService extends BaseService {
           latestJoinProfile: true,
         },
       })
-
     if (!foundUser) throw new NotFoundException()
 
     return foundUser
