@@ -15,16 +15,15 @@ import { LogRequestDTO } from '@/externals/modules/influxdb/dtos/log-request.dto
 import { EmailTemplateName } from '@/shared/constants/common.constant'
 
 @Injectable()
-export class ExternalsService extends BaseService {
+export class ExternalsService {
   constructor(
+    private readonly baseService: BaseService,
     private readonly httpService: HttpService,
     private readonly cloudinaryService: CloudinaryService,
     private readonly influxDBService: InfluxDBService,
     @Inject(CoolsmsMessageService)
     private readonly coolsmsMessageService: CoolsmsMessageService,
-  ) {
-    super()
-  }
+  ) {}
 
   /**
    * SMS전송
@@ -65,12 +64,12 @@ export class ExternalsService extends BaseService {
     form.append('template', templateName)
     emailVars.forEach((eVar) => form.append(`v:${eVar.key}`, eVar.value))
     const response = await this.httpService.axiosRef.post(
-      `https://api.mailgun.net/v3/${this.configService.get('MAILGUN_DOMAIN')}/messages`,
+      `https://api.mailgun.net/v3/${this.baseService.conf.get('MAILGUN_DOMAIN')}/messages`,
       form,
       {
         auth: {
           username: 'api',
-          password: this.configService.get('MAILGUN_API_KEY'),
+          password: this.baseService.conf.get('MAILGUN_API_KEY'),
         },
       },
     )

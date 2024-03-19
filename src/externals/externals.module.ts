@@ -6,10 +6,12 @@ import { ExternalsService } from '@/externals/externals.service'
 import { CloudinaryModule } from '@/externals/modules/cloudinary/cloudinary.module'
 import { InfluxdbModule } from '@/externals/modules/influxdb/influxdb.module'
 import CoolsmsMessageService from 'coolsms-node-sdk'
+import { BaseService } from '@/shared/services/base.service'
 
 @Module({
   imports: [HttpModule, CloudinaryModule, InfluxdbModule],
   providers: [
+    BaseService,
     ExternalsService,
     {
       provide: CoolsmsMessageService,

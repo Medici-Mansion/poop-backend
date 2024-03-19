@@ -12,7 +12,6 @@ import { TokenPayload, TokenType } from '@/shared/interfaces/token.interface'
 
 import { UsersService } from '@/users/users.service'
 import { VerificationsService } from '@/verifications/verifications.service'
-import { BaseService } from '@/shared/services/base.service'
 import { ExternalsService } from '@/externals/externals.service'
 import { RedisService } from '@/redis/redis.service'
 
@@ -30,18 +29,18 @@ import { RefreshDTO } from './dtos/refresh.dto'
 
 import { EmailTemplateName } from '@/shared/constants/common.constant'
 import { FindOptionsWhereProperty } from 'typeorm'
+import { BaseService } from '@/shared/services/base.service'
 
 @Injectable()
-export class AuthService extends BaseService {
+export class AuthService {
   constructor(
+    private readonly baseService: BaseService,
     private readonly jwtService: JwtService,
     private readonly usersService: UsersService,
     private readonly verificationsService: VerificationsService,
     private readonly externalsService: ExternalsService,
     private readonly redisService: RedisService,
-  ) {
-    super()
-  }
+  ) {}
 
   async signup(createUserDTO: CreateUserDTO): Promise<boolean> {
     const user = await this.usersService.createUser(createUserDTO)
@@ -80,7 +79,8 @@ export class AuthService extends BaseService {
     const foundVerification =
       await this.verificationsService.verifyingCode(verifyCodeDTO)
 
-    await this.getManager()
+    await this.baseService
+      .getManager()
       .getRepository(Users)
       .update(foundVerification.user.id, {
         verified: () => 'NOW()',
@@ -96,9 +96,12 @@ export class AuthService extends BaseService {
     const userWhereCond: FindOptionsWhereProperty<Users> = {
       [loginRequestDTO.loginType]: loginRequestDTO.id,
     }
-    const foundUser = await this.getManager().getRepository(Users).findOne({
-      where: userWhereCond,
-    })
+    const foundUser = await this.baseService
+      .getManager()
+      .getRepository(Users)
+      .findOne({
+        where: userWhereCond,
+      })
 
     if (!foundUser) throw new NotFoundException()
     if (!foundUser.verified)
@@ -179,7 +182,7 @@ export class AuthService extends BaseService {
   verify(token: string): TokenPayload {
     try {
       return this.jwtService.verify<TokenPayload>(token, {
-        secret: this.configService.get('JWT_SECRET'),
+        secret: this.baseService.conf.get('JWT_SECRET'),
       })
     } catch (e) {
       throw new UnauthorizedException()
@@ -197,9 +200,9 @@ export class AuthService extends BaseService {
       return this.jwtService.sign(token, {
         expiresIn:
           tokenType === 'ACCESS'
-            ? this.configService.get('ACCESS_EXPIRES_IN')
-            : this.configService.get('REFRESH_EXPIRES_IN'),
-        secret: this.configService.get('JWT_SECRET'),
+            ? this.baseService.conf.get('ACCESS_EXPIRES_IN')
+            : this.baseService.conf.get('REFRESH_EXPIRES_IN'),
+        secret: this.baseService.conf.get('JWT_SECRET'),
       })
     } catch (error) {
       throw new ForbiddenException()
@@ -212,7 +215,7 @@ export class AuthService extends BaseService {
       refreshToken: this.sign(id, 'REFRESH'),
     }
 
-    await this.getManager().getRepository(Users).update(id, {
+    await this.baseService.getManager().getRepository(Users).update(id, {
       refreshToken: token.refreshToken,
     })
 

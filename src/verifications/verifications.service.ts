@@ -14,13 +14,11 @@ import { VerifyCodeDTO } from '@/verifications/dtos/verify-code.dto'
 import { GetUserByVidDTO } from '@/users/dtos/get-user-by-vid.dto'
 
 @Injectable()
-export class VerificationsService extends BaseService {
-  constructor() {
-    super()
-  }
+export class VerificationsService {
+  constructor(private readonly baseService: BaseService) {}
 
   async createVerification(userId: string) {
-    const repository = this.getManager().getRepository(Verification)
+    const repository = this.baseService.getManager().getRepository(Verification)
     const newVerification = await repository.save(
       repository.create({
         userId,
@@ -35,7 +33,7 @@ export class VerificationsService extends BaseService {
       [getUserByVidDTO.type.toLowerCase()]: getUserByVidDTO.vid,
       verified: IsNull(),
     }
-    const repository = this.getManager().getRepository(Verification)
+    const repository = this.baseService.getManager().getRepository(Verification)
     const foundUserVerification = await repository.findOne({
       where: {
         user: {
@@ -66,7 +64,10 @@ export class VerificationsService extends BaseService {
     return foundUserVerification
   }
   async removeVerification(id: string) {
-    return this.getManager().getRepository(Verification).softRemove({ id })
+    return this.baseService
+      .getManager()
+      .getRepository(Verification)
+      .softRemove({ id })
   }
 
   generateRandomString(options?: {

@@ -1,15 +1,12 @@
 import { Injectable } from '@nestjs/common'
 import { InfluxDBClient, Point } from '@influxdata/influxdb3-client'
-import { BaseService } from '@/shared/services/base.service'
 import { LogRequestDTO } from './dtos/log-request.dto'
 
 @Injectable()
-export class InfluxDBService extends BaseService {
+export class InfluxDBService {
   private influxDB: InfluxDBClient
 
   constructor() {
-    super()
-
     this.influxDB = new InfluxDBClient({
       host: process.env.INFLUXDB_HOST,
       token: process.env.INFLUXDB_TOKEN,

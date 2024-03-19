@@ -9,6 +9,7 @@ import { UsersModule } from '@/users/users.module'
 import { AuthController } from '@/auth/auth.controller'
 
 import { AuthService } from '@/auth/auth.service'
+import { BaseService } from '@/shared/services/base.service'
 
 @Global()
 @Module({
@@ -21,7 +22,7 @@ import { AuthService } from '@/auth/auth.service'
     VerificationsModule,
     ExternalsModule,
   ],
-  providers: [AuthService],
+  providers: [BaseService, AuthService],
   controllers: [AuthController],
   exports: [AuthService],
 })

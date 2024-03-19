@@ -12,13 +12,12 @@ import { LoginProfileDTO } from './dtos/login-profile.dto'
 import { Users } from '@/users/models/users.model'
 
 @Injectable()
-export class ProfilesService extends BaseService {
+export class ProfilesService {
   constructor(
+    private readonly baseService: BaseService,
     private readonly externalsService: ExternalsService,
     private readonly usersService: UsersService,
-  ) {
-    super()
-  }
+  ) {}
 
   async createProfile(userId: string, createProfileDTO: CreateProfileDTO) {
     // 존재하는 회원여부 확인
@@ -27,7 +26,7 @@ export class ProfilesService extends BaseService {
       createProfileDTO.avatar,
     ])
 
-    const repository = this.getManager().getRepository(Profiles)
+    const repository = this.baseService.getManager().getRepository(Profiles)
     await repository.save(
       repository.create({
         ...createProfileDTO,
@@ -39,7 +38,7 @@ export class ProfilesService extends BaseService {
   }
 
   async getMyProfileList(userId: string) {
-    const profiles = await this.getManager().find(Profiles, {
+    const profiles = await this.baseService.getManager().find(Profiles, {
       where: {
         userId,
       },
@@ -52,7 +51,7 @@ export class ProfilesService extends BaseService {
 
   async loginProfile(userId: string, loginProfileDTO: LoginProfileDTO) {
     const user = await this.usersService.getUserById(userId)
-    await this.getManager().update(Users, user.id, {
+    await this.baseService.getManager().update(Users, user.id, {
       latestProfileId: loginProfileDTO.profileId,
     })
 

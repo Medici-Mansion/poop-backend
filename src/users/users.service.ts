@@ -19,13 +19,15 @@ import { GetUserByVidDTO } from '@/users/dtos/get-user-by-vid.dto'
 import { PatchPasswordDTO } from '@/users/dtos/patch-password.dto'
 
 @Injectable()
-export class UsersService extends BaseService {
-  constructor(private readonly redisService: RedisService) {
-    super()
-  }
+export class UsersService {
+  constructor(
+    private readonly redisService: RedisService,
+    private readonly baseService: BaseService,
+  ) {}
 
   async getUserById(id: string) {
-    const foundUser = await this.getManager()
+    const foundUser = await this.baseService
+      .getManager()
       .getRepository(Users)
       .findOne({
         where: {
@@ -41,11 +43,14 @@ export class UsersService extends BaseService {
   }
 
   async getUserByAccountId(accountId: string) {
-    const foundUser = await this.getManager().getRepository(Users).findOne({
-      where: {
-        accountId,
-      },
-    })
+    const foundUser = await this.baseService
+      .getManager()
+      .getRepository(Users)
+      .findOne({
+        where: {
+          accountId,
+        },
+      })
 
     if (!foundUser) throw new NotFoundException()
 
@@ -53,7 +58,7 @@ export class UsersService extends BaseService {
   }
 
   async createUser(createUserDTO: CreateUserDTO) {
-    const repository = this.getManager().getRepository(Users)
+    const repository = this.baseService.getManager().getRepository(Users)
     const existUser = await repository.findOne({
       where: [
         {
@@ -90,7 +95,7 @@ export class UsersService extends BaseService {
       patchPasswordDTO.code,
     )
     if (!id) throw new NotFoundException()
-    await this.getManager().update(Users, id, {
+    await this.baseService.getManager().update(Users, id, {
       password: await this.hashPassword(patchPasswordDTO.password),
     })
 
@@ -99,11 +104,12 @@ export class UsersService extends BaseService {
     return true
   }
 
-  async getUserByVid(getUserByVidDTO: GetUserByVidDTO) {
+  // TODO 사용자 응답 DTO 리턴하기
+  async getUserByVid(getUserByVidDTO: GetUserByVidDTO): Promise<Users> {
     const userWhereCond: FindOptionsWhereProperty<Users> = {
       [getUserByVidDTO.type.toLowerCase()]: getUserByVidDTO.vid,
     }
-    const repository = this.getManager().getRepository(Users)
+    const repository = this.baseService.getManager().getRepository(Users)
     const foundUser = await repository.findOne({
       where: {
         ...userWhereCond,
