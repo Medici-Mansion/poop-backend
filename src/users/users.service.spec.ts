@@ -1,7 +1,6 @@
 import { Test } from '@nestjs/testing'
 import { UsersService } from './users.service'
 import { RedisService } from '@/redis/redis.service'
-import { ConfigService } from '@nestjs/config'
 import { ConflictException, NotFoundException } from '@nestjs/common'
 import { CreateUserDTO, CreateUserResponseDTO } from './dtos/create-user.dto'
 import { Gender } from '@/shared/constants/common.constant'
@@ -10,39 +9,9 @@ import { VerificationType } from '@/verifications/dtos/verify-code.dto'
 import { BaseService } from '@/shared/services/base.service'
 import { Users } from '@/users/models/users.model'
 import { GetUserByVidDTO } from './dtos/get-user-by-vid.dto'
+import { mockBaseService, mockRedisService } from '@test/mocks/service'
+import { dataSource, manager } from '@test/mocks/base'
 
-const mockRedisService = {
-  findById: jest.fn(),
-  setPasswordCode: jest.fn(),
-  setChangePasswordCode: jest.fn(),
-  getChangePasswordCode: jest.fn(),
-  removeByKey: jest.fn(),
-}
-
-const mockRepository = {
-  findOne: jest.fn(),
-  save: jest.fn(),
-  create: jest.fn(),
-  findOneOrFail: jest.fn(),
-  delete: jest.fn(),
-}
-
-const manager = {
-  getRepository: () => mockRepository,
-  update: jest.fn(),
-}
-
-const dataSource = {
-  createEntityManager: jest.fn(),
-  manager,
-}
-
-const mockBaseService = {
-  getManager() {
-    return dataSource.manager
-  },
-  configService: ConfigService,
-}
 const id = '1234'
 const user = { id, nickname: 'NIKCNAME' }
 
