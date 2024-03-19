@@ -16,6 +16,7 @@ import { LoggingMiddleware } from '@/shared/middlewares/logging.middleware'
 
 import { ResponseInterceptor } from '@/shared/interceptors/response.interceptor'
 import { RedisModule } from '@/redis/redis.module'
+import { BaseService } from './shared/services/base.service'
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { RedisModule } from '@/redis/redis.module'
       provide: APP_INTERCEPTOR,
       useClass: ResponseInterceptor,
     },
+    BaseService,
   ],
   controllers: [AppController],
 })
