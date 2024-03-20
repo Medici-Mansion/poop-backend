@@ -1,11 +1,13 @@
-import { ConfigService } from '@nestjs/config'
 import { dataSource } from '@test/mocks/base'
 
 export const mockBaseService = {
   getManager() {
     return dataSource.manager
   },
-  configService: ConfigService,
+
+  conf: {
+    get: jest.fn(),
+  },
 }
 
 export const mockRedisService = {

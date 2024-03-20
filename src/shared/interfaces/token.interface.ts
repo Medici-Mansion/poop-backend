@@ -1,3 +1,5 @@
+import { IsUUID } from 'class-validator'
+
 export type TokenType = 'ACCESS' | 'REFRESH'
 
 export interface AuthTokenResponse {
@@ -5,6 +7,7 @@ export interface AuthTokenResponse {
   refreshToken: string
 }
 
-export interface TokenPayload {
+export class TokenPayload {
+  @IsUUID()
   uid: string
 }

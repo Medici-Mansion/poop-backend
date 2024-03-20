@@ -104,8 +104,7 @@ export class AuthService {
       })
 
     if (!foundUser) throw new NotFoundException()
-    if (!foundUser.verified)
-      throw new ForbiddenException('인증되지 않은 계정입니다.')
+    if (!foundUser.verified) throw new ForbiddenException()
     const validPassword = await foundUser.checkPassword(
       loginRequestDTO.password,
     )
@@ -147,10 +146,11 @@ export class AuthService {
     return true
   }
 
-  async verifyChangePasswordCode(verifyCodeDTO: VerifyCodeDTO) {
+  async verifyChangePasswordCode(
+    verifyCodeDTO: VerifyCodeDTO,
+  ): Promise<string> {
     const foundUser = await this.usersService.getUserByVid(verifyCodeDTO)
 
-    // TODO: redisService를 통해 값 가져오는 매소드 구성
     const code = await this.redisService.findById(foundUser.id)
     if (!code) throw new NotFoundException()
     if (code !== verifyCodeDTO.code) throw new UnauthorizedException()
@@ -171,7 +171,10 @@ export class AuthService {
     const verifiedToken = this.verify(refreshDTO.refreshToken)
 
     const foundUser = await this.usersService.getUserById(verifiedToken.uid)
-    if (foundUser.refreshToken !== refreshDTO.refreshToken)
+    if (
+      !foundUser.refreshToken ||
+      foundUser.refreshToken !== refreshDTO.refreshToken
+    )
       throw new UnauthorizedException()
 
     const newToken = await this.publishToken(foundUser.id)
@@ -189,15 +192,14 @@ export class AuthService {
     }
   }
 
-  sign(uid: string, tokenType: TokenType = 'ACCESS'): string {
+  async sign(uid: string, tokenType: TokenType = 'ACCESS'): Promise<string> {
     try {
-      const token: TokenPayload = {
-        uid,
-      }
+      const newTokenPayload = new TokenPayload()
+      newTokenPayload.uid = uid
 
-      validateOrReject(token)
+      await validateOrReject(newTokenPayload)
 
-      return this.jwtService.sign(token, {
+      return this.jwtService.sign(newTokenPayload, {
         expiresIn:
           tokenType === 'ACCESS'
             ? this.baseService.conf.get('ACCESS_EXPIRES_IN')
@@ -211,8 +213,8 @@ export class AuthService {
 
   private async publishToken(id: string): Promise<VerifyingCodeResponseDTO> {
     const token = {
-      accessToken: this.sign(id),
-      refreshToken: this.sign(id, 'REFRESH'),
+      accessToken: await this.sign(id),
+      refreshToken: await this.sign(id, 'REFRESH'),
     }
 
     await this.baseService.getManager().getRepository(Users).update(id, {
