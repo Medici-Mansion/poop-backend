@@ -4,6 +4,15 @@ import { Users } from '@/users/models/users.model'
 
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm'
 
+export interface ProfilesFields {
+  userId: string
+  avatarUrl: string
+  name: string
+  birthday: string
+  gender: Gender
+  breed: string
+}
+
 @Entity()
 export class Profiles extends CommonModel {
   @Column({ nullable: true, comment: '프로필 메인 아바타 이미지 주소' })
@@ -36,4 +45,22 @@ export class Profiles extends CommonModel {
   })
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
   user: Users
+
+  static of({
+    avatarUrl,
+    birthday,
+    breed,
+    gender,
+    name,
+    userId,
+  }: ProfilesFields) {
+    const profile = new Profiles()
+    profile.userId = userId
+    profile.avatarUrl = avatarUrl
+    profile.name = name
+    profile.birthday = birthday
+    profile.gender = gender
+    profile.breed = breed
+    return profile
+  }
 }

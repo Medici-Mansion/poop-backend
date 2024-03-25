@@ -106,12 +106,11 @@
       "<rootDir>/src/app/main.ts",
       ".mock.ts"
     ],
-    "coverageDirectory": "../coverage",
+    "coverageDirectory": "coverage",
     "testEnvironment": "node",
     "moduleNameMapper": {
       "^@/(.*)$": "<rootDir>/src/$1",
       "^@test/(.*)$": "<rootDir>/test/$1"
-    },
-    "autoRun": {}
+    }
   }
 }

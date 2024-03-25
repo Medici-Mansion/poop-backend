@@ -10,6 +10,7 @@ export const mockRepository = {
 export const manager = {
   getRepository: () => mockRepository,
   update: jest.fn(),
+  find: jest.fn(),
 }
 
 export const dataSource = {
