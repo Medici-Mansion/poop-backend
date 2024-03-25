@@ -2,6 +2,11 @@ import { BeforeInsert, Column, Entity, JoinColumn, OneToOne } from 'typeorm'
 import { CommonModel } from '@/shared/models/common.model'
 import { Users } from '@/users/models/users.model'
 
+interface VerificationsFields {
+  code: string
+  userId: string
+}
+
 @Entity()
 export class Verification extends CommonModel {
   private readonly codeLength = 6
@@ -37,5 +42,12 @@ export class Verification extends CommonModel {
     }
 
     return result
+  }
+
+  static of({ code, userId }: VerificationsFields): Verification {
+    const verification = new Verification()
+    verification.code = code
+    verification.userId = userId
+    return verification
   }
 }
