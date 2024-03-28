@@ -2,7 +2,7 @@ import { Gender } from '@/shared/constants/common.constant'
 import { IsOnlyDate } from '@/shared/validators/is-date-string.validator'
 import { MaxImageSize } from '@/shared/validators/max-image-size.validator'
 import { ApiProperty } from '@nestjs/swagger'
-import { IsEnum, IsString } from 'class-validator'
+import { IsEnum, IsString, IsUUID } from 'class-validator'
 import {
   HasMimeType,
   IsFile,
@@ -52,10 +52,9 @@ export class CreateProfileDTO {
 
   @ApiProperty({
     type: String,
-    title: '품종',
-    deprecated: true,
-    description: '픔종 테이블 제작되면 특정품종만 입력 가능하도록 변경 예정',
+    title: '견종 아이디',
+    description: '견종 데이터 아이디',
   })
-  @IsString()
-  breed: string
+  @IsUUID()
+  breedId: string
 }

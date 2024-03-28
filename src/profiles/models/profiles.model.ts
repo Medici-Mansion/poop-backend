@@ -1,8 +1,9 @@
+import { Breeds } from '@/breeds/models/breeds.model'
 import { Gender } from '@/shared/constants/common.constant'
 import { CommonModel } from '@/shared/models/common.model'
 import { Users } from '@/users/models/users.model'
 
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm'
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm'
 
 export interface ProfilesFields {
   userId: string
@@ -10,7 +11,7 @@ export interface ProfilesFields {
   name: string
   birthday: string
   gender: Gender
-  breed: string
+  breedId: string
 }
 
 @Entity()
@@ -33,11 +34,16 @@ export class Profiles extends CommonModel {
   gender: Gender
 
   // TODO: 릴레이션을 통한 품종 1:N 매핑 필요
-  @Column({ comment: '반려동물 품종' })
-  breed: string
+  @Column({ comment: '반려동물 품종 아이디' })
+  breedId: string
 
   @Column({ comment: '프로필과 매핑된 사용자 아이디' })
   userId: string
+
+  @OneToOne((type) => Breeds, {
+    createForeignKeyConstraints: false,
+  })
+  breed: Breeds
 
   @ManyToOne((type) => Users, (users) => users.nickname, {
     onDelete: 'CASCADE',
@@ -49,7 +55,7 @@ export class Profiles extends CommonModel {
   static of({
     avatarUrl,
     birthday,
-    breed,
+    breedId,
     gender,
     name,
     userId,
@@ -60,7 +66,7 @@ export class Profiles extends CommonModel {
     profile.name = name
     profile.birthday = birthday
     profile.gender = gender
-    profile.breed = breed
+    profile.breedId = breedId
     return profile
   }
 }

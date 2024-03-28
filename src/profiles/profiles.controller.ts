@@ -1,4 +1,3 @@
-import { ExtractLatestProfile } from './../shared/decorators/latest-profile.decorator'
 import {
   Body,
   Controller,
@@ -19,8 +18,9 @@ import {
 
 import { AccessGuard } from '@/auth/guards/access.guard'
 
-import { Profiles } from './models/profiles.model'
+import { Profiles } from '@/profiles/models/profiles.model'
 
+import { ExtractLatestProfile } from '@/shared/decorators/latest-profile.decorator'
 import { UserId } from '@/shared/decorators/user-id.decorator'
 import { ApiPoopSecurity } from '@/shared/decorators/api-poop-security.decorator'
 import { Transaction } from '@/shared/decorators/transaction.decorator'

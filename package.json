@@ -55,6 +55,7 @@
     "rxjs": "^7.8.1",
     "ts-morph": "^21.0.1",
     "typeorm": "^0.3.20",
+    "typeorm-cursor-pagination": "^0.10.1",
     "uuid": "^9.0.1"
   },
   "devDependencies": {

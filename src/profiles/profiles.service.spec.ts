@@ -63,7 +63,7 @@ describe('AuthService', () => {
       const createProfileDTO: CreateProfileDTO = {
         avatar: new MemoryStoredFile(),
         birthday: '2020-01-01',
-        breed: 'breed',
+        breedId: 'breed',
         gender: Gender.MALE,
         name: 'test',
       }
@@ -92,7 +92,7 @@ describe('AuthService', () => {
       const createProfileDTO: CreateProfileDTO = {
         avatar: new MemoryStoredFile(),
         birthday: '2020-01-01',
-        breed: 'breed',
+        breedId: 'breed',
         gender: Gender.MALE,
         name: 'test',
       }
@@ -112,7 +112,7 @@ describe('AuthService', () => {
           userId,
           avatarUrl: '',
           birthday: '',
-          breed: '',
+          breedId: '',
           gender: Gender.FEMALE,
           name: '',
         }),

@@ -36,8 +36,8 @@ export class ProfileDTO {
   @IsEnum(Gender)
   gender: Gender
 
-  @ApiProperty({ title: '품종' })
-  breed: string
+  @ApiProperty({ title: '품종 아이디' })
+  breedId: string
 
   @ApiProperty({ title: '최근 접속한 프로필 여부' })
   isLatestLoginProfile: boolean
@@ -50,7 +50,7 @@ export class ProfileDTO {
     this.name = profile.name
     this.birthday = profile.birthday
     this.gender = profile.gender
-    this.breed = profile.breed
+    this.breedId = profile.breedId
     this.isLatestLoginProfile = profile.isLatestLoginProfile
   }
 }

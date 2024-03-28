@@ -11,12 +11,14 @@ import { ProfilesModule } from '@/profiles/profiles.module'
 import { VerificationsModule } from '@/verifications/verifications.module'
 import { ConfigModule } from '@/shared/modules/config.module'
 import { ExternalsModule } from '@/externals/externals.module'
+import { RedisModule } from '@/redis/redis.module'
+import { BreedsModule } from '@/breeds/breeds.module'
+import { CommonModule } from '@/common/common.module'
 
 import { LoggingMiddleware } from '@/shared/middlewares/logging.middleware'
 
 import { ResponseInterceptor } from '@/shared/interceptors/response.interceptor'
-import { RedisModule } from '@/redis/redis.module'
-import { BaseService } from './shared/services/base.service'
+import { BaseService } from '@/shared/services/base.service'
 
 @Module({
   imports: [
@@ -29,6 +31,8 @@ import { BaseService } from './shared/services/base.service'
     ProfilesModule,
     VerificationsModule,
     ExternalsModule,
+    BreedsModule,
+    CommonModule,
   ],
   providers: [
     {

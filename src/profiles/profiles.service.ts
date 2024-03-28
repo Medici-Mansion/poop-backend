@@ -1,15 +1,15 @@
-import { UsersService } from '../users/users.service'
 import { Injectable } from '@nestjs/common'
 
 import { Profiles } from '@/profiles/models/profiles.model'
+import { Users } from '@/users/models/users.model'
 
+import { UsersService } from '@/users/users.service'
 import { ExternalsService } from '@/externals/externals.service'
 import { BaseService } from '@/shared/services/base.service'
 
 import { CreateProfileDTO } from '@/profiles/dtos/create-profile.dto'
-import { GetProfileDTO } from './dtos/get-profile.dto'
-import { LoginProfileDTO } from './dtos/login-profile.dto'
-import { Users } from '@/users/models/users.model'
+import { GetProfileDTO } from '@/profiles/dtos/get-profile.dto'
+import { LoginProfileDTO } from '@/profiles/dtos/login-profile.dto'
 
 @Injectable()
 export class ProfilesService {

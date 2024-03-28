@@ -1,18 +1,12 @@
-import { Injectable } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import { InfluxDBClient, Point } from '@influxdata/influxdb3-client'
-import { LogRequestDTO } from './dtos/log-request.dto'
+import { LogRequestDTO } from '@/externals/modules/influxdb/dtos/log-request.dto'
 
 @Injectable()
 export class InfluxDBService {
-  private influxDB: InfluxDBClient
-
-  constructor() {
-    this.influxDB = new InfluxDBClient({
-      host: process.env.INFLUXDB_HOST,
-      token: process.env.INFLUXDB_TOKEN,
-      database: process.env.INFLUXDB_NAME,
-    })
-  }
+  constructor(
+    @Inject(InfluxDBClient) private readonly influxDB: InfluxDBClient,
+  ) {}
 
   async logRequest(logRequestDTO: LogRequestDTO) {
     const point = Point.measurement('log_response')
@@ -25,7 +19,6 @@ export class InfluxDBService {
       .setIntegerField('contentLength', logRequestDTO.contentLength)
       .setIntegerField('responseTime', logRequestDTO.responseTime)
     await this.influxDB.write(point, process.env.INFLUXDB_NAME)
-    await this.influxDB.close()
     return true
   }
 }
