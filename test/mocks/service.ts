@@ -26,7 +26,7 @@ export const mockUsersService = {
 
 export const mockVerificationsService = {
   createVerification: jest.fn(),
-  getUserByVid: jest.fn(),
+  getVerificationByVid: jest.fn(),
   verifyingCode: jest.fn(),
   removeVerification: jest.fn(),
   generateRandomString: jest.fn(),

@@ -51,7 +51,7 @@ export class AuthService {
 
   async requestVerificationCode(getUserByVidDTO: GetUserByVidDTO) {
     const foundVerification =
-      await this.verificationsService.getUserByVid(getUserByVidDTO)
+      await this.verificationsService.getVerificationByVid(getUserByVidDTO)
     foundVerification.code = this.verificationsService.generateRandomString()
     if (getUserByVidDTO.type === VerificationType.PHONE) {
       await this.externalsService.sendSMS(
@@ -76,8 +76,9 @@ export class AuthService {
   }
 
   async verifyingCode(verifyCodeDTO: VerifyCodeDTO): Promise<boolean> {
+    await this.verificationsService.verifyingCode(verifyCodeDTO)
     const foundVerification =
-      await this.verificationsService.verifyingCode(verifyCodeDTO)
+      await this.verificationsService.getVerificationByVid(verifyCodeDTO)
 
     await this.baseService
       .getManager()

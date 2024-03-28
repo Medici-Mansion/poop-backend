@@ -116,7 +116,9 @@ describe('AuthService', () => {
         save: jest.fn(),
       }
 
-      mockVerificationsService.getUserByVid.mockResolvedValue(foundVerification)
+      mockVerificationsService.getVerificationByVid.mockResolvedValue(
+        foundVerification,
+      )
       const result = await service.requestVerificationCode(getUserByVidDTO)
 
       expect(result).toBe(true)
@@ -136,7 +138,9 @@ describe('AuthService', () => {
         id: '1',
         save: jest.fn(),
       }
-      mockVerificationsService.getUserByVid.mockResolvedValue(foundVerification)
+      mockVerificationsService.getVerificationByVid.mockResolvedValue(
+        foundVerification,
+      )
       const result = await service.requestVerificationCode(getUserByVidDTO)
 
       expect(result).toBe(true)
@@ -164,7 +168,8 @@ describe('AuthService', () => {
         id: '1',
         user: { id: '1' },
       }
-      mockVerificationsService.verifyingCode.mockResolvedValue(
+      mockVerificationsService.verifyingCode.mockResolvedValue(true)
+      mockVerificationsService.getVerificationByVid.mockResolvedValue(
         foundVerification,
       )
       const result = await service.verifyingCode(verifyCodeDTO)

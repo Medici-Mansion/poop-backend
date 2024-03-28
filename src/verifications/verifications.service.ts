@@ -28,7 +28,7 @@ export class VerificationsService {
     return newVerification
   }
 
-  async getUserByVid(getUserByVidDTO: GetUserByVidDTO) {
+  async getVerificationByVid(getUserByVidDTO: GetUserByVidDTO) {
     const userWhereCond: FindOptionsWhere<Users> = {
       [getUserByVidDTO.type.toLowerCase()]: getUserByVidDTO.vid,
       verified: IsNull(),
@@ -52,7 +52,7 @@ export class VerificationsService {
   }
 
   async verifyingCode(verifyCodeDTO: VerifyCodeDTO) {
-    const foundUserVerification = await this.getUserByVid(verifyCodeDTO)
+    const foundUserVerification = await this.getVerificationByVid(verifyCodeDTO)
 
     if (!foundUserVerification) {
       throw new NotFoundException()
@@ -61,8 +61,9 @@ export class VerificationsService {
       throw new ForbiddenException()
     }
 
-    return foundUserVerification
+    return true
   }
+
   async removeVerification(id: string) {
     return this.baseService
       .getManager()
