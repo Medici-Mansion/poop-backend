@@ -14,7 +14,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'
           database: process.env.DB_NAME,
           synchronize: process.env.NODE_ENV !== 'production',
           // synchronize: false,
-          schema: 'development',
+          // schema: 'development',
           ssl: {
             ca: process.env.CA_CERT,
           },

@@ -21,17 +21,21 @@ export class BreedsService {
       .createQueryBuilder(SearchBreeds, 'b')
 
     if (getBreadRequestDTO.searchKey) {
-      queryBuilder.where(`b.searchKey = :searchKey`, {
-        searchKey: getBreadRequestDTO.searchKey,
+      queryBuilder.where(`b.searchKeyCode = :searchKeyCode`, {
+        searchKeyCode: getBreadRequestDTO.searchKey.charCodeAt(0),
       })
     }
+
     const paginator = buildPaginator({
       entity: SearchBreeds,
       alias: 'b',
-      paginationKeys: ['id'],
+      paginationKeys: ['name'],
       query: {
-        limit: 10,
+        limit: getBreadRequestDTO.limit,
         order: 'ASC',
+        ...(getBreadRequestDTO.cursor && {
+          afterCursor: getBreadRequestDTO.cursor,
+        }),
       },
     })
 

@@ -1,12 +1,15 @@
-import { Type, applyDecorators } from '@nestjs/common'
+import { type Type as Tp, applyDecorators } from '@nestjs/common'
 import {
   ApiProperty,
   ApiExtraModels,
   ApiOkResponse,
   getSchemaPath,
+  ApiPropertyOptional,
 } from '@nestjs/swagger'
 
 import { CursorMeta } from '@/shared/interfaces/meta.interface'
+import { IsInt, IsOptional, IsString } from 'class-validator'
+import { Type } from 'class-transformer'
 
 export class ResponseWithCursor<T> {
   @ApiProperty({ description: '결과' })
@@ -20,7 +23,7 @@ export class ResponseWithCursor<T> {
   }
 }
 
-export const ApiResultWithCursorResponse = <DataDto extends Type<unknown>>(
+export const ApiResultWithCursorResponse = <DataDto extends Tp<unknown>>(
   dataDto: DataDto,
   // eslint-disable-next-line @typescript-eslint/ban-types
   model: Function = ResponseWithCursor,
@@ -44,3 +47,21 @@ export const ApiResultWithCursorResponse = <DataDto extends Type<unknown>>(
       },
     }),
   )
+
+export class CursorOption {
+  @IsOptional()
+  @IsInt()
+  @Type(() => Number)
+  @ApiProperty({
+    description: 'limit',
+    required: false,
+    example: 10,
+    default: 10,
+  })
+  limit?: number = 10
+
+  @IsOptional()
+  @IsString()
+  @ApiPropertyOptional({ description: '커서', required: false })
+  cursor?: string
+}

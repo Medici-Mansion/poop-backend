@@ -12,16 +12,29 @@ export class Breeds extends CommonModel {
 
 @ViewEntity({
   expression: `
-    select
-    "b"."id" as "id",
-    "b"."createdAt" as "createdAt",
-    "b"."updatedAt" as "updatedAt",
-    "b"."deletedAt" as "deletedAt",
-    "b"."name" as "name",
-    "b"."avatar" as "avatar",
-    "development".get_choseong("b"."name") as "searchKey"
-    from
-    "development"."breeds" "b"
+    WITH search_keys AS (
+        SELECT
+            "b"."id",
+            "b"."createdAt",
+            "b"."updatedAt",
+            "b"."deletedAt",
+            "b"."name",
+            "b"."avatar",
+            get_choseong("b"."name") AS "searchKey"
+        FROM
+            "breeds" "b"
+    )
+    SELECT
+        "id",
+        "createdAt",
+        "updatedAt",
+        "deletedAt",
+        "name",
+        "avatar",
+        "searchKey",
+        ascii("searchKey") AS "searchKeyCode"
+    FROM
+        search_keys;
   `,
 })
 export class SearchBreeds {
@@ -45,4 +58,7 @@ export class SearchBreeds {
 
   @ViewColumn()
   searchKey: string
+
+  @ViewColumn()
+  searchKeyCode: number
 }

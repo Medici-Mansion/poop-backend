@@ -2,8 +2,9 @@ import { IsYYYYMMDD } from '@/shared/validators/is-YYYY-MM-DD.validator'
 import { ApiProperty } from '@nestjs/swagger'
 import { IsOptional, IsString, IsUUID } from 'class-validator'
 import { SearchBreeds } from '@/breeds/models/breeds.model'
+import { CursorOption } from '@/shared/dtos/common.dto'
 
-export class GetBreadRequestDTO {
+export class GetBreadRequestDTO extends CursorOption {
   @ApiProperty({
     description: '초성검색 키워드',
     required: false,
