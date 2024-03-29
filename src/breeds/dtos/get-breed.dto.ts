@@ -1,4 +1,3 @@
-import { IsYYYYMMDD } from '@/shared/validators/is-YYYY-MM-DD.validator'
 import { ApiProperty } from '@nestjs/swagger'
 import { IsOptional, IsString, IsUUID } from 'class-validator'
 import { SearchBreeds } from '@/breeds/models/breeds.model'
@@ -24,12 +23,6 @@ export class GetBreedResponseDTO {
   @IsUUID('all')
   id: string
 
-  @IsYYYYMMDD({ description: '생성일' })
-  createdAt: Date
-
-  @IsYYYYMMDD({ description: '수정일' })
-  updatedAt: Date
-
   @ApiProperty({ description: '이름' })
   name: string
 
@@ -40,7 +33,5 @@ export class GetBreedResponseDTO {
     this.id = breeds.id
     this.name = breeds.name
     this.avatar = breeds.avatar
-    this.updatedAt = breeds.updatedAt
-    this.createdAt = breeds.createdAt
   }
 }
