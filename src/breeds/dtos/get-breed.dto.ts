@@ -24,10 +24,10 @@ export class GetBreedResponseDTO {
   @IsUUID('all')
   id: string
 
-  @IsYYYYMMDD()
+  @IsYYYYMMDD({ description: '생성일' })
   createdAt: Date
 
-  @IsYYYYMMDD()
+  @IsYYYYMMDD({ description: '수정일' })
   updatedAt: Date
 
   @ApiProperty({ description: '이름' })

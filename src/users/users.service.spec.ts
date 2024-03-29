@@ -1,16 +1,23 @@
 import { Test } from '@nestjs/testing'
-import { UsersService } from './users.service'
-import { RedisService } from '@/redis/redis.service'
 import { ConflictException, NotFoundException } from '@nestjs/common'
-import { CreateUserDTO, CreateUserResponseDTO } from './dtos/create-user.dto'
-import { Gender } from '@/shared/constants/common.constant'
-import { PatchPasswordDTO } from './dtos/patch-password.dto'
-import { VerificationType } from '@/verifications/dtos/verify-code.dto'
-import { BaseService } from '@/shared/services/base.service'
-import { Users } from '@/users/models/users.model'
-import { GetUserByVidDTO } from './dtos/get-user-by-vid.dto'
-import { mockBaseService, mockRedisService } from '@test/mocks/service'
 import { dataSource, manager } from '@test/mocks/base'
+import { mockBaseService, mockRedisService } from '@test/mocks/service'
+
+import { UsersService } from '@/users/users.service'
+import { RedisService } from '@/redis/redis.service'
+import { BaseService } from '@/shared/services/base.service'
+
+import { PatchPasswordDTO } from '@/users/dtos/patch-password.dto'
+import {
+  CreateUserDTO,
+  CreateUserResponseDTO,
+} from '@/users/dtos/create-user.dto'
+import { VerificationType } from '@/verifications/dtos/verify-code.dto'
+import { GetUserByVidDTO } from '@/users/dtos/get-user-by-vid.dto'
+
+import { Users } from '@/users/models/users.model'
+
+import { Gender } from '@/shared/constants/common.constant'
 
 const id = '1234'
 const user = { id, nickname: 'NIKCNAME' }

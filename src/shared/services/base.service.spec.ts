@@ -1,10 +1,12 @@
 import { Test } from '@nestjs/testing'
 import { dataSource } from '@test/mocks/base'
 import { DataSource } from 'typeorm'
-import { BaseService } from './base.service'
 import { ConfigService } from '@nestjs/config'
 import { REQUEST } from '@nestjs/core'
-import { MANAGER_KEY } from '../constants/common.constant'
+
+import { BaseService } from '@/shared/services/base.service'
+
+import { MANAGER_KEY } from '@/shared/constants/common.constant'
 
 const request = { [MANAGER_KEY]: dataSource.manager }
 const mockRequest = jest.fn()

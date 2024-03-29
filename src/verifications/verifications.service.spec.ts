@@ -1,12 +1,18 @@
+import { ForbiddenException, NotFoundException } from '@nestjs/common'
+import { IsNull } from 'typeorm'
 import { Test } from '@nestjs/testing'
+
 import { VerificationsService } from '@/verifications/verifications.service'
 import { BaseService } from '@/shared/services/base.service'
 import { mockBaseService } from '@test/mocks/service'
-import { Verification } from './models/verification.model'
+
 import { GetUserByVidDTO } from '@/users/dtos/get-user-by-vid.dto'
-import { VerificationType, VerifyCodeDTO } from './dtos/verify-code.dto'
-import { ForbiddenException, NotFoundException } from '@nestjs/common'
-import { IsNull } from 'typeorm'
+import {
+  VerificationType,
+  VerifyCodeDTO,
+} from '@/verifications/dtos/verify-code.dto'
+
+import { Verification } from '@/verifications/models/verification.model'
 
 describe('VerificationsService', () => {
   const userId = '1'

@@ -5,9 +5,11 @@ import {
   UnauthorizedException,
 } from '@nestjs/common'
 import { Observable } from 'rxjs'
-import { AuthService } from '../auth.service'
 import { Reflector } from '@nestjs/core'
 import { FastifyRequest } from 'fastify'
+
+import { AuthService } from '@/auth/auth.service'
+
 import { TOKEN_KEY } from '@/shared/constants/common.constant'
 
 @Injectable()

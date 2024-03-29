@@ -8,6 +8,7 @@ import {
   IsString,
   MaxLength,
 } from 'class-validator'
+import { Transform } from 'class-transformer'
 
 import { Users } from '@/users/models/users.model'
 
@@ -16,8 +17,8 @@ import { IsAccountPassword } from '@/shared/validators/is-account-password.valid
 import { IsOnlyDate } from '@/shared/validators/is-date-string.validator'
 import { IsUserId } from '@/shared/validators/is-user-id.validator'
 import { IsYYYYMMDD } from '@/shared/validators/is-YYYY-MM-DD.validator'
+
 import { Gender } from '@/shared/constants/common.constant'
-import { Transform } from 'class-transformer'
 
 export class CreateUserDTO {
   @IsAccountId()

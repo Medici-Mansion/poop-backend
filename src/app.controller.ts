@@ -1,9 +1,10 @@
-import { BaseService } from '@/shared/services/base.service'
 import { Controller, Get } from '@nestjs/common'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
-import { Users } from './users/models/users.model'
-import { Verification } from './verifications/models/verification.model'
-import { Profiles } from './profiles/models/profiles.model'
+import { Users } from '@/users/models/users.model'
+import { Verification } from '@/verifications/models/verification.model'
+import { Profiles } from '@/profiles/models/profiles.model'
+
+import { BaseService } from '@/shared/services/base.service'
 
 @Controller({
   version: '1',

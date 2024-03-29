@@ -5,6 +5,7 @@ import { Profiles } from '@/profiles/models/profiles.model'
 
 import { IsYYYYMMDD } from '@/shared/validators/is-YYYY-MM-DD.validator'
 import { IsUserId } from '@/shared/validators/is-user-id.validator'
+
 import { Gender } from '@/shared/constants/common.constant'
 
 export class ProfileDTO {

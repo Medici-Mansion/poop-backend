@@ -1,21 +1,28 @@
 import { Test } from '@nestjs/testing'
-import { ProfilesService } from './profiles.service'
-import { BaseService } from '@/shared/services/base.service'
+import { MemoryStoredFile } from 'nestjs-form-data'
+import { NotFoundException } from '@nestjs/common'
+
 import {
   mockBaseService,
+  mockBreedsService,
   mockExternalsService,
   mockUsersService,
 } from '@test/mocks/service'
+
+import { Gender } from '@/shared/constants/common.constant'
+
+import { Users } from '@/users/models/users.model'
+import { Profiles } from '@/profiles/models/profiles.model'
+
+import { CreateProfileDTO } from '@/profiles/dtos/create-profile.dto'
+import { GetProfileDTO } from '@/profiles/dtos/get-profile.dto'
+import { LoginProfileDTO } from '@/profiles/dtos/login-profile.dto'
+
+import { BreedsService } from '@/breeds/breeds.service'
+import { ProfilesService } from '@/profiles/profiles.service'
+import { BaseService } from '@/shared/services/base.service'
 import { ExternalsService } from '@/externals/externals.service'
 import { UsersService } from '@/users/users.service'
-import { CreateProfileDTO } from './dtos/create-profile.dto'
-import { Gender } from '@/shared/constants/common.constant'
-import { MemoryStoredFile } from 'nestjs-form-data'
-import { NotFoundException } from '@nestjs/common'
-import { Profiles } from './models/profiles.model'
-import { GetProfileDTO } from './dtos/get-profile.dto'
-import { LoginProfileDTO } from './dtos/login-profile.dto'
-import { Users } from '@/users/models/users.model'
 
 describe('AuthService', () => {
   const userId = '1'
@@ -38,6 +45,10 @@ describe('AuthService', () => {
         {
           provide: UsersService,
           useValue: mockUsersService,
+        },
+        {
+          provide: BreedsService,
+          useValue: mockBreedsService,
         },
 
         ProfilesService,
@@ -87,6 +98,7 @@ describe('AuthService', () => {
       expect(mockRepositorySave).toHaveBeenCalledTimes(1)
       expect(mockExternalsService.uploadFiles).toHaveBeenCalledTimes(1)
     })
+
     it('존재하지 않는 회원일 경우, NotFoundException을 던진다.', async () => {
       mockUsersService.getUserById.mockRejectedValue(new NotFoundException())
       const createProfileDTO: CreateProfileDTO = {

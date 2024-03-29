@@ -5,11 +5,11 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common'
+import { randomUUID } from 'crypto'
 
 import { UsersService } from '@/users/users.service'
 import { VerificationsService } from '@/verifications/verifications.service'
 import { ExternalsService } from '@/externals/externals.service'
-import { LoginRequestDTO, LoginType } from '@/auth/dtos/login.dto'
 import { AuthService } from '@/auth/auth.service'
 import { RedisService } from '@/redis/redis.service'
 import { BaseService } from '@/shared/services/base.service'
@@ -29,11 +29,12 @@ import {
   VerificationType,
   VerifyCodeDTO,
 } from '@/verifications/dtos/verify-code.dto'
+import { LoginRequestDTO, LoginType } from '@/auth/dtos/login.dto'
+import { RefreshDTO } from '@/auth/dtos/refresh.dto'
 
 import { manager, mockJwtService } from '@test/mocks/base'
-import { RefreshDTO } from './dtos/refresh.dto'
+
 import { TokenType } from '@/shared/interfaces/token.interface'
-import { randomUUID } from 'crypto'
 
 describe('AuthService', () => {
   let service: AuthService

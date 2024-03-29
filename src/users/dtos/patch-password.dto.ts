@@ -1,5 +1,3 @@
-import { IsEmailOrPhoneNumber } from '@/shared/validators/is-email-or-phone.validator'
-import { VerificationType } from '@/verifications/dtos/verify-code.dto'
 import { ApiProperty } from '@nestjs/swagger'
 import {
   IsEnum,
@@ -9,6 +7,10 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator'
+
+import { IsEmailOrPhoneNumber } from '@/shared/validators/is-email-or-phone.validator'
+
+import { VerificationType } from '@/verifications/dtos/verify-code.dto'
 
 export class PatchPasswordDTO {
   @ApiProperty({

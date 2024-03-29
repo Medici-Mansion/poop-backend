@@ -1,9 +1,10 @@
-import { Breeds } from '@/breeds/models/breeds.model'
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm'
+
 import { Gender } from '@/shared/constants/common.constant'
+
+import { Breeds } from '@/breeds/models/breeds.model'
 import { CommonModel } from '@/shared/models/common.model'
 import { Users } from '@/users/models/users.model'
-
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm'
 
 export interface ProfilesFields {
   userId: string

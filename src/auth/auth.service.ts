@@ -5,15 +5,15 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common'
+import { FindOptionsWhereProperty } from 'typeorm'
 import { JwtService } from '@nestjs/jwt'
 import { validateOrReject } from 'class-validator'
-
-import { TokenPayload, TokenType } from '@/shared/interfaces/token.interface'
 
 import { UsersService } from '@/users/users.service'
 import { VerificationsService } from '@/verifications/verifications.service'
 import { ExternalsService } from '@/externals/externals.service'
 import { RedisService } from '@/redis/redis.service'
+import { BaseService } from '@/shared/services/base.service'
 
 import { Users } from '@/users/models/users.model'
 
@@ -25,11 +25,11 @@ import {
 } from '@/verifications/dtos/verify-code.dto'
 import { LoginRequestDTO } from '@/auth/dtos/login.dto'
 import { GetUserByVidDTO } from '@/users/dtos/get-user-by-vid.dto'
-import { RefreshDTO } from './dtos/refresh.dto'
+import { RefreshDTO } from '@/auth/dtos/refresh.dto'
 
 import { EmailTemplateName } from '@/shared/constants/common.constant'
-import { FindOptionsWhereProperty } from 'typeorm'
-import { BaseService } from '@/shared/services/base.service'
+
+import { TokenPayload, TokenType } from '@/shared/interfaces/token.interface'
 
 @Injectable()
 export class AuthService {

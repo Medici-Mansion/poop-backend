@@ -36,3 +36,7 @@ export const mockExternalsService = {
   sendEmail: jest.fn(),
   uploadFiles: jest.fn(),
 }
+
+export const mockBreedsService = {
+  findById: jest.fn(),
+}

@@ -1,8 +1,11 @@
 import { ConfigService } from '@nestjs/config'
 import { RedisModule as DefaultRedisModule } from '@liaoliaots/nestjs-redis'
 import { Module } from '@nestjs/common'
-import { RedisService } from './redis.service'
+
+import { RedisService } from '@/redis/redis.service'
+
 import { ConfigModule } from '@/shared/modules/config.module'
+
 import { Env } from '@/shared/interfaces/env.interface'
 
 @Module({

@@ -1,6 +1,3 @@
-import { Gender } from '@/shared/constants/common.constant'
-import { IsOnlyDate } from '@/shared/validators/is-date-string.validator'
-import { MaxImageSize } from '@/shared/validators/max-image-size.validator'
 import { ApiProperty } from '@nestjs/swagger'
 import { IsEnum, IsString, IsUUID } from 'class-validator'
 import {
@@ -9,6 +6,11 @@ import {
   MaxFileSize,
   MemoryStoredFile,
 } from 'nestjs-form-data'
+
+import { Gender } from '@/shared/constants/common.constant'
+
+import { IsOnlyDate } from '@/shared/validators/is-date-string.validator'
+import { MaxImageSize } from '@/shared/validators/max-image-size.validator'
 
 export class CreateProfileDTO {
   @ApiProperty({
