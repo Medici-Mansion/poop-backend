@@ -14,7 +14,7 @@ import { ApiResultWithCursorResponse } from '@/shared/dtos/common.dto'
 export class CommonController {
   constructor(private readonly breedsService: BreedsService) {}
 
-  @Get()
+  @Get('breeds')
   @ApiOperation({
     summary: '견종정보 조회',
     description: '견종정보를 조회합니다.',
