@@ -41,10 +41,10 @@ export class BreedsService {
     const paginator = buildPaginator({
       entity: SearchBreeds,
       alias: 'b',
-      paginationKeys: ['name'],
+      paginationKeys: ['nameKR'],
       query: {
         limit: getBreadRequestDTO.limit,
-        order: 'ASC',
+        order: getBreadRequestDTO.order,
         ...(getBreadRequestDTO.cursor && {
           afterCursor: getBreadRequestDTO.cursor,
         }),

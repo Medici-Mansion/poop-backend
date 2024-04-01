@@ -3,11 +3,17 @@ import { Column, Entity, ViewColumn, ViewEntity } from 'typeorm'
 
 @Entity()
 export class Breeds extends CommonModel {
-  @Column({ comment: '이름' })
-  name: string
+  @Column({ comment: '이름', nullable: true })
+  nameKR: string
+
+  @Column({ comment: '이름', nullable: true })
+  nameEN: string
 
   @Column({ comment: '아바타 이미지 주소', nullable: true })
   avatar: string
+
+  @Column({ comment: 'FCI 분류 그룹', nullable: true })
+  group: number
 }
 
 @ViewEntity({
@@ -18,9 +24,10 @@ export class Breeds extends CommonModel {
             "b"."createdAt",
             "b"."updatedAt",
             "b"."deletedAt",
-            "b"."name",
+            "b"."nameKR",
+            "b"."nameEN",
             "b"."avatar",
-            get_choseong("b"."name") AS "searchKey"
+            get_choseong("b"."nameKR") AS "searchKey"
         FROM
             "breeds" "b"
     )
@@ -29,7 +36,8 @@ export class Breeds extends CommonModel {
         "createdAt",
         "updatedAt",
         "deletedAt",
-        "name",
+        "nameKR",
+        "nameEN",
         "avatar",
         "searchKey",
         ascii("searchKey") AS "searchKeyCode"
@@ -51,7 +59,10 @@ export class SearchBreeds {
   deletedAt: Date
 
   @ViewColumn()
-  name: string
+  nameKR: string
+
+  @ViewColumn()
+  nameEN: string
 
   @ViewColumn()
   avatar: string

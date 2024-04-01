@@ -1,0 +1,346 @@
+group 1
+
+South Russian Shepherd, 사우스 러시안 셰퍼드
+Czechoslovakian Wolfdog, 체코슬로바키안 늑대개
+Slovakian Chuvach, 슬로바키안 쿠바크
+Catalan Sheepdog, 카탈란 쉽독
+Majorca Shepherd, 마요르카 셰퍼드
+White Swiss Shepherd, 화이트 스위스 셰퍼드
+Dutch Schapendoes, 더치 샤펜도스
+Dutch Shepherd, 더치 셰퍼드
+Saarloos Wolfhound, 사를로스 울프독
+Australian Shepherd, 오스트레일리언 셰퍼드
+Australian Cattle, 오스트레일리언 캐틀
+Bouvier des Ardennes, 부비에 데 아르덴
+Bouvier des Flandres, 부비에 데 플랑드르
+Welsh Corgi (Cardigan), 웰시 코기 카디건
+Welsh Corgi (Pembroke), 웰시 코기 펨브로크
+
+group 2
+
+Austrian Pincher, 오스트리안 핀셔
+Danish-Swedish Farmdog, 덴마크-스웨덴 팜독
+Affenpinscher, 아펜핀셔
+Dobermann, 도베르만 핀셔
+German Pincher, 독일 핀셔
+Miniature Pinsher, 미니어처 핀셔
+Giant Schnauzer, 자이언트 슈나우저
+Miniature Schnauzer, 미니어처 슈나우저
+Schnauzer, 슈나우저
+Dutch Smoushond, 더치 스무순드
+Russian Black Terrier, 러시안 블랙 테리어
+Dogo Argentino, 도고 아르헨티노
+Fila Brasileiro, 필라 브라질레이로
+Shar Pei, 샤페이
+Broholmer, 브로홀머
+Dogue de Bordeaux, 보르도 마스티프
+Boxer, 복서
+Great Dane, 그레이트 데인
+Rottweiler, 로트와일러
+Bulldog, 불도그
+Bullmastiff, 불마스티프
+Mastiff, 마스티프
+Italian Cane Corso, 이탈리안 카네 코르소
+Neopolitan Mastiff, 네오폴리탄 마스티프
+Tosa, 도사견
+Saint Miguel Cattle, 생 미겔 캐틀
+Majorca Mastiff, 마요르카 마스티프
+Presa Canario, 프레사 카나리오
+Cimarrón Uruguayo, 시마론 우루과이오
+Bosnian and Herzegovinian - Croatian Shepherd, 보스니안 헤르체고비나 크로아티안 셰퍼드
+Newfoundland, 뉴펀들랜드
+Pyrenean Mountain, 피레네 산맥
+Hovawart, 호바와트
+Leonberger, 레온베르거
+Landseer (European Continental Type), 랜드시어 (유럽 대륙형)
+Atlas Mountain (AIDI), 아틀라스 산맥 (아이디)
+Yugoslavian Shepherd - Sharplanina, 유고슬라비안 셰퍼드 - 샤플라니나
+Castro Laboreiro, 카스트로 라보레이로
+Estrela Mountain, 에스트렐라 마운틴
+Rafeiro of Alentejo, 라페이로 도 알렌테조
+Romanian Bucovina Shepherd, 루마니안 부코비나 셰퍼드
+Caucasian Shepherd, 코카시안 셰퍼드
+Central Asia Shepherd, 센트럴 아시아 셰퍼드
+Karst Shepherd, 카르스트 셰퍼드
+Pyrenean Mastiff, 피레니언 마스티프
+Spanish Mastiff, 스페인 마스티프
+ST. Bernard, 세인트 버나드
+Kangal Shepherd, 캉갈 셰퍼드
+Tibetan Mastiff, 티베트 마스티프
+Appenzell Cattle, 애펜젤 캐틀
+Bernese Mountain, 버니즈 마운틴
+Entlebuch Cattle, 엔틀부흐 캐틀
+Great Swiss Mountain, 그레이트 스위스 마운틴
+
+group 3
+
+Brazilian Terrier, 브라질리언 테리어
+German Hunting Terrier, 독일 헌팅 테리어
+Airedale Terrier, 에어데일 테리어
+Bedlington Terrier, 베들링턴 테리어
+Border Terrier, 보더 테리어
+Fox Terrier (Smooth), 폭스 테리어 (스무스)
+Fox Terrier (Wire), 폭스 테리어 (와이어)
+Lakeland Terrier, 레이크랜드 테리어
+Manchester Terrier, 맨체스터 테리어
+Parson Russell Terrier, 파슨 러셀 테리어
+Welsh Terrier, 웰시 테리어
+Irish Glen of Imaal Terrier, 아이리시 글렌 오브 이말 테리어
+Irish Soft Coated Wheaten Terrier, 아이리시 소프트 코티드 휘튼 테리어
+Irish Terrier, 아이리시 테리어
+Kerry Blue Terrier, 케리 블루 테리어
+Australian Terrier, 오스트레일리안 테리어
+Cesky Terrier, 체스키 테리어
+Cairn Terrier, 케언 테리어
+Dandie Dinmont Terrier, 댄디 딘몬트 테리어
+Jack Russell Terrier, 잭 러셀 테리어
+Norfolk Terrier, 노퍽 테리어
+Norwich Terrier, 노리치 테리어
+Scottish Terrier, 스코티시 테리어
+Sealyham Terrier, 씰리햄 테리어
+Skye Terrier, 스카이 테리어
+West Highland White Terrier, 웨스트 하이랜드 화이트 테리어
+Japanese Terrier, 재패니즈 테리어
+Bull Terrier, 불 테리어
+Miniature Bull Terrier, 미니어처 불 테리어
+Staffordshire Bull Terrier, 스태퍼드셔 불 테리어
+American Staffordshire Bull Terrier, 아메리칸 스태퍼드셔 불 테리어
+Australian Silky Terrier, 오스트레일리안 실키 테리어
+English Toy Terrier (Black & Tan), 잉글리시 토이 테리어 (블랙 & 탄)
+Yorkshire Terrier, 요크셔 테리어
+
+
+group 4
+
+Dachshund, 닥스훈트
+
+group 5
+
+Canadian Eskimo Dog, 캐나디언 에스키모 도그
+Greenland Dog, 그린란드 도그
+Samoyed, 사모예드
+Alaskan Malamute, 알래스칸 말라뮤트
+Siberian Husky, 시베리안 허스키
+Finnish Spitz, 핀란드 스피츠
+Karelian Bear Dog, 카렐리안 베어 도그
+Norwegian Elkhound Black, 노르웨이안 엘크하운드 블랙
+Norwegian Elkhound Grey, 노르웨이안 엘크하운드 그레이
+Norwegian Lundehund, 노르웨이안 룬데훈드
+Siberian Laika, 시베리안 라이카
+Jämthund, 옌툰드
+Norrbottenspitz, 노르보텐스피츠
+Finnish Lapponian Dog, 핀란드 라포니안 도그
+Lapponian Herder, 라포니안 허더
+Icelandic Sheepdog, 아이슬란딕 쉽독
+Norwegian Buhund, 노르웨이안 부훈드
+Swedish Lapphund, 스웨덴 래퍼훈드
+Swedish Vallhund, 스웨덴 발훈드
+German Spitz, 저먼 스피츠
+Italian Volpino, 이탈리안 볼피노
+Chow Chow, 차우차우
+Eurasian, 유라시안
+Akita, 아키타
+American Akita, 아메리칸 아키타
+Hokkaido, 홋카이도
+Japanese Spitz, 재패니즈 스피츠
+Kai, 카이
+Kishu, 기슈
+Shiba, 시바
+Shikoku, 시코쿠
+Korea Jindo Dog, 진돗개
+Thai Bangkaew Dog, 타이 방카우 도그
+Basenji, 바센지
+Canaan dog, 가나안 도그
+Pharaoh Hound, 파라오 하운드
+Xoloitzcuintle, 솔로이츠쿠인틀레
+Peruvian Hairless Dog, 페루비안 헤어리스 도그
+Cirneco Dell'etna, 치르네코 델레트나
+Portuguese Warren Hound-Portuguese Podengo, 포르투갈 워런 하운드-포르투갈 포덴고
+Canarian Warren Hound, 카나리안 워런 하운드
+Ibizan Podenco, 이비잔 포덴코
+Taiwan Dog, 타이완 도그
+Thai Ridgeback Dog, 타이 리지백 도그
+
+group 6
+
+Bloodhound, 블러드하운드
+Brazilian Tracker, 브라질리안 트래커
+Billy, 빌리
+French Tricolour Hound, 프렌치 트라이컬러 하운드
+French White & Black Hound, 프렌치 화이트 & 블랙 하운드
+French White and Orange Hound, 프렌치 화이트 앤드 오렌지 하운드
+Gascon Saintongeois, 가스콩 생통주아
+Grand Griffon Vendeen, 그랑 그리폰 벤딘
+Great Anglo-French Tricolour Hound, 그레이트 앵글로-프렌치 트라이컬러 하운드
+Great Anglo-French White & Orange Hound, 그레이트 앵글로-프렌치 화이트 & 오렌지 하운드
+Great Anglo-French White and Black Hound, 그레이트 앵글로-프렌치 화이트 앤드 블랙 하운드
+Great Gascony Blue, 그레이트 가스코니 블루
+Poitevin, 포아테뱅
+English Foxhound, 잉글리시 폭스하운드
+Otterhound, 오타하운드
+Polish Hound, 폴리쉬 하운드
+American Foxhound, 아메리칸 폭스하운드
+Black and Tan Coonhound, 블랙 앤드 탄 쿤하운드
+Austrian Black and Tan Hound, 오스트리안 블랙 앤드 탄 하운드
+Coarse-haired Styrian Hound, 코스헤어드 스티리안 하운드
+Tyrolean Hound, 티롤리안 하운드
+Bosnian Broken-haired Hound - Called Barak, 보스니안 브로큰-헤어드 하운드 - 바락
+Istrian Short-haired Hound, 이스트리안 쇼트-헤어드 하운드
+Istrian Wire-haired Hound, 이스트리안 와이어-헤어드 하운드
+Posavatz Hound, 포사바츠 하운드
+Finnish Hound, 핀란드 하운드
+Ariegeois, 아리에주아
+Artois Hound, 아르투아 하운드
+Beagle Harrier, 비글 해리어
+Blue Gascony Griffon, 블루 가스콩 그리폰
+Briquet Griffon Vendeen, 브리케 그리폰 벤딘
+Fawn Brittany Griffon, 폰 브리타니 그리폰
+Griffon Nivernais, 그리폰 니베르네
+Medium-sized Anglo-French Hound, 미디엄-사이즈드 앵글로-프렌치 하운드
+Porchlaine, 포슐레인
+Small Blue Gascony, 스몰 블루 가스콩
+Harrier, 해리어
+Hellenic Hound, 헬레닉 하운드
+Hungarian Hound - Transylvanian Scent Hound, 헝가리안 하운드 - 트랜실바니안 센트 하운드
+Italian Rough-haired Segugio, 이탈리안 러프-헤어드 세구지오
+Italian Shorth-haired Segugio, 이탈리안 쇼트-헤어드 세구지오
+Montenegrin Mountain Hound, 몬테네그린 마운틴 하운드
+Halden Hound, 할덴 하운드
+Hygen Hound, 히겐 하운드
+Norwegian Hound, 노르웨이안 하운드
+Polish Hunting Dog, 폴리쉬 헌팅 도그
+Serbian Hound, 세르비안 하운드
+Serbian Tricolour Hound, 세르비안 트라이컬러 하운드
+Slovakian Hound, 슬로바키안 하운드
+Spanish Hound, 스패니시 하운드
+Hamiltonstövare, 해밀턴스토바레
+Schillerstövare, 실러스토바레
+Smålandsstövare, 스몰란드스토바레
+Swiss Hound, 스위스 하운드
+Basset Fauve de Bretagne, 바셋 포브 드 브리타뉴
+Blue Gascony Basset, 블루 가스콩 바셋
+Grand Basset Griffon Vendeen, 그랑 바셋 그리폰 벤딘
+Norman Artesien Basset, 노르만 아르테지앙 바셋
+Petit Basset Griffon Vendeen, 페티 바셋 그리폰 벤딘
+German Hound, 독일 하운드
+Westphalian Dachbracke, 베스트팔리안 다크브라케
+Basset Hound, 바셋 하운드
+Beagle, 비글
+Drever, 드레버
+Small Swiss Hound, 스몰 스위스 하운드
+Alpine Dachbracke, 알파인 다크브라케
+Bavarian Mountain Scent Hound, 바이에른 마운틴 센트 하운드
+Hanoverian Scent Hound, 하노버리안 센트 하운드
+Dalmatian, 달마시안
+Rhodesian Ridgeback, 로디지안 리지백
+
+group 7
+
+Old Danish Pointing Dog, 올드 덴마크 포인팅 도그
+Ariege Pointing Dog, 아리에주 포인팅 도그
+Auvergne Pointer, 오베르뉴 포인터
+Bourbonnais Pointing Dog, 부르봉네 포인팅 도그
+French Pointing Dog - Gascogne Type, 프렌치 포인팅 도그 - 가스콩 타입
+French Pointing Dog - Pyerenean Type, 프렌치 포인팅 도그 - 피레네 타입
+Saint Germain Pointer, 생 제르맹 포인터
+Deutsch Stichelhaar, 도이치 스티켈하어
+German Short-haired Pointing Dog, 독일 쇼트헤어드 포인팅 도그
+German Wire-Haired Pointing Dog, 독일 와이어헤어드 포인팅 도그
+Pudelpointer, 푸델포인터
+Weimaraner, 바이마라너
+Hungarian Short-haired Pointer, 헝가리안 쇼트헤어드 포인터
+Hungarian Wire-haired Pointer, 헝가리안 와이어헤어드 포인터
+Italian Pointing Dog, 이탈리안 포인팅 도그
+Portuguese Pointing Dog, 포르투갈 포인팅 도그
+Wirehaired Slovakian Pointer, 와이어헤어드 슬로바키안 포인터
+Burgos Pointing Dog, 부르고스 포인팅 도그
+Blue Picardy Spaniel, 블루 피카르디 스패니얼
+Brittany Spaniel, 브리타니 스패니얼
+French Spaniel, 프렌치 스패니얼
+Picardy Spaniel, 피카르디 스패니얼
+Pont-Audemer Spaniel, 폰 오데메르 스패니얼
+Deutsch Langhaar, 도이치 랑하르
+Kleiner Münsterländer, 클라이너 뮌스터랜더
+Large Munsterlander, 라지 뮌스터랜더
+Drentsche Partridge Dog, 드렌트셰 파트리지 도그
+Stabijhon, 스타비혼
+Bohemian Wire-haired Pointing Griffon, 보헤미안 와이어헤어드 포인팅 그리폰
+Wire-haired Pointing Griffon Korthals, 와이어헤어드 포인팅 그리폰 코르탈스
+Italian Spinone, 이탈리안 스피노네
+English Pointer, 잉글리시 포인터
+English Setter, 잉글리시 세터
+Gordon Setter, 고든 세터
+Irish Red and White Setter, 아이리시 레드 앤드 화이트 세터
+Irish Red Setter, 아이리시 레드 세터
+
+
+group 8
+
+Nova Scotia Duck Tolling Retriever, 노바 스코샤 덕 톨링 리트리버
+Curly Coated Retriever, 컬리 코티드 리트리버
+Flat Coated Retriever, 플랫 코티드 리트리버
+Golden Retriever, 골든 리트리버
+Labrador Retriever, 래브라도 리트리버
+Chesapeke Bay Retriever, 체서피크 베이 리트리버
+German Spaniel, 독일 스패니얼
+Clumber Spaniel, 클럼버 스패니얼
+English Cocker Spaniel, 잉글리시 코커 스패니얼
+English Springer Spaniel, 잉글리시 스프링어 스패니얼
+Field Spaniel, 필드 스패니얼
+Sussex Spaniel, 서식스 스패니얼
+Welsh Springer Spaniel, 웰시 스프링어 스패니얼
+Nederlandse Kooikerhondje, 네덜란드세 쿠이커혼제
+American Cocker Spaniel, 아메리칸 코커 스패니얼
+French Water Dog, 프렌치 워터 도그
+Irish Water Spaniel, 아이리시 워터 스패니얼
+Romagna Water Dog, 라고토 로마뇰로
+Portuguese Water Dog, 포르투갈 워터 도그
+Spanish Water Dog, 스패니시 워터 도그
+Frisian Water Dog, 프리지안 워터 도그
+American Water Spaniel, 아메리칸 워터 스패니얼
+
+group 9
+
+Bichon Frise, 비숑 프리제
+Maltese, 말티즈
+Havanese, 하바니즈
+Bolognese, 볼로네제
+Coton de Tulear, 코통 드 튈레아르
+Little Lion Dog, 리틀 라이언 도그
+Poodle, 푸들
+Griffon Belge, 그리폰 벨지
+Griffon Bruxellois, 그리폰 브뤼셀루아
+Petit Brabançon, 프티 브라반송
+Chinese Crested Dog, 차이니스 크레스티드
+Lhasa Apso, 라사압소
+Shih Tzu, 시추
+Tibetan Spaniel, 티베탄 스패니얼
+Tibetan Terrier, 티베탄 테리어
+Chihuahua, 치와와
+Cavalier King Charles Spaniel, 카발리에 킹 찰스 스패니얼
+King Charles Spaniel, 킹 찰스 스패니얼
+Pekingese, 페키니즈
+Japanese Chin, 재패니즈 친
+Continential Toy Spaniel, 컨티넨탈 토이 스패니얼
+Russian Toy, 러시안 토이
+Kromfohrländer, 크롬포를란더
+Pug, 퍼그
+French Bulldog, 프렌치 불도그
+Boston Terrier, 보스턴 테리어
+
+
+group 10
+
+Afghan Hound, 아프간 하운드
+Saluki, 살루키
+Borzoi - Russian Hunting Sighthound, 보르조이 - 러시안 헌팅 사이트하운드
+Deerhound, 디어하운드
+Irish Wolfhound, 아이리시 울프하운드
+Greyhound, 그레이하운드
+Whippet, 휘핏
+Hungarian Greyhound, 헝가리안 그레이하운드
+Italian Sighthound, 이탈리안 사이트하운드
+Azawakh, 아자와크
+Sloughi, 슬루기
+Polish Greyhound, 폴리쉬 그레이하운드
+Spanish Greyhound, 스패니시 그레이하운드

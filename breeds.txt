@@ -1,0 +1,147 @@
+1그룹
+
+Belgian Sheepdog, 벨지언 쉽독
+Border Collie, 보더 콜리
+Bouvier des Flandres, 부비에 데 플랑드르
+Briard, 브리어드
+Shetland Sheepdog, 셰틀랜드 쉽독
+Schipperke, 스키퍼키
+Australian Kelpie, 오스트레일리안 켈피
+Old English Sheepdog, 올드 잉글리시 십독
+Welsh Corgi, 웰시 코기
+German Shepherd Dog, 저먼 셰퍼드 독
+Czechoslovakian Wolfdog, 체코슬로바키아 늑대개
+Komondor, 코몬도르
+Collie, 콜리
+Croatian Shepherd Dog, 크로아티안 셰퍼드 독
+Pumi, 푸미
+Puli, 풀리
+
+
+2그룹
+
+Great Dane, 그레이트 데인
+Great Pyrenees, 그레이트 피레니즈
+Presa Canario, 까나리오
+Neapolitan Mastiff, 나폴리탄 마스티프
+Newfoundland, 뉴펀들랜드(견종)
+Dogo Argentino, 도고 아르헨티노
+Dobermann, 도베르만 핀셔
+Tosa, 도사견
+Rafeiro do Alentejo, 라페이로 도 알렌테조
+Leonberger, 레온베르거
+Rottweiler, 로트와일러
+Mastiff, 마스티프
+Miniature Schnauzer, 미니어처 슈나우저
+Miniature Pinscher, 미니어처 핀셔
+Bernese Mountain Dog, 버니즈 마운틴 독
+Dogue de Bordeaux, 보르도 마스티프
+Boxer, 복서
+Bulldog, 불도그
+Bullmastiff, 불마스티프
+Šarplaninac, 사플라니낙
+Shar Pei, 샤페이
+Saint Bernard, 세인트 버나드
+Affenpinscher, 아펜핀셔
+Estrela Mountain Dog, 에스트렐라 마운틴 독
+Caucasian Shepherd Dog, 오브차카
+Chinese Chongqing Dog, 차이니즈 충칭 독
+Cane Corso, 카네 코르소
+Kangal Dog, 캉갈
+Tibetan Mastiff, 티베탄 마스티프
+Fila Brasileiro, 필라 브라질레이로
+
+
+3그룹
+
+Manchester Terrier, 맨체스터 테리어
+Miniature Bull Terrier, 미니어처 불테리어
+Bedlington Terrier, 베들링턴 테리어
+Bull Terrier, 불테리어
+Scottish Terrier, 스코티쉬 테리어
+Staffordshire Bull Terrier, 스태퍼드셔 불테리어
+Australian Silky Terrier, 실키 테리어
+American Staffordshire Terrier, 아메리칸 스태퍼드셔 테리어
+Yorkshire Terrier, 요크셔 테리어
+West Highland White Terrier, 웨스트 하이랜드 화이트테리어
+Jack Russell Terrier, 잭 러셀 테리어
+Fox Terrier, 폭스 테리어
+
+4그룹
+
+Dachshund, 닥스훈트
+
+5그룹
+
+Greenland Dog, 그린란드견
+Kishu, 기슈견
+Laika (Siberian Laika for example), 라이카
+Basenji, 바센지
+Samoyed, 사모예드
+Xoloitzcuintli, 솔로이츠 쿠인틀레
+Spitz (Generic term for Spitz-type dogs), 스피츠
+Shiba Inu, 시바견
+Siberian Husky, 시베리안 허스키
+Shikoku, 시코쿠견
+Akita, 아키타견
+Alaskan Malamute, 알래스칸 말라뮤트
+Alaskan Klee Kai, 알래스칸 클리카이
+Japanese Spitz, 재패니즈 스피츠
+Korean Jindo Dog, 진돗개
+Chow Chow, 차우차우
+Pharaoh Hound, 파라오 하운드
+Pomeranian, 포메라니안
+
+6그룹
+
+Dalmatian, 달마시안
+Rhodesian Ridgeback, 로디지안 리지백
+Basset Hound, 바셋 하운드
+Bloodhound, 블러드 하운드
+Beagle, 비글
+Harrier, 해리어
+
+7그룹
+
+Setter, 세터
+Irish Setter, 아이리시 세터
+English Setter, 잉글리시 세터
+Pointer, 포인터
+
+8그룹
+
+Golden Retriever, 골든 리트리버
+Lagotto Romagnolo, 라고토 로마뇰로
+Labrador Retriever, 래브라도 리트리버
+Cocker Spaniel, 코커 스파니엘
+
+9그룹
+
+Coton de Tulear, 꼬똥 드 툴레아
+Lhasa Apso, 라사압소
+Maltese, 말티즈
+Boston Terrier, 보스턴 테리어
+Brussels Griffon, 브뤼셀 그리폰
+Bichon Frise, 비숑 프리제
+Shih Tzu, 시추
+Japanese Chin, 재패니즈 친
+Chihuahua, 치와와
+Cavalier King Charles Spaniel, 카발리에 킹 찰스 스파니엘
+Tibetan Terrier, 티베탄 테리어
+Papillon, 파피용
+Pug, 퍼그
+Pekingese, 페키니즈
+Poodle, 푸들
+French Bulldog, 프렌치 불도그
+Havanese, 하바니즈
+
+10그룹
+
+Greyhound, 그레이하운드
+Borzoi, 보르조이
+Saluki, 살루키
+Scottish Deerhound, 스코티시 디어하운드
+Irish Wolfhound, 아이리시 울프하운드
+Azawakh, 아자와크
+Afghan Hound, 아프간 하운드
+Whippet, 휘핏
