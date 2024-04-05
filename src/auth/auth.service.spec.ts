@@ -29,7 +29,7 @@ import {
   VerificationType,
   VerifyCodeDTO,
 } from '@/verifications/dtos/verify-code.dto'
-import { LoginRequestDTO, LoginType } from '@/auth/dtos/login.dto'
+import { LoginRequestDTO } from '@/auth/dtos/login.dto'
 import { RefreshDTO } from '@/auth/dtos/refresh.dto'
 
 import { manager, mockJwtService } from '@test/mocks/base'
@@ -201,7 +201,7 @@ describe('AuthService', () => {
   describe('login', () => {
     const loginRequestDTO: LoginRequestDTO = {
       id: '123@fff.ff',
-      loginType: LoginType.EMAIL,
+      // loginType: LoginType.EMAIL,
       password: '123',
     }
 
@@ -219,7 +219,18 @@ describe('AuthService', () => {
         .spyOn(service, 'sign')
         .mockResolvedValue(publishTokenValue.accessToken)
 
-      const cond = { [loginRequestDTO.loginType]: loginRequestDTO.id }
+      const cond = [
+        {
+          email: loginRequestDTO.id,
+        },
+        {
+          phone: loginRequestDTO.id,
+        },
+        {
+          nickname: loginRequestDTO.id,
+        },
+      ]
+
       const result = await service.login(loginRequestDTO)
 
       expect(result).toEqual(publishTokenValue)
@@ -238,7 +249,17 @@ describe('AuthService', () => {
     it('존재하지 않는 정보일 경우 NotFoundException을 던진다', async () => {
       manager.getRepository().findOne.mockResolvedValue(null)
 
-      const cond = { [loginRequestDTO.loginType]: loginRequestDTO.id }
+      const cond = [
+        {
+          email: loginRequestDTO.id,
+        },
+        {
+          phone: loginRequestDTO.id,
+        },
+        {
+          nickname: loginRequestDTO.id,
+        },
+      ]
       await expect(async () => {
         await service.login(loginRequestDTO)
       }).rejects.toThrow(new NotFoundException())
@@ -257,7 +278,17 @@ describe('AuthService', () => {
       }
       manager.getRepository().findOne.mockResolvedValue(foundUser)
 
-      const cond = { [loginRequestDTO.loginType]: loginRequestDTO.id }
+      const cond = [
+        {
+          email: loginRequestDTO.id,
+        },
+        {
+          phone: loginRequestDTO.id,
+        },
+        {
+          nickname: loginRequestDTO.id,
+        },
+      ]
       await expect(async () => {
         await service.login(loginRequestDTO)
       }).rejects.toThrow(new ForbiddenException())

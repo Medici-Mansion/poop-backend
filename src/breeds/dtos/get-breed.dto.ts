@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger'
 import { IsOptional, IsString, IsUUID } from 'class-validator'
 import { SearchBreeds } from '@/breeds/models/breeds.model'
 import { CursorOption } from '@/shared/dtos/common.dto'
+import { getImagePath } from '@/shared/utils'
 
 export class GetBreadRequestDTO extends CursorOption {
   @ApiProperty({
@@ -36,6 +37,6 @@ export class GetBreedResponseDTO {
     this.id = breeds.id
     this.name = breeds.nameKR
     this.nameEN = breeds.nameEN
-    this.avatar = breeds.avatar
+    this.avatar = getImagePath(breeds.avatar, { width: 160, prefix: 'avatar' })
   }
 }

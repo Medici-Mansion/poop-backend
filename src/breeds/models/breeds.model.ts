@@ -11,9 +11,6 @@ export class Breeds extends CommonModel {
 
   @Column({ comment: '아바타 이미지 주소', nullable: true })
   avatar: string
-
-  @Column({ comment: 'FCI 분류 그룹', nullable: true })
-  group: number
 }
 
 @ViewEntity({
