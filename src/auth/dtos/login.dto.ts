@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 import {
-  IsEnum,
+  // IsEnum,
   IsNotEmpty,
   IsString,
   MaxLength,
@@ -14,13 +14,14 @@ export enum LoginType {
 }
 
 export class LoginRequestDTO {
-  @ApiProperty({
-    description: '로그인 타입',
-    enum: LoginType,
-    example: LoginType.EMAIL,
-  })
-  @IsEnum(LoginType)
-  loginType: LoginType
+  // TODO: OR조건을 통해 여러가지 타입을 확인하도록 수정됨. 베타 이후 문제생길 경우 수정필요
+  // @ApiProperty({
+  //   description: '로그인 타입',
+  //   enum: LoginType,
+  //   example: LoginType.EMAIL,
+  // })
+  // @IsEnum(LoginType)
+  // loginType: LoginType
 
   @ApiProperty({
     description: '로그인에 사용할 아이디',

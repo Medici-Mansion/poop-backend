@@ -5,7 +5,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common'
-import { FindOptionsWhereProperty } from 'typeorm'
+import { FindOptionsWhere } from 'typeorm'
 import { JwtService } from '@nestjs/jwt'
 import { validateOrReject } from 'class-validator'
 
@@ -94,9 +94,18 @@ export class AuthService {
   async login(
     loginRequestDTO: LoginRequestDTO,
   ): Promise<VerifyingCodeResponseDTO> {
-    const userWhereCond: FindOptionsWhereProperty<Users> = {
-      [loginRequestDTO.loginType]: loginRequestDTO.id,
-    }
+    const userWhereCond: FindOptionsWhere<Users>[] = [
+      {
+        email: loginRequestDTO.id,
+      },
+      {
+        phone: loginRequestDTO.id,
+      },
+      {
+        nickname: loginRequestDTO.id,
+      },
+    ]
+
     const foundUser = await this.baseService
       .getManager()
       .getRepository(Users)
