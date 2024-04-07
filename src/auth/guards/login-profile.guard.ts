@@ -13,9 +13,9 @@ export class LoginProfileGuard implements CanActivate {
     const token = req['token'] as TokenPayload
     if (!token) return false
     const user = await this.usersService.getUserById(token.uid)
-    if (user.latestJoinProfile) {
-      req['profile'] = user.latestJoinProfile
+    if (user.latestProfile) {
+      req['profile'] = user.latestProfile
     }
-    return !!user.latestJoinProfile
+    return !!user.latestProfile
   }
 }

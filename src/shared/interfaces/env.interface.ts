@@ -7,6 +7,7 @@ export interface Env {
   readonly DB_HOST: string
   readonly DB_PORT: string
   readonly DB_NAME: string
+  readonly DATABASE_URL: string
   readonly SSL_MODE: string
   readonly CA_CERT: string
   readonly REFRESH_EXPIRES_IN: string

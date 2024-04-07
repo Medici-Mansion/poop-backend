@@ -1,21 +1,18 @@
 import { Injectable } from '@nestjs/common'
 
-import { Profiles } from '@/profiles/models/profiles.model'
-import { Users } from '@/users/models/users.model'
-
 import { UsersService } from '@/users/users.service'
 import { ExternalsService } from '@/externals/externals.service'
-import { BaseService } from '@/shared/services/base.service'
 import { BreedsService } from '@/breeds/breeds.service'
 
 import { CreateProfileDTO } from '@/profiles/dtos/create-profile.dto'
 import { GetProfileDTO } from '@/profiles/dtos/get-profile.dto'
 import { LoginProfileDTO } from '@/profiles/dtos/login-profile.dto'
+import { PrismaService } from '@/prisma/prisma.service'
 
 @Injectable()
 export class ProfilesService {
   constructor(
-    private readonly baseService: BaseService,
+    private readonly prismaService: PrismaService,
     private readonly externalsService: ExternalsService,
     private readonly usersService: UsersService,
     private readonly breedsService: BreedsService,
@@ -32,34 +29,50 @@ export class ProfilesService {
     const foundBreeds = await this.breedsService.findById(
       createProfileDTO.breedId,
     )
-    const repository = this.baseService.getManager().getRepository(Profiles)
-    await repository.save(
-      repository.create({
-        ...createProfileDTO,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { breedId: _, ...rest } = createProfileDTO
+    await this.prismaService.profile.create({
+      data: {
+        ...rest,
         avatarUrl: avatarUrl[0].url,
-        userId,
-        breed: foundBreeds,
-      }),
-    )
+        birthday: new Date(createProfileDTO.birthday),
+        user: {
+          connect: {
+            id: userId,
+          },
+        },
+        breed: {
+          connect: {
+            id: foundBreeds.id,
+          },
+        },
+      },
+    })
     return true
   }
 
   async getMyProfileList(userId: string) {
-    const profiles = await this.baseService.getManager().find(Profiles, {
+    const profiles = await this.prismaService.profile.findMany({
       where: {
         userId,
       },
-      relations: {
+      include: {
         user: true,
       },
     })
-    return profiles.map((profile) => new GetProfileDTO(profile))
+    return profiles.map((profile) => {
+      profile.gender
+      return new GetProfileDTO(profile)
+    })
   }
 
   async loginProfile(userId: string, loginProfileDTO: LoginProfileDTO) {
     const user = await this.usersService.getUserById(userId)
-    await this.baseService.getManager().update(Users, user.id, {
-      latestProfileId: loginProfileDTO.profileId,
+    await this.prismaService.user.update({
+      where: { id: user.id },
+      data: {
+        latestProfileId: loginProfileDTO.profileId,
+      },
     })
 
     return true

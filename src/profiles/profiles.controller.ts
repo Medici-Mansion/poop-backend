@@ -23,7 +23,6 @@ import { Profiles } from '@/profiles/models/profiles.model'
 import { ExtractLatestProfile } from '@/shared/decorators/latest-profile.decorator'
 import { UserId } from '@/shared/decorators/user-id.decorator'
 import { ApiPoopSecurity } from '@/shared/decorators/api-poop-security.decorator'
-import { Transaction } from '@/shared/decorators/transaction.decorator'
 import { LatestProfile } from '@/shared/decorators/latest-profile.decorator'
 
 import { ProfilesService } from '@/profiles/profiles.service'
@@ -68,7 +67,7 @@ export class ProfilesController {
     type: Boolean,
   })
   @FormDataRequest()
-  @Transaction()
+  // @Transaction()
   createProfile(
     @UserId() { uid }: TokenPayload,
     @Body() createProfileDTO: CreateProfileDTO,

@@ -18,8 +18,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger'
 
-import { Transaction } from '@/shared/decorators/transaction.decorator'
-
 import { AuthService } from '@/auth/auth.service'
 
 import { CreateUserDTO } from '@/users/dtos/create-user.dto'
@@ -44,7 +42,7 @@ export class AuthController {
     type: Boolean,
   })
   @Put('signup')
-  @Transaction()
+  // @Transaction()
   async createUser(@Body() createUserDTO: CreateUserDTO): Promise<boolean> {
     if (!createUserDTO.email && !createUserDTO.phone)
       throw new BadRequestException(['이메일 또는 전화번호는 필수에요.'])
@@ -60,7 +58,7 @@ export class AuthController {
     description: '선택한 매체를 통해 인증번호 전송',
   })
   @Get('verify')
-  @Transaction()
+  // @Transaction()
   async requestVerificationCode(@Query() getUserByVidDTO: GetUserByVidDTO) {
     return this.authService.requestVerificationCode(getUserByVidDTO)
   }
@@ -80,7 +78,7 @@ export class AuthController {
   })
   @HttpCode(200)
   @Post('verify')
-  @Transaction()
+  // @Transaction()
   async verifyingCode(@Body() verifyCodeDTO: VerifyCodeDTO): Promise<boolean> {
     return this.authService.verifyingCode(verifyCodeDTO)
   }
@@ -142,7 +140,7 @@ export class AuthController {
     description: '선택한 매체를 통해 인증번호 전송',
   })
   @Get('password-code')
-  @Transaction()
+  // @Transaction()
   getChangePasswordCode(@Query() getUserByVidDTO: GetUserByVidDTO) {
     return this.authService.getChangePasswordCode(getUserByVidDTO)
   }
@@ -162,7 +160,7 @@ export class AuthController {
   })
   @HttpCode(200)
   @Post('password-code')
-  @Transaction()
+  // @Transaction()
   verifyChangePasswordCode(@Body() verifyCodeDTO: VerifyCodeDTO) {
     return this.authService.verifyChangePasswordCode(verifyCodeDTO)
   }

@@ -10,8 +10,6 @@ import {
 } from 'class-validator'
 import { Transform } from 'class-transformer'
 
-import { Users } from '@/users/models/users.model'
-
 import { IsAccountId } from '@/shared/validators/is-account-id.validator'
 import { IsAccountPassword } from '@/shared/validators/is-account-password.validator'
 import { IsOnlyDate } from '@/shared/validators/is-date-string.validator'
@@ -19,6 +17,24 @@ import { IsUserId } from '@/shared/validators/is-user-id.validator'
 import { IsYYYYMMDD } from '@/shared/validators/is-YYYY-MM-DD.validator'
 
 import { Gender } from '@/shared/constants/common.constant'
+import { $Enums } from '@prisma/client'
+
+interface CreateUserArgs {
+  id: string
+  createdAt: Date
+  updatedAt: Date
+  deletedAt: Date
+  accountId: string
+  password: string
+  nickname: string
+  email: string
+  phone: string
+  birthday: Date
+  gender: $Enums.Gender
+  verified: Date
+  refreshToken: string
+  latestProfileId: string
+}
 
 export class CreateUserDTO {
   @IsAccountId()
@@ -86,9 +102,9 @@ export class CreateUserResponseDTO {
   accountId: string
 
   @IsYYYYMMDD()
-  birthday: string
+  birthday: Date
 
-  constructor(user: Users) {
+  constructor(user: CreateUserArgs) {
     this.id = user.id
     this.accountId = user.accountId
     this.birthday = user.birthday

@@ -1,12 +1,22 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { IsEnum } from 'class-validator'
 
-import { Profiles } from '@/profiles/models/profiles.model'
-
 import { IsYYYYMMDD } from '@/shared/validators/is-YYYY-MM-DD.validator'
 import { IsUserId } from '@/shared/validators/is-user-id.validator'
 
-import { Gender } from '@/shared/constants/common.constant'
+import { $Enums } from '@prisma/client'
+
+interface GetProfileArgs {
+  id: string
+  createdAt: Date
+  updatedAt: Date
+  avatarUrl: string
+  name: string
+  birthday: Date
+  gender: $Enums.Gender
+  breedId: string
+  latestProfileId?: string
+}
 
 export class ProfileDTO {
   @IsUserId()
@@ -26,42 +36,40 @@ export class ProfileDTO {
 
   @ApiProperty({ title: '프로필 생일 (반려동물 생일)' })
   @IsYYYYMMDD()
-  birthday: string
+  birthday: Date
 
   @ApiProperty({
     type: 'enum',
     title: '성별',
     description: '성별',
-    enum: Gender,
+    enum: $Enums.Gender,
   })
-  @IsEnum(Gender)
-  gender: Gender
+  @IsEnum($Enums.Gender)
+  gender: $Enums.Gender
 
   @ApiProperty({ title: '품종 아이디' })
   breedId: string
 
-  @ApiProperty({ title: '최근 접속한 프로필 여부' })
-  isLatestLoginProfile: boolean
-
-  constructor(profile: Profiles & { isLatestLoginProfile?: boolean }) {
-    this.id = profile.id
-    this.createdAt = profile.createdAt
-    this.updatedAt = profile.updatedAt
-    this.avatarUrl = profile.avatarUrl
-    this.name = profile.name
-    this.birthday = profile.birthday
-    this.gender = profile.gender
-    this.breedId = profile.breedId
-    this.isLatestLoginProfile = profile.isLatestLoginProfile
+  constructor(getProfileArgs: GetProfileArgs) {
+    this.id = getProfileArgs.id
+    this.createdAt = getProfileArgs.createdAt
+    this.updatedAt = getProfileArgs.updatedAt
+    this.avatarUrl = getProfileArgs.avatarUrl
+    this.name = getProfileArgs.name
+    this.birthday = getProfileArgs.birthday
+    this.gender = getProfileArgs.gender
+    this.breedId = getProfileArgs.breedId
   }
 }
 
 export class GetProfileDTO extends ProfileDTO {
-  constructor(profile: Profiles) {
-    super(profile)
+  @ApiProperty({ title: '최근 접속한 프로필 여부' })
+  isLatestLoginProfile: boolean
+  constructor(getProfileArgs: GetProfileArgs) {
+    super(getProfileArgs)
     this.isLatestLoginProfile = !!(
-      profile?.user?.latestProfileId &&
-      profile.user.latestProfileId === profile.id
+      getProfileArgs.latestProfileId &&
+      getProfileArgs.latestProfileId === getProfileArgs.id
     )
   }
 }

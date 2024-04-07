@@ -5,7 +5,6 @@ import { NestjsFormDataModule } from 'nestjs-form-data'
 import { AppController } from '@/app.controller'
 
 import { UsersModule } from '@/users/users.module'
-import { DatabaseModule } from '@/database/database.module'
 import { AuthModule } from '@/auth/auth.module'
 import { ProfilesModule } from '@/profiles/profiles.module'
 import { VerificationsModule } from '@/verifications/verifications.module'
@@ -19,12 +18,14 @@ import { LoggingMiddleware } from '@/shared/middlewares/logging.middleware'
 
 import { ResponseInterceptor } from '@/shared/interceptors/response.interceptor'
 import { BaseService } from '@/shared/services/base.service'
+import { PrismaModule } from '@/prisma/prisma.module'
 
 @Module({
   imports: [
     RedisModule,
     NestjsFormDataModule.config({ isGlobal: true, autoDeleteFile: true }),
-    DatabaseModule,
+    // DatabaseModule,
+    PrismaModule,
     ConfigModule,
     UsersModule,
     AuthModule,

@@ -1,11 +1,13 @@
+import { PrismaService } from '@/prisma/prisma.service'
+import bcrypt from 'bcrypt'
 import {
   BadRequestException,
   ForbiddenException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common'
-import { FindOptionsWhere } from 'typeorm'
 import { JwtService } from '@nestjs/jwt'
 import { validateOrReject } from 'class-validator'
 
@@ -14,8 +16,6 @@ import { VerificationsService } from '@/verifications/verifications.service'
 import { ExternalsService } from '@/externals/externals.service'
 import { RedisService } from '@/redis/redis.service'
 import { BaseService } from '@/shared/services/base.service'
-
-import { Users } from '@/users/models/users.model'
 
 import { CreateUserDTO } from '@/users/dtos/create-user.dto'
 import {
@@ -35,6 +35,7 @@ import { TokenPayload, TokenType } from '@/shared/interfaces/token.interface'
 export class AuthService {
   constructor(
     private readonly baseService: BaseService,
+    private readonly prismaService: PrismaService,
     private readonly jwtService: JwtService,
     private readonly usersService: UsersService,
     private readonly verificationsService: VerificationsService,
@@ -52,10 +53,14 @@ export class AuthService {
   async requestVerificationCode(getUserByVidDTO: GetUserByVidDTO) {
     const foundVerification =
       await this.verificationsService.getVerificationByVid(getUserByVidDTO)
-    foundVerification.code = this.verificationsService.generateRandomString()
+    // this.prismaService.$transaction(() => {})
+    const newVerification =
+      await this.verificationsService.refreshVerificationCode(
+        foundVerification.id,
+      )
     if (getUserByVidDTO.type === VerificationType.PHONE) {
       await this.externalsService.sendSMS(
-        `POOP! \n 인증코드: ${foundVerification.code}`,
+        `POOP! \n 인증코드: ${newVerification.code}`,
         getUserByVidDTO.vid,
       )
     } else if (getUserByVidDTO.type === VerificationType.EMAIL) {
@@ -66,12 +71,12 @@ export class AuthService {
         [
           {
             key: 'code',
-            value: foundVerification.code,
+            value: newVerification.code,
           },
         ],
       )
     }
-    await foundVerification.save()
+
     return true
   }
 
@@ -80,12 +85,14 @@ export class AuthService {
     const foundVerification =
       await this.verificationsService.getVerificationByVid(verifyCodeDTO)
 
-    await this.baseService
-      .getManager()
-      .getRepository(Users)
-      .update(foundVerification.user.id, {
-        verified: () => 'NOW()',
-      })
+    await this.prismaService.user.update({
+      where: {
+        id: foundVerification.user.id,
+      },
+      data: {
+        verified: new Date(),
+      },
+    })
 
     await this.verificationsService.removeVerification(foundVerification.id)
     return true
@@ -94,32 +101,31 @@ export class AuthService {
   async login(
     loginRequestDTO: LoginRequestDTO,
   ): Promise<VerifyingCodeResponseDTO> {
-    const userWhereCond: FindOptionsWhere<Users>[] = [
-      {
-        email: loginRequestDTO.id,
-      },
-      {
-        phone: loginRequestDTO.id,
-      },
-      {
-        nickname: loginRequestDTO.id,
-      },
-    ]
+    const userWhereCond = {
+      OR: [
+        {
+          email: loginRequestDTO.id,
+        },
+        {
+          phone: loginRequestDTO.id,
+        },
+        {
+          nickname: loginRequestDTO.id,
+        },
+      ],
+    }
 
-    const foundUser = await this.baseService
-      .getManager()
-      .getRepository(Users)
-      .findOne({
-        where: userWhereCond,
-      })
-
+    const foundUser = await this.prismaService.user.findFirst({
+      where: userWhereCond,
+    })
     if (!foundUser) throw new NotFoundException()
     if (!foundUser.verified) throw new ForbiddenException()
-    const validPassword = await foundUser.checkPassword(
+    const validPassword = await this.checkPassword(
       loginRequestDTO.password,
+      foundUser.password,
     )
-
     if (!validPassword) throw new BadRequestException('비밀번호가 다릅니다.')
+
     // TODO: 커스텀에러를 통해 인증되지 않은 계정의 로그인 요청 분기 필요합니다.
 
     return this.publishToken(foundUser.id)
@@ -209,13 +215,16 @@ export class AuthService {
 
       await validateOrReject(newTokenPayload)
 
-      return this.jwtService.sign(newTokenPayload, {
-        expiresIn:
-          tokenType === 'ACCESS'
-            ? this.baseService.conf.get('ACCESS_EXPIRES_IN')
-            : this.baseService.conf.get('REFRESH_EXPIRES_IN'),
-        secret: this.baseService.conf.get('JWT_SECRET'),
-      })
+      return this.jwtService.sign(
+        { uid },
+        {
+          expiresIn:
+            tokenType === 'ACCESS'
+              ? this.baseService.conf.get('ACCESS_EXPIRES_IN')
+              : this.baseService.conf.get('REFRESH_EXPIRES_IN'),
+          secret: this.baseService.conf.get('JWT_SECRET'),
+        },
+      )
     } catch (error) {
       throw new ForbiddenException()
     }
@@ -227,10 +236,19 @@ export class AuthService {
       refreshToken: await this.sign(id, 'REFRESH'),
     }
 
-    await this.baseService.getManager().getRepository(Users).update(id, {
-      refreshToken: token.refreshToken,
-    })
+    // await this.prismaService.user.update({
+    //   where: { id },
+    //   data: { refreshToken: token.refreshToken },
+    // })
 
     return new VerifyingCodeResponseDTO(token)
+  }
+
+  async checkPassword(aPassword: string, bPassword): Promise<boolean> {
+    try {
+      return bcrypt.compare(aPassword, bPassword)
+    } catch (e) {
+      throw new InternalServerErrorException()
+    }
   }
 }

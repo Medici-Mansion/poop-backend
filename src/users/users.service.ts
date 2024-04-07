@@ -3,54 +3,46 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common'
-import { FindOptionsWhereProperty } from 'typeorm'
 import bcrypt from 'bcrypt'
 
-import { Users } from '@/users/models/users.model'
-
-import { BaseService } from '@/shared/services/base.service'
 import { RedisService } from '@/redis/redis.service'
-
 import {
   CreateUserDTO,
   CreateUserResponseDTO,
 } from '@/users/dtos/create-user.dto'
 import { GetUserByVidDTO } from '@/users/dtos/get-user-by-vid.dto'
 import { PatchPasswordDTO } from '@/users/dtos/patch-password.dto'
+import { Prisma, User } from '@prisma/client'
+import { PrismaService } from '@/prisma/prisma.service'
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly redisService: RedisService,
-    private readonly baseService: BaseService,
+    private readonly prismaService: PrismaService,
   ) {}
 
   async getUserById(id: string) {
-    const foundUser = await this.baseService
-      .getManager()
-      .getRepository(Users)
-      .findOne({
-        where: {
-          id,
-        },
-        relations: {
-          latestJoinProfile: true,
-        },
-      })
+    const foundUser = await this.prismaService.user.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        latestProfile: true,
+      },
+    })
+
     if (!foundUser) throw new NotFoundException()
 
     return foundUser
   }
 
   async getUserByAccountId(accountId: string) {
-    const foundUser = await this.baseService
-      .getManager()
-      .getRepository(Users)
-      .findOne({
-        where: {
-          accountId,
-        },
-      })
+    const foundUser = await this.prismaService.user.findFirst({
+      where: {
+        accountId,
+      },
+    })
 
     if (!foundUser) throw new NotFoundException()
 
@@ -58,34 +50,36 @@ export class UsersService {
   }
 
   async createUser(createUserDTO: CreateUserDTO) {
-    const repository = this.baseService.getManager().getRepository(Users)
-    const existUser = await repository.findOne({
-      where: [
-        {
-          accountId: createUserDTO.id,
-        },
-        {
-          nickname: createUserDTO.nickname,
-        },
-        {
-          phone: createUserDTO.phone,
-        },
-        {
-          email: createUserDTO.email,
-        },
-      ],
+    const existUser = await this.prismaService.user.findFirst({
+      where: {
+        OR: [
+          {
+            accountId: createUserDTO.id,
+          },
+          {
+            nickname: createUserDTO.nickname,
+          },
+          {
+            phone: createUserDTO.phone,
+          },
+          {
+            email: createUserDTO.email,
+          },
+        ],
+      },
     })
 
     if (existUser) {
       throw new ConflictException()
     }
     const { id, ...newUserData } = createUserDTO
-    const newUser = await repository.save(
-      repository.create({
+    const newUser = await this.prismaService.user.create({
+      data: {
         accountId: id,
         ...newUserData,
-      }),
-    )
+        birthday: new Date(newUserData.birthday),
+      },
+    })
 
     return new CreateUserResponseDTO(newUser)
   }
@@ -95,8 +89,11 @@ export class UsersService {
       patchPasswordDTO.code,
     )
     if (!id) throw new NotFoundException()
-    await this.baseService.getManager().update(Users, id, {
-      password: await this.hashPassword(patchPasswordDTO.password),
+    await this.prismaService.user.update({
+      where: { id },
+      data: {
+        password: await this.hashPassword(patchPasswordDTO.password),
+      },
     })
 
     await this.redisService.removeByKey(key)
@@ -105,17 +102,16 @@ export class UsersService {
   }
 
   // TODO 사용자 응답 DTO 리턴하기
-  async getUserByVid(getUserByVidDTO: GetUserByVidDTO): Promise<Users> {
-    const userWhereCond: FindOptionsWhereProperty<Users> = {
+  async getUserByVid(getUserByVidDTO: GetUserByVidDTO): Promise<User> {
+    const userWhereCond: Prisma.UserWhereInput = {
       [getUserByVidDTO.type.toLowerCase()]: getUserByVidDTO.vid,
     }
-    const repository = this.baseService.getManager().getRepository(Users)
-    const foundUser = await repository.findOne({
+
+    const foundUser = await this.prismaService.user.findFirst({
       where: {
         ...userWhereCond,
       },
     })
-
     if (!foundUser) {
       throw new NotFoundException()
     }

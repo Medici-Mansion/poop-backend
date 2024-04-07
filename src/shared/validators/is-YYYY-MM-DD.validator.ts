@@ -6,7 +6,7 @@ import { IsOnlyDate } from '@/shared/validators/is-date-string.validator'
 export function IsYYYYMMDD(options?: ApiPropertyOptions) {
   return applyDecorators(
     ApiProperty({
-      description: '사용자 생일',
+      description: '날짜',
       example: '1995-01-04',
       ...options,
     }),
