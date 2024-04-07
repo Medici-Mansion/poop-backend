@@ -58,4 +58,25 @@ export class BreedsService {
       cursor,
     )
   }
+
+  async getAllBreeds() {
+    const repository = this.baseService.getManager().getRepository(SearchBreeds)
+
+    const allBreeds = await repository.find({
+      order: {
+        nameKR: 'ASC',
+      },
+    })
+
+    const breedsObj = allBreeds.reduce((acc, cur) => {
+      if (!acc[cur.searchKey]) {
+        acc[cur.searchKey] = []
+      }
+
+      acc[cur.searchKey].push(new GetBreedResponseDTO(cur))
+      return acc
+    }, {})
+
+    return breedsObj
+  }
 }
