@@ -1,38 +1,17 @@
+import { DataSourceService } from './../prisma/datasource.service'
 import {
   ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common'
 
-import { BaseService } from '@/shared/services/base.service'
-
 import { VerifyCodeDTO } from '@/verifications/dtos/verify-code.dto'
 import { GetUserByVidDTO } from '@/users/dtos/get-user-by-vid.dto'
 import { Prisma } from '@prisma/client'
-import { PrismaService } from '@/prisma/prisma.service'
 
 @Injectable()
 export class VerificationsService {
-  constructor(
-    private readonly baseService: BaseService,
-    private readonly prismaService: PrismaService,
-  ) {}
-
-  async createVerification(userId: string) {
-    // const repository = this.baseService.getManager().getRepository(Verification)
-    const newVerification = await this.prismaService.verification.create({
-      data: {
-        user: {
-          connect: {
-            id: userId,
-          },
-        },
-        code: this.generateRandomString({ onlyString: false, length: 6 }),
-      },
-    })
-
-    return newVerification
-  }
+  constructor(private readonly dataSourceService: DataSourceService) {}
 
   async getVerificationByVid(getUserByVidDTO: GetUserByVidDTO) {
     const userWhereCond: Prisma.UserWhereInput = {
@@ -40,7 +19,7 @@ export class VerificationsService {
       verified: null,
     }
     const foundUserVerification =
-      await this.prismaService.verification.findFirst({
+      await this.dataSourceService.manager.verification.findFirst({
         where: {
           user: {
             ...userWhereCond,
@@ -50,7 +29,6 @@ export class VerificationsService {
           user: true,
         },
       })
-    console.log(foundUserVerification, '<<foundUserVerification')
     if (!foundUserVerification) {
       throw new NotFoundException()
     }
@@ -71,16 +49,17 @@ export class VerificationsService {
   }
 
   async removeVerification(id: string) {
-    return this.prismaService.verification.delete({ where: { id } })
+    return this.dataSourceService.manager.verification.delete({ where: { id } })
   }
 
   async refreshVerificationCode(verificationId: string) {
-    const foundVerification = await this.prismaService.verification.findUnique({
-      where: { id: verificationId },
-    })
+    const foundVerification =
+      await this.dataSourceService.manager.verification.findUnique({
+        where: { id: verificationId },
+      })
 
     if (!foundVerification) throw new NotFoundException()
-    const newVerification = this.prismaService.verification.update({
+    const newVerification = this.dataSourceService.manager.verification.update({
       where: { id: foundVerification.id },
       data: {
         code: this.generateRandomString({ onlyString: false, length: 6 }),

@@ -1,6 +1,9 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 import { APP_INTERCEPTOR } from '@nestjs/core'
 import { NestjsFormDataModule } from 'nestjs-form-data'
+import { ClsModule } from 'nestjs-cls'
+import { ClsPluginTransactional } from '@nestjs-cls/transactional'
+import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma'
 
 import { AppController } from '@/app.controller'
 
@@ -13,19 +16,30 @@ import { ExternalsModule } from '@/externals/externals.module'
 import { RedisModule } from '@/redis/redis.module'
 import { BreedsModule } from '@/breeds/breeds.module'
 import { CommonModule } from '@/common/common.module'
+import { PrismaModule } from '@/prisma/prisma.module'
 
 import { LoggingMiddleware } from '@/shared/middlewares/logging.middleware'
 
 import { ResponseInterceptor } from '@/shared/interceptors/response.interceptor'
+
 import { BaseService } from '@/shared/services/base.service'
-import { PrismaModule } from '@/prisma/prisma.module'
+import { PrismaService } from '@/prisma/prisma.service'
 
 @Module({
   imports: [
     RedisModule,
     NestjsFormDataModule.config({ isGlobal: true, autoDeleteFile: true }),
-    // DatabaseModule,
-    PrismaModule,
+    ClsModule.forRoot({
+      plugins: [
+        new ClsPluginTransactional({
+          imports: [PrismaModule],
+          adapter: new TransactionalAdapterPrisma({
+            prismaInjectionToken: PrismaService,
+          }),
+        }),
+      ],
+      global: true,
+    }),
     ConfigModule,
     UsersModule,
     AuthModule,

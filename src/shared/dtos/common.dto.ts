@@ -1,13 +1,13 @@
-import { type Type as Tp, applyDecorators } from '@nestjs/common'
+// import { type Type as Tp, applyDecorators } from '@nestjs/common'
 import {
   ApiProperty,
-  ApiExtraModels,
-  ApiOkResponse,
-  getSchemaPath,
+  // ApiExtraModels,
+  // ApiOkResponse,
+  // getSchemaPath,
   ApiPropertyOptional,
 } from '@nestjs/swagger'
 
-import { CursorMeta } from '@/shared/interfaces/meta.interface'
+// import { CursorMeta } from '@/shared/interfaces/meta.interface'
 import { IsEnum, IsInt, IsOptional, IsString, Max } from 'class-validator'
 import { Type } from 'class-transformer'
 
@@ -16,42 +16,42 @@ export enum Order {
   DESC = 'DESC',
 }
 
-export class ResponseWithCursor<T> {
-  @ApiProperty({ description: '결과' })
-  items: T[]
+// export class ResponseWithCursor<T> {
+//   @ApiProperty({ description: '결과' })
+//   items: T[]
 
-  @ApiProperty({ description: '커서 메타 ' })
-  meta: CursorMeta
-  constructor(items: T[], meta: CursorMeta) {
-    this.items = items
-    this.meta = meta
-  }
-}
+//   @ApiProperty({ description: '커서 메타 ' })
+//   meta: CursorMeta
+//   constructor(items: T[], meta: CursorMeta) {
+//     this.items = items
+//     this.meta = meta
+//   }
+// }
 
-export const ApiResultWithCursorResponse = <DataDto extends Tp<unknown>>(
-  dataDto: DataDto,
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  model: Function = ResponseWithCursor,
-): any =>
-  applyDecorators(
-    ApiExtraModels(model, dataDto),
-    ApiOkResponse({
-      description: 'OK',
-      schema: {
-        allOf: [
-          { $ref: getSchemaPath(model) },
-          {
-            properties: {
-              items: {
-                type: 'array',
-                items: { $ref: getSchemaPath(dataDto) },
-              },
-            },
-          },
-        ],
-      },
-    }),
-  )
+// export const ApiResultWithCursorResponse = <DataDto extends Tp<unknown>>(
+//   dataDto: DataDto,
+//   // eslint-disable-next-line @typescript-eslint/ban-types
+//   model: Function = ResponseWithCursor,
+// ): any =>
+//   applyDecorators(
+//     ApiExtraModels(model, dataDto),
+//     ApiOkResponse({
+//       description: 'OK',
+//       schema: {
+//         allOf: [
+//           { $ref: getSchemaPath(model) },
+//           {
+//             properties: {
+//               items: {
+//                 type: 'array',
+//                 items: { $ref: getSchemaPath(dataDto) },
+//               },
+//             },
+//           },
+//         ],
+//       },
+//     }),
+//   )
 
 export class CursorOption {
   @IsOptional()

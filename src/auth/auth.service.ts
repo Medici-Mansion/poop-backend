@@ -1,7 +1,10 @@
-import { PrismaService } from '@/prisma/prisma.service'
 import bcrypt from 'bcrypt'
+import { TransactionHost, Transactional } from '@nestjs-cls/transactional'
+import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma'
+import { PrismaClient } from '@prisma/client'
 import {
   BadRequestException,
+  ConflictException,
   ForbiddenException,
   Injectable,
   InternalServerErrorException,
@@ -16,6 +19,7 @@ import { VerificationsService } from '@/verifications/verifications.service'
 import { ExternalsService } from '@/externals/externals.service'
 import { RedisService } from '@/redis/redis.service'
 import { BaseService } from '@/shared/services/base.service'
+import { DataSourceService } from '@/prisma/datasource.service'
 
 import { CreateUserDTO } from '@/users/dtos/create-user.dto'
 import {
@@ -35,25 +39,77 @@ import { TokenPayload, TokenType } from '@/shared/interfaces/token.interface'
 export class AuthService {
   constructor(
     private readonly baseService: BaseService,
-    private readonly prismaService: PrismaService,
+    private readonly dataSourceService: DataSourceService,
     private readonly jwtService: JwtService,
     private readonly usersService: UsersService,
     private readonly verificationsService: VerificationsService,
     private readonly externalsService: ExternalsService,
+    private readonly txHost: TransactionHost<
+      TransactionalAdapterPrisma<PrismaClient>
+    >,
     private readonly redisService: RedisService,
-  ) {}
+  ) {
+    console.log(this.txHost)
+  }
 
+  @Transactional()
   async signup(createUserDTO: CreateUserDTO): Promise<boolean> {
-    const user = await this.usersService.createUser(createUserDTO)
-    await this.verificationsService.createVerification(user.id)
+    const existUser = await this.txHost.tx.user.findFirst({
+      where: {
+        OR: [
+          {
+            accountId: createUserDTO.id,
+          },
+          {
+            nickname: createUserDTO.nickname,
+          },
+          {
+            phone: createUserDTO.phone,
+          },
+          {
+            email: createUserDTO.email,
+          },
+        ],
+      },
+    })
 
+    if (existUser) {
+      throw new ConflictException()
+    }
+    const { id, ...newUserData } = createUserDTO
+    const hashedPassword = await this.usersService.hashPassword(
+      newUserData.password,
+    )
+    const newUser = await this.txHost.tx.user.create({
+      data: {
+        accountId: id,
+        ...newUserData,
+        password: hashedPassword,
+        birthday: new Date(newUserData.birthday),
+      },
+    })
+
+    await this.txHost.tx.verification.create({
+      data: {
+        user: {
+          connect: {
+            id: newUser.id,
+          },
+        },
+        code: this.verificationsService.generateRandomString({
+          onlyString: false,
+          length: 6,
+        }),
+      },
+    })
     return true
   }
 
+  @Transactional()
   async requestVerificationCode(getUserByVidDTO: GetUserByVidDTO) {
     const foundVerification =
       await this.verificationsService.getVerificationByVid(getUserByVidDTO)
-    // this.prismaService.$transaction(() => {})
+
     const newVerification =
       await this.verificationsService.refreshVerificationCode(
         foundVerification.id,
@@ -80,14 +136,15 @@ export class AuthService {
     return true
   }
 
+  @Transactional()
   async verifyingCode(verifyCodeDTO: VerifyCodeDTO): Promise<boolean> {
     await this.verificationsService.verifyingCode(verifyCodeDTO)
     const foundVerification =
       await this.verificationsService.getVerificationByVid(verifyCodeDTO)
 
-    await this.prismaService.user.update({
+    await this.dataSourceService.manager.user.update({
       where: {
-        id: foundVerification.user.id,
+        id: foundVerification.userId,
       },
       data: {
         verified: new Date(),
@@ -115,7 +172,7 @@ export class AuthService {
       ],
     }
 
-    const foundUser = await this.prismaService.user.findFirst({
+    const foundUser = await this.dataSourceService.manager.user.findFirst({
       where: userWhereCond,
     })
     if (!foundUser) throw new NotFoundException()
@@ -236,10 +293,10 @@ export class AuthService {
       refreshToken: await this.sign(id, 'REFRESH'),
     }
 
-    // await this.prismaService.user.update({
-    //   where: { id },
-    //   data: { refreshToken: token.refreshToken },
-    // })
+    await this.dataSourceService.manager.user.update({
+      where: { id },
+      data: { refreshToken: token.refreshToken },
+    })
 
     return new VerifyingCodeResponseDTO(token)
   }

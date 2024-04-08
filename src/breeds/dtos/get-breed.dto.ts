@@ -1,7 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger'
+import { SearchBreeds } from '@prisma/client'
 import { IsOptional, IsString, IsUUID } from 'class-validator'
-import { SearchBreeds } from '@/breeds/models/breeds.model'
+
 import { CursorOption } from '@/shared/dtos/common.dto'
+
 import { getImagePath } from '@/shared/utils'
 
 export class GetBreadRequestDTO extends CursorOption {

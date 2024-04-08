@@ -1,15 +1,8 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import bcrypt from 'bcrypt'
 
 import { RedisService } from '@/redis/redis.service'
-import {
-  CreateUserDTO,
-  CreateUserResponseDTO,
-} from '@/users/dtos/create-user.dto'
+
 import { GetUserByVidDTO } from '@/users/dtos/get-user-by-vid.dto'
 import { PatchPasswordDTO } from '@/users/dtos/patch-password.dto'
 import { Prisma, User } from '@prisma/client'
@@ -47,41 +40,6 @@ export class UsersService {
     if (!foundUser) throw new NotFoundException()
 
     return foundUser
-  }
-
-  async createUser(createUserDTO: CreateUserDTO) {
-    const existUser = await this.prismaService.user.findFirst({
-      where: {
-        OR: [
-          {
-            accountId: createUserDTO.id,
-          },
-          {
-            nickname: createUserDTO.nickname,
-          },
-          {
-            phone: createUserDTO.phone,
-          },
-          {
-            email: createUserDTO.email,
-          },
-        ],
-      },
-    })
-
-    if (existUser) {
-      throw new ConflictException()
-    }
-    const { id, ...newUserData } = createUserDTO
-    const newUser = await this.prismaService.user.create({
-      data: {
-        accountId: id,
-        ...newUserData,
-        birthday: new Date(newUserData.birthday),
-      },
-    })
-
-    return new CreateUserResponseDTO(newUser)
   }
 
   async changePassword(patchPasswordDTO: PatchPasswordDTO) {

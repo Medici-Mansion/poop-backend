@@ -18,8 +18,6 @@ import {
 
 import { AccessGuard } from '@/auth/guards/access.guard'
 
-import { Profiles } from '@/profiles/models/profiles.model'
-
 import { ExtractLatestProfile } from '@/shared/decorators/latest-profile.decorator'
 import { UserId } from '@/shared/decorators/user-id.decorator'
 import { ApiPoopSecurity } from '@/shared/decorators/api-poop-security.decorator'
@@ -67,7 +65,6 @@ export class ProfilesController {
     type: Boolean,
   })
   @FormDataRequest()
-  // @Transaction()
   createProfile(
     @UserId() { uid }: TokenPayload,
     @Body() createProfileDTO: CreateProfileDTO,
@@ -96,7 +93,7 @@ export class ProfilesController {
     type: ProfileDTO,
   })
   @LatestProfile()
-  getLatestProfile(@ExtractLatestProfile() profile: Profiles) {
+  getLatestProfile(@ExtractLatestProfile() profile: ProfileDTO) {
     return profile
   }
 }
