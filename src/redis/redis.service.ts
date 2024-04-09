@@ -15,7 +15,7 @@ export class RedisService {
 
   async setChangePasswordCode(id: string, code: string) {
     let delFn = new Promise<number>((resolve) => resolve(0))
-    const foundExistCodeById = this.findById(id)
+    const foundExistCodeById = await this.findById(id)
     if (foundExistCodeById) {
       delFn = this.removeByKey(id)
     }

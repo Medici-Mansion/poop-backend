@@ -1,37 +1,29 @@
-import { IsNumber, IsOptional, IsString } from 'class-validator'
+import { IsNumber, IsString } from 'class-validator'
 
 export class LogRequestDTO {
   @IsString()
-  @IsOptional()
-  method?: string
+  method: string
 
   @IsString()
-  @IsOptional()
-  originalUrl?: string
+  originalUrl: string
 
   @IsNumber()
-  @IsOptional()
-  statusCode?: number
+  statusCode: number
 
   @IsNumber()
-  @IsOptional()
-  responseTime?: number
+  responseTime: number
 
   @IsString()
-  @IsOptional()
-  contentLength?: string
+  contentLength: string
 
   @IsString()
-  @IsOptional()
-  userAgent?: string
+  userAgent: string
 
   @IsString()
-  @IsOptional()
-  ip?: string
+  ip: string
 
   @IsString()
-  @IsOptional()
-  hostname?: string
+  hostname: string
 
   constructor({
     method,
@@ -43,14 +35,14 @@ export class LogRequestDTO {
     ip,
     hostname,
   }: {
-    method?: string
-    originalUrl?: string
-    statusCode?: number
-    responseTime?: number
-    contentLength?: string
-    userAgent?: string
-    ip?: string
-    hostname?: string
+    method: string
+    originalUrl: string
+    statusCode: number
+    responseTime: number
+    contentLength: string
+    userAgent: string
+    ip: string
+    hostname: string
   }) {
     this.method = method
     this.originalUrl = originalUrl

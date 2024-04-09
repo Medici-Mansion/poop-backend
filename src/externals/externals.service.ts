@@ -69,7 +69,7 @@ export class ExternalsService {
       {
         auth: {
           username: 'api',
-          password: this.baseService.conf.get('MAILGUN_API_KEY'),
+          password: this.baseService.conf.get('MAILGUN_API_KEY')!,
         },
       },
     )

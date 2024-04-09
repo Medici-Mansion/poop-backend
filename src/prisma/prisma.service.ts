@@ -1,26 +1,10 @@
-import { BaseService } from '@/shared/services/base.service'
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common'
 import { PrismaClient, Prisma } from '@prisma/client'
 
 @Injectable()
-export class PrismaService
-  extends PrismaClient
-  implements OnModuleInit, OnModuleDestroy
-{
-  constructor(private readonly baseService: BaseService) {
-    super({
-      log: ['query', 'error', 'info', 'warn'],
-      transactionOptions: {
-        isolationLevel: 'RepeatableRead',
-      },
-      datasources: {
-        db: {
-          url: baseService.conf.get('DATABASE_URL'),
-        },
-      },
-    })
-
-    this.$extends({
+export class PrismaService implements OnModuleInit, OnModuleDestroy {
+  constructor(private readonly prismaClient: PrismaClient) {
+    this.prismaClient.$extends({
       model: {
         $allModels: {
           softDelete<T, A>(
@@ -35,9 +19,13 @@ export class PrismaService
     })
   }
   async onModuleDestroy() {
-    await this.$disconnect()
+    await this.prismaClient.$disconnect()
   }
   async onModuleInit() {
-    await this.$connect()
+    await this.prismaClient.$connect()
+  }
+
+  get client() {
+    return this.prismaClient
   }
 }

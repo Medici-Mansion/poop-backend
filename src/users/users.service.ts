@@ -1,3 +1,4 @@
+import { DataSourceService } from '@/prisma/datasource.service'
 import { Injectable, NotFoundException } from '@nestjs/common'
 import bcrypt from 'bcrypt'
 
@@ -6,17 +7,16 @@ import { RedisService } from '@/redis/redis.service'
 import { GetUserByVidDTO } from '@/users/dtos/get-user-by-vid.dto'
 import { PatchPasswordDTO } from '@/users/dtos/patch-password.dto'
 import { Prisma, User } from '@prisma/client'
-import { PrismaService } from '@/prisma/prisma.service'
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly redisService: RedisService,
-    private readonly prismaService: PrismaService,
+    private readonly dataSourceService: DataSourceService,
   ) {}
 
   async getUserById(id: string) {
-    const foundUser = await this.prismaService.user.findUnique({
+    const foundUser = await this.dataSourceService.manager.user.findUnique({
       where: {
         id,
       },
@@ -31,7 +31,7 @@ export class UsersService {
   }
 
   async getUserByAccountId(accountId: string) {
-    const foundUser = await this.prismaService.user.findFirst({
+    const foundUser = await this.dataSourceService.manager.user.findFirst({
       where: {
         accountId,
       },
@@ -47,7 +47,7 @@ export class UsersService {
       patchPasswordDTO.code,
     )
     if (!id) throw new NotFoundException()
-    await this.prismaService.user.update({
+    await this.dataSourceService.manager.user.update({
       where: { id },
       data: {
         password: await this.hashPassword(patchPasswordDTO.password),
@@ -65,7 +65,7 @@ export class UsersService {
       [getUserByVidDTO.type.toLowerCase()]: getUserByVidDTO.vid,
     }
 
-    const foundUser = await this.prismaService.user.findFirst({
+    const foundUser = await this.dataSourceService.manager.user.findFirst({
       where: {
         ...userWhereCond,
       },

@@ -1,7 +1,5 @@
 import bcrypt from 'bcrypt'
-import { TransactionHost, Transactional } from '@nestjs-cls/transactional'
-import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma'
-import { PrismaClient } from '@prisma/client'
+import { Transactional } from '@nestjs-cls/transactional'
 import {
   BadRequestException,
   ConflictException,
@@ -44,17 +42,13 @@ export class AuthService {
     private readonly usersService: UsersService,
     private readonly verificationsService: VerificationsService,
     private readonly externalsService: ExternalsService,
-    private readonly txHost: TransactionHost<
-      TransactionalAdapterPrisma<PrismaClient>
-    >,
     private readonly redisService: RedisService,
-  ) {
-    console.log(this.txHost)
-  }
+  ) {}
 
-  @Transactional()
+  @Transactional('prisma')
   async signup(createUserDTO: CreateUserDTO): Promise<boolean> {
-    const existUser = await this.txHost.tx.user.findFirst({
+    console.log('<<<this.dataSourceService!!')
+    const existUser = await this.dataSourceService.manager.user.findFirst({
       where: {
         OR: [
           {
@@ -80,7 +74,7 @@ export class AuthService {
     const hashedPassword = await this.usersService.hashPassword(
       newUserData.password,
     )
-    const newUser = await this.txHost.tx.user.create({
+    const newUser = await this.dataSourceService.manager.user.create({
       data: {
         accountId: id,
         ...newUserData,
@@ -89,7 +83,7 @@ export class AuthService {
       },
     })
 
-    await this.txHost.tx.verification.create({
+    await this.dataSourceService.manager.verification.create({
       data: {
         user: {
           connect: {
@@ -105,7 +99,7 @@ export class AuthService {
     return true
   }
 
-  @Transactional()
+  @Transactional('prisma')
   async requestVerificationCode(getUserByVidDTO: GetUserByVidDTO) {
     const foundVerification =
       await this.verificationsService.getVerificationByVid(getUserByVidDTO)
@@ -136,7 +130,7 @@ export class AuthService {
     return true
   }
 
-  @Transactional()
+  @Transactional('prisma')
   async verifyingCode(verifyCodeDTO: VerifyCodeDTO): Promise<boolean> {
     await this.verificationsService.verifyingCode(verifyCodeDTO)
     const foundVerification =

@@ -1,16 +1,21 @@
 import { Module } from '@nestjs/common'
 import { InfluxDBService } from '@/externals/modules/influxdb/influxDB.service'
 import { InfluxDBClient } from '@influxdata/influxdb3-client'
+import { ConfigService } from '@nestjs/config'
+import { Env } from '@/shared/interfaces/env.interface'
 
 @Module({
   providers: [
     {
       provide: InfluxDBClient,
-      useValue: new InfluxDBClient({
-        host: process.env.INFLUXDB_HOST,
-        token: process.env.INFLUXDB_TOKEN,
-        database: process.env.INFLUXDB_NAME,
-      }),
+      useFactory(configService: ConfigService<Env>) {
+        return new InfluxDBClient({
+          host: configService.get('INFLUXDB_HOST')!,
+          token: configService.get('INFLUXDB_TOKEN')!,
+          database: configService.get('INFLUXDB_NAME')!,
+        })
+      },
+      inject: [ConfigService],
     },
     InfluxDBService,
   ],

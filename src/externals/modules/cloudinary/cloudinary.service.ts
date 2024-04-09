@@ -21,7 +21,7 @@ export class CloudinaryService {
                   folder,
                 },
                 (error, result) => {
-                  if (error) reject(error)
+                  if (error || !result) reject(error)
                   else resolve(result)
                 },
               )

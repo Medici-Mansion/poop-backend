@@ -10,7 +10,7 @@ interface GetProfileArgs {
   id: string
   createdAt: Date
   updatedAt: Date
-  avatarUrl: string
+  avatarUrl: string | null
   name: string
   birthday: Date
   gender: $Enums.Gender
@@ -28,8 +28,8 @@ export class ProfileDTO {
   @IsYYYYMMDD()
   updatedAt: Date
 
-  @ApiProperty({ title: '프로필 메인 아바타 이미지 주소' })
-  avatarUrl: string
+  @ApiProperty({ title: '프로필 메인 아바타 이미지 주소', nullable: true })
+  avatarUrl: string | null
 
   @ApiProperty({ title: '프로필 이름' })
   name: string
@@ -67,6 +67,7 @@ export class GetProfileDTO extends ProfileDTO {
   isLatestLoginProfile: boolean
   constructor(getProfileArgs: GetProfileArgs) {
     super(getProfileArgs)
+    getProfileArgs.avatarUrl
     this.isLatestLoginProfile = !!(
       getProfileArgs.latestProfileId &&
       getProfileArgs.latestProfileId === getProfileArgs.id

@@ -29,16 +29,18 @@ export class GetBreedResponseDTO {
   @ApiProperty({ description: '이름' })
   name: string
 
-  @ApiProperty({ description: '영어 이름' })
-  nameEN: string
+  @ApiProperty({ description: '영어 이름', nullable: true })
+  nameEN: string | null
 
   @ApiProperty({ description: '아바타 이미지 주소', nullable: true })
-  avatar: string
+  avatar: string | null
 
   constructor(breeds: SearchBreeds) {
     this.id = breeds.id
     this.name = breeds.nameKR
-    this.nameEN = breeds.nameEN
-    this.avatar = getImagePath(breeds.avatar, { width: 160, prefix: 'avatar' })
+    this.nameEN = breeds.nameEN ?? null
+    this.avatar = breeds.avatar
+      ? getImagePath(breeds.avatar, { width: 160, prefix: 'avatar' })
+      : null
   }
 }

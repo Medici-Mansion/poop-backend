@@ -1,4 +1,4 @@
-import { PrismaService } from './prisma/prisma.service'
+import { DataSourceService } from '@/prisma/datasource.service'
 import { Controller, Get } from '@nestjs/common'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
 
@@ -7,7 +7,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger'
 })
 @ApiTags('Base')
 export class AppController {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly dataSourceService: DataSourceService) {}
   @ApiOperation({ description: 'Health check', summary: 'Health check' })
   @Get()
   healthCheck() {
@@ -21,9 +21,9 @@ export class AppController {
   @Get('clear')
   async reset() {
     await Promise.allSettled([
-      this.prismaService.user.deleteMany(),
-      this.prismaService.verification.deleteMany(),
-      this.prismaService.profile.deleteMany(),
+      this.dataSourceService.manager.user.deleteMany(),
+      this.dataSourceService.manager.verification.deleteMany(),
+      this.dataSourceService.manager.profile.deleteMany(),
     ])
 
     return true

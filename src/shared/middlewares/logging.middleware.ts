@@ -27,7 +27,7 @@ export class LoggingMiddleware implements NestMiddleware {
         this.externalsService.logResponse({
           contentLength,
           ip,
-          method,
+          method: method ?? '',
           originalUrl,
           statusCode,
           userAgent,

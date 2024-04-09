@@ -52,7 +52,7 @@ export class UploadFileDTO implements UploadApiResponse {
       this.metadata = value.metadata
       this.colors = value.colors
     } else {
-      return null
+      return
     }
   }
 }
