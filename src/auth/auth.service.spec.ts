@@ -15,6 +15,7 @@ import { RedisService } from '@/redis/redis.service'
 import { BaseService } from '@/shared/services/base.service'
 import {
   mockBaseService,
+  mockDataSourceService,
   mockExternalsService,
   mockRedisService,
   mockUsersService,
@@ -35,6 +36,11 @@ import { RefreshDTO } from '@/auth/dtos/refresh.dto'
 import { manager, mockJwtService } from '@test/mocks/base'
 
 import { TokenType } from '@/shared/interfaces/token.interface'
+import { ClsModule } from 'nestjs-cls'
+import { $Enums, PrismaClient } from '@prisma/client'
+import { PrismaModule } from '@/prisma/prisma.module'
+import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma'
+import { ClsPluginTransactional } from '@nestjs-cls/transactional'
 
 describe('AuthService', () => {
   let service: AuthService
@@ -47,8 +53,22 @@ describe('AuthService', () => {
   afterEach(() => {
     jest.clearAllMocks()
   })
+
   beforeEach(async () => {
     const module = await Test.createTestingModule({
+      imports: [
+        ClsModule.forRoot({
+          plugins: [
+            new ClsPluginTransactional({
+              imports: [PrismaModule],
+              adapter: new TransactionalAdapterPrisma({
+                prismaInjectionToken: PrismaClient,
+              }),
+            }),
+          ],
+          global: true,
+        }),
+      ],
       providers: [
         {
           provide: JwtService,
@@ -74,6 +94,10 @@ describe('AuthService', () => {
           provide: ExternalsService,
           useValue: mockExternalsService,
         },
+        // {
+        //   provide: DataSourceService,
+        //   useValue: mockDataSourceService,
+        // },
         AuthService,
       ],
     })
@@ -98,8 +122,24 @@ describe('AuthService', () => {
     }
 
     it('회원정보를 통해 회원가입에 성공한다.', async () => {
-      const createUserResponse = { id: '1' }
-      mockUsersService.createUser.mockResolvedValue(createUserResponse)
+      mockDataSourceService.manager.user.findFirst.mockResolvedValue(null)
+      mockUsersService.hashPassword.mockResolvedValue('456')
+      mockDataSourceService.manager.user.create.mockResolvedValue({
+        id: '1',
+        accountId: '',
+        birthday: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        deletedAt: null,
+        email: 'aaa@aaa.com',
+        gender: $Enums.Gender.FEMALE,
+        latestProfileId: null,
+        nickname: '1',
+        password: '456',
+        phone: null,
+        refreshToken: null,
+        verified: null,
+      })
       const result = await service.signup(createUserDTO)
 
       expect(result).toBe(true)
@@ -212,7 +252,23 @@ describe('AuthService', () => {
         password: '123',
         checkPassword: jest.fn(),
       }
-
+      mockDataSourceService.manager.user.findFirst.mockResolvedValue({
+        ...foundUser,
+        birthday: new Date(),
+        email: 'aaa@aaa.com',
+        gender: Gender.FEMALE,
+        id: '1',
+        nickname: '1',
+        password: '123',
+        phone: '01000000000',
+        updatedAt: new Date(),
+        createdAt: new Date(),
+        accountId: '',
+        deletedAt: null,
+        latestProfileId: null,
+        refreshToken: null,
+        verified: new Date(),
+      })
       manager.getRepository().findOne.mockResolvedValue(foundUser)
       foundUser.checkPassword.mockReturnValue(true)
       jest
@@ -231,6 +287,7 @@ describe('AuthService', () => {
         },
       ]
 
+      jest.spyOn(service, 'checkPassword').mockResolvedValue(true)
       const result = await service.login(loginRequestDTO)
 
       expect(result).toEqual(publishTokenValue)
@@ -244,6 +301,8 @@ describe('AuthService', () => {
         loginRequestDTO.password,
       )
       expect(foundUser.checkPassword).toHaveBeenCalledTimes(1)
+
+      jest.clearAllMocks()
     })
 
     it('존재하지 않는 정보일 경우 NotFoundException을 던진다', async () => {

@@ -1,19 +1,15 @@
+import { prismaMock } from './prisma'
 import { PrismaClient } from '@prisma/client'
-import { DeepMockProxy, mockDeep } from 'jest-mock-extended'
-import prisma from '@/prisma/prisma'
+import { DeepMockProxy } from 'jest-mock-extended'
+
 export const mockBaseService = {
   conf: {
     get: jest.fn(),
   },
 }
 
-jest.mock('@/prisma/prisma', () => ({
-  __esModule: true,
-  default: mockDeep<PrismaClient>(),
-}))
-
 export const mockDataSourceService = {
-  manager: prisma as unknown as DeepMockProxy<PrismaClient>,
+  manager: prismaMock as unknown as DeepMockProxy<PrismaClient>,
 }
 
 export const mockRedisService = {

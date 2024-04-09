@@ -23,7 +23,7 @@ import { LoggingMiddleware } from '@/shared/middlewares/logging.middleware'
 import { ResponseInterceptor } from '@/shared/interceptors/response.interceptor'
 
 import { BaseService } from '@/shared/services/base.service'
-import { PrismaService } from './prisma/prisma.service'
+import { PrismaClient } from '@prisma/client'
 
 @Module({
   imports: [
@@ -32,10 +32,9 @@ import { PrismaService } from './prisma/prisma.service'
     ClsModule.forRoot({
       plugins: [
         new ClsPluginTransactional({
-          connectionName: 'prisma',
           imports: [PrismaModule],
           adapter: new TransactionalAdapterPrisma({
-            prismaInjectionToken: PrismaService,
+            prismaInjectionToken: PrismaClient,
           }),
         }),
       ],

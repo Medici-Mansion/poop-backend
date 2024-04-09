@@ -19,7 +19,7 @@ export class ProfilesService {
     private readonly breedsService: BreedsService,
   ) {}
 
-  @Transactional('prisma')
+  @Transactional()
   async createProfile(userId: string, createProfileDTO: CreateProfileDTO) {
     // 존재하는 회원여부 확인
     await this.usersService.getUserById(userId)

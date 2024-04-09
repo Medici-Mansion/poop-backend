@@ -1,10 +1,7 @@
 import { PrismaService } from '@/prisma/prisma.service'
 import { Prisma, PrismaClient } from '@prisma/client'
 import { Injectable } from '@nestjs/common'
-import {
-  InjectTransactionHost,
-  TransactionHost,
-} from '@nestjs-cls/transactional'
+import { TransactionHost } from '@nestjs-cls/transactional'
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma'
 import { DefaultArgs } from '@prisma/client/runtime/library'
 
@@ -12,7 +9,6 @@ import { DefaultArgs } from '@prisma/client/runtime/library'
 export class DataSourceService {
   constructor(
     private readonly prismaService: PrismaService,
-    @InjectTransactionHost('prisma')
     private readonly txHost: TransactionHost<
       TransactionalAdapterPrisma<PrismaClient>
     >,

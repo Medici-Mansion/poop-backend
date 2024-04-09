@@ -1,5 +1,4 @@
 import { PrismaClient } from '@prisma/client'
-import { DeepMockProxy } from 'jest-mock-extended'
 
 const prisma = new PrismaClient({
   log: ['query', 'error', 'info', 'warn'],
@@ -12,7 +11,5 @@ const prisma = new PrismaClient({
     },
   },
 })
-
-export const prismaMock = prisma as unknown as DeepMockProxy<PrismaClient>
 
 export default prisma

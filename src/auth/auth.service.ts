@@ -45,9 +45,9 @@ export class AuthService {
     private readonly redisService: RedisService,
   ) {}
 
-  @Transactional('prisma')
+  @Transactional()
   async signup(createUserDTO: CreateUserDTO): Promise<boolean> {
-    console.log('<<<this.dataSourceService!!')
+    this.dataSourceService
     const existUser = await this.dataSourceService.manager.user.findFirst({
       where: {
         OR: [
@@ -66,7 +66,6 @@ export class AuthService {
         ],
       },
     })
-
     if (existUser) {
       throw new ConflictException()
     }
@@ -99,7 +98,7 @@ export class AuthService {
     return true
   }
 
-  @Transactional('prisma')
+  @Transactional()
   async requestVerificationCode(getUserByVidDTO: GetUserByVidDTO) {
     const foundVerification =
       await this.verificationsService.getVerificationByVid(getUserByVidDTO)
@@ -130,7 +129,7 @@ export class AuthService {
     return true
   }
 
-  @Transactional('prisma')
+  @Transactional()
   async verifyingCode(verifyCodeDTO: VerifyCodeDTO): Promise<boolean> {
     await this.verificationsService.verifyingCode(verifyCodeDTO)
     const foundVerification =
