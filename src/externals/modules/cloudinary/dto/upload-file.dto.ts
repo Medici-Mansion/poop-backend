@@ -16,7 +16,7 @@ export class UploadFileDTO implements UploadApiResponse {
   etag: string
   placeholder: boolean
   url: string
-  secure_url: string
+  secureUrl: string
   access_mode: string
   original_filename: string
   moderation: string[]
@@ -43,7 +43,7 @@ export class UploadFileDTO implements UploadApiResponse {
       this.etag = value.etag
       this.placeholder = value.placeholder
       this.url = value.url
-      this.secure_url = value.secure_url
+      this.secureUrl = value.secure_url
       this.access_mode = value.access_mode
       this.original_filename = value.original_filename
       this.moderation = value.moderation
@@ -55,4 +55,6 @@ export class UploadFileDTO implements UploadApiResponse {
       return
     }
   }
+  [futureKey: string]: any
+  secure_url: string
 }

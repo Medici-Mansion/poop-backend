@@ -36,7 +36,7 @@ export class ProfilesService {
       data: {
         name: createProfileDTO.name,
         gender: createProfileDTO.gender,
-        avatarUrl: avatarUrl[0].url,
+        avatarUrl: avatarUrl[0].secure_url,
         birthday: new Date(createProfileDTO.birthday),
         user: {
           connect: {
