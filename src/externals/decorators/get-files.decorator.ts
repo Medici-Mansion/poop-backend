@@ -13,7 +13,6 @@ export const GetFiles = createParamDecorator(
     const files = await request.saveRequestFiles({
       ...options,
     })
-
     if (!files.length) throw new BadRequestException()
     return files
   },

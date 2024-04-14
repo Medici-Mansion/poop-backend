@@ -32,10 +32,10 @@ export class ProfilesService {
       createProfileDTO.breedId,
     )
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { breedId: _, ...rest } = createProfileDTO
     await this.dataSourceService.manager.profile.create({
       data: {
-        ...rest,
+        name: createProfileDTO.name,
+        gender: createProfileDTO.gender,
         avatarUrl: avatarUrl[0].url,
         birthday: new Date(createProfileDTO.birthday),
         user: {
