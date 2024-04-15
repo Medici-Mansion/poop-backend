@@ -28,6 +28,7 @@ import {
 import { LoginRequestDTO } from '@/auth/dtos/login.dto'
 import { GetUserByVidDTO } from '@/users/dtos/get-user-by-vid.dto'
 import { RefreshDTO } from '@/auth/dtos/refresh.dto'
+import { Public } from '@/shared/decorators/public.decorator'
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -113,6 +114,7 @@ export class AuthController {
     return token
   }
 
+  @Public()
   @ApiOperation({
     summary: '새로운 토큰발급',
     description: 'refresh token을 통해 새로운 토큰을 발급한다',
