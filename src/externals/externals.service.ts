@@ -58,7 +58,7 @@ export class ExternalsService {
     emailVars: EmailVars[],
   ) {
     const form = new FormData()
-    form.append('from', 'PooP! <support@poop.com>')
+    form.append('from', 'PooP! <support@poop.co.kr>')
     form.append('to', to)
     form.append('subject', subject)
     form.append('template', templateName)

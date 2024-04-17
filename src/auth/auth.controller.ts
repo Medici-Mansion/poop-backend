@@ -75,8 +75,8 @@ export class AuthController {
     type: Boolean,
     description: '인증코드 검증 완료 처리',
   })
-  @HttpCode(200)
   @Post('verify')
+  @HttpCode(200)
   async verifyingCode(@Body() verifyCodeDTO: VerifyCodeDTO): Promise<boolean> {
     return this.authService.verifyingCode(verifyCodeDTO)
   }

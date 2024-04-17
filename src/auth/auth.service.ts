@@ -169,7 +169,7 @@ export class AuthService {
       where: userWhereCond,
     })
     if (!foundUser) throw new NotFoundException()
-    if (!foundUser.verified) throw new ForbiddenException()
+    if (!foundUser.verified) throw new ForbiddenException('미인증 계정')
     const validPassword = await this.checkPassword(
       loginRequestDTO.password,
       foundUser.password,
