@@ -27,11 +27,10 @@ import {
 } from '@/verifications/dtos/verify-code.dto'
 import { LoginRequestDTO } from '@/auth/dtos/login.dto'
 import { GetUserByVidDTO } from '@/users/dtos/get-user-by-vid.dto'
-import { RefreshDTO } from '@/auth/dtos/refresh.dto'
 
 import { EmailTemplateName } from '@/shared/constants/common.constant'
 
-import { TokenPayload, TokenType } from '@/shared/interfaces/token.interface'
+import { TokenPayload } from '@/shared/interfaces/token.interface'
 
 @Injectable()
 export class AuthService {
@@ -168,6 +167,7 @@ export class AuthService {
     const foundUser = await this.dataSourceService.manager.user.findFirst({
       where: userWhereCond,
     })
+
     if (!foundUser) throw new NotFoundException()
     if (!foundUser.verified) throw new ForbiddenException('미인증 계정')
     const validPassword = await this.checkPassword(
@@ -177,8 +177,9 @@ export class AuthService {
     if (!validPassword) throw new BadRequestException('비밀번호가 다릅니다.')
 
     // TODO: 커스텀에러를 통해 인증되지 않은 계정의 로그인 요청 분기 필요합니다.
+    const newVerifyToken = await this.publishToken(foundUser.id)
 
-    return this.publishToken(foundUser.id)
+    return newVerifyToken
   }
 
   /**
@@ -233,46 +234,48 @@ export class AuthService {
     return changePasswordKey
   }
 
-  async refresh(refreshDTO: RefreshDTO) {
-    const verifiedToken = this.verify(refreshDTO.refreshToken)
+  async refresh(token: string) {
+    const verifiedToken = this.verify(token, {
+      ignoreExpiration: true,
+    })
 
     const foundUser = await this.usersService.getUserById(verifiedToken.uid)
-    if (
-      !foundUser.refreshToken ||
-      foundUser.refreshToken !== refreshDTO.refreshToken
-    )
-      throw new UnauthorizedException()
+
+    // 존재하지 않는 회원이거나, 로그인한 이력이 없는 회원일 경우
+    if (!foundUser || !foundUser.latestToken) throw new UnauthorizedException()
+
+    // 마지막 사용된 토큰과 다른 토큰이 전달 된 경우
+    if (foundUser.latestToken !== token) throw new UnauthorizedException()
 
     const newToken = await this.publishToken(foundUser.id)
 
     return newToken
   }
 
-  verify(token: string): TokenPayload {
+  verify(
+    token: string,
+    verifyingOptions: { ignoreExpiration?: boolean } = {},
+  ): TokenPayload {
     try {
       return this.jwtService.verify<TokenPayload>(token, {
-        secret: this.baseService.conf.get('JWT_SECRET'),
+        ignoreExpiration: !!verifyingOptions.ignoreExpiration,
+        algorithms: ['RS256'],
       })
     } catch (e) {
       throw new UnauthorizedException()
     }
   }
 
-  async sign(uid: string, tokenType: TokenType = 'ACCESS'): Promise<string> {
+  async sign(uid: string): Promise<string> {
     try {
       const newTokenPayload = new TokenPayload()
       newTokenPayload.uid = uid
 
       await validateOrReject(newTokenPayload)
-
       return this.jwtService.sign(
         { uid },
         {
-          expiresIn:
-            tokenType === 'ACCESS'
-              ? this.baseService.conf.get('ACCESS_EXPIRES_IN')
-              : this.baseService.conf.get('REFRESH_EXPIRES_IN'),
-          secret: this.baseService.conf.get('JWT_SECRET'),
+          algorithm: 'RS256',
         },
       )
     } catch (error) {
@@ -283,12 +286,13 @@ export class AuthService {
   private async publishToken(id: string): Promise<VerifyingCodeResponseDTO> {
     const token = {
       accessToken: await this.sign(id),
-      refreshToken: await this.sign(id, 'REFRESH'),
     }
 
     await this.dataSourceService.manager.user.update({
       where: { id },
-      data: { refreshToken: token.refreshToken },
+      data: {
+        latestToken: token.accessToken,
+      },
     })
 
     return new VerifyingCodeResponseDTO(token)

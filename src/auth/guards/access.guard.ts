@@ -23,6 +23,10 @@ export class AccessGuard implements CanActivate {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const isPublic = this.reflector.get('isPublic', context.getHandler())
+    const isRefreshRequest = this.reflector.get(
+      'isRefresh',
+      context.getHandler(),
+    )
 
     if (isPublic) return true
     const request = context.switchToHttp().getRequest() as FastifyRequest
@@ -31,7 +35,12 @@ export class AccessGuard implements CanActivate {
     if (!token) {
       throw new UnauthorizedException()
     }
-    const payload = this.authService.verify(token)
+    const payload = this.authService.verify(token, {
+      ignoreExpiration: !!isRefreshRequest,
+    })
+    if (isRefreshRequest) {
+      request['plainToken'] = token
+    }
 
     request['token'] = payload
     return true

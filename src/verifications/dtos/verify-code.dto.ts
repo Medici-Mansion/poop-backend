@@ -39,22 +39,14 @@ export class VerifyCodeDTO {
 
 export class VerifyingCodeResponseDTO {
   @ApiProperty({
-    description: '엑세스 토큰. 유효시간 1시간',
+    description: '엑세스 토큰. 유효시간 30일',
     example:
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOiI4M2NkYjIxZC0xOWNjLTQ1ZmMtYTNlMi1jN2Y3ODlhZDlhMjQiLCJpYXQiOjE3MDk3MDYxNjIsImV4cCI6MTcwOTcwOTc2Mn0.KdaxEM8bzNFsu5wRQIPn5pCmENnHOEMSRd5PUZwRcNA',
   })
   @IsString()
   accessToken: string
 
-  @ApiProperty({
-    description: '리프레시 토큰. 유효시간 30일',
-    example:
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOiI4M2NkYjIxZC0xOWNjLTQ1ZmMtYTNlMi1jN2Y3ODlhZDlhMjQiLCJpYXQiOjE3MDk3MDYxNjIsImV4cCI6MTcxMjI5ODE2Mn0.wICUB_UrDGM1rQWezZC2ytA6V1quQqzpp3r62IjvZu0',
-  })
-  @IsString()
-  refreshToken: string
-  constructor({ accessToken, refreshToken }: AuthTokenResponse) {
+  constructor({ accessToken }: AuthTokenResponse) {
     this.accessToken = accessToken
-    this.refreshToken = refreshToken
   }
 }

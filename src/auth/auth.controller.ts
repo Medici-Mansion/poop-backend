@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import { FastifyReply } from 'fastify'
 import {
   BadRequestException,
   Body,
@@ -9,7 +8,7 @@ import {
   Post,
   Put,
   Query,
-  Res,
+  UseGuards,
 } from '@nestjs/common'
 import {
   ApiCreatedResponse,
@@ -27,8 +26,8 @@ import {
 } from '@/verifications/dtos/verify-code.dto'
 import { LoginRequestDTO } from '@/auth/dtos/login.dto'
 import { GetUserByVidDTO } from '@/users/dtos/get-user-by-vid.dto'
-import { RefreshDTO } from '@/auth/dtos/refresh.dto'
-import { Public } from '@/shared/decorators/public.decorator'
+import { PlainToken, Refresh } from '@/shared/decorators/refresh.decorator'
+import { AccessGuard } from '@/auth/guards/access.guard'
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -94,27 +93,12 @@ export class AuthController {
   @HttpCode(200)
   async login(
     @Body() loginRequestDTO: LoginRequestDTO,
-    @Res({ passthrough: true }) response: FastifyReply,
   ): Promise<VerifyingCodeResponseDTO> {
-    const token = await this.authService.login(loginRequestDTO)
-    response.setCookie('access_token', token.accessToken, {
-      path: '/',
-      maxAge: 60 * 60,
-      secure: true,
-      httpOnly: true,
-      sameSite: 'lax',
-    })
-    response.setCookie('refresh_token', token.refreshToken, {
-      path: '/',
-      maxAge: 60 * 60 * 24 * 30,
-      secure: true,
-      httpOnly: true,
-      sameSite: 'lax',
-    })
-    return token
+    return this.authService.login(loginRequestDTO)
   }
 
-  @Public()
+  @UseGuards(AccessGuard)
+  @Refresh()
   @ApiOperation({
     summary: '새로운 토큰발급',
     description: 'refresh token을 통해 새로운 토큰을 발급한다',
@@ -125,8 +109,8 @@ export class AuthController {
   })
   @HttpCode(200)
   @Post('refresh')
-  refresh(@Body() refreshDTO: RefreshDTO) {
-    return this.authService.refresh(refreshDTO)
+  refresh(@PlainToken() token: string) {
+    return this.authService.refresh(token)
   }
 
   @ApiOperation({

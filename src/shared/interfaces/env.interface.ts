@@ -1,6 +1,8 @@
 export interface Env {
   readonly NODE_ENV: 'development' | 'production' | 'test'
   readonly JWT_SECRET: string
+  readonly JWT_PUBLIC_KEY: string
+  readonly JWT_PRIVATE_KEY: string
   readonly HASH_ROUNDS: string
   readonly DB_USER: string
   readonly DB_PWD: string
@@ -10,7 +12,6 @@ export interface Env {
   readonly DATABASE_URL: string
   readonly SSL_MODE: string
   readonly CA_CERT: string
-  readonly REFRESH_EXPIRES_IN: string
   readonly ACCESS_EXPIRES_IN: string
   readonly COOKIE_SECRET: string
   readonly SALT: string

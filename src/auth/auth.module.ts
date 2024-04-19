@@ -16,7 +16,8 @@ import { BaseService } from '@/shared/services/base.service'
   imports: [
     RedisModule,
     JwtModule.register({
-      secret: process.env.JWT_SECRET,
+      publicKey: process.env.JWT_PUBLIC_KEY,
+      privateKey: process.env.JWT_PRIVATE_KEY,
     }),
     UsersModule,
     VerificationsModule,
@@ -27,3 +28,6 @@ import { BaseService } from '@/shared/services/base.service'
   exports: [AuthService],
 })
 export class AuthModule {}
+
+console.log(process.env.JWT_PRIVATE_KEY)
+console.log(process.env.JWT_PUBLIC_KEY)

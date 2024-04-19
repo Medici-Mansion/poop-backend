@@ -43,19 +43,19 @@ model Profile {
 }
 
 model User {
-  id           String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  createdAt    DateTime  @default(now()) @db.Timestamp(6)
-  updatedAt    DateTime  @updatedAt @db.Timestamp(6)
-  deletedAt    DateTime? @db.Timestamp(6)
-  accountId    String    @db.VarChar(20)
-  password     String    @db.VarChar
-  nickname     String    @unique @db.VarChar(20)
-  email        String?   @unique @db.VarChar
-  phone        String?   @unique @db.VarChar
-  birthday     DateTime  @db.Date
-  gender       Gender    @default(NONE)
-  verified     DateTime? @db.Timestamp(6)
-  refreshToken String?   @db.VarChar
+  id          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  createdAt   DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt   DateTime  @updatedAt @db.Timestamp(6)
+  deletedAt   DateTime? @db.Timestamp(6)
+  accountId   String    @db.VarChar(20)
+  password    String    @db.VarChar
+  nickname    String    @unique @db.VarChar(20)
+  email       String?   @unique @db.VarChar
+  phone       String?   @unique @db.VarChar
+  birthday    DateTime  @db.Date
+  gender      Gender    @default(NONE)
+  verified    DateTime? @db.Timestamp(6)
+  latestToken String?   @db.VarChar
 
   profiles Profile[] @relation("profile")
 
