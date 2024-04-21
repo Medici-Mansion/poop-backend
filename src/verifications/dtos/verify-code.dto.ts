@@ -5,8 +5,8 @@ import { AuthTokenResponse } from '@/shared/interfaces/token.interface'
 import { IsEmailOrPhoneNumber } from '@/shared/validators/is-email-or-phone.validator'
 
 export enum VerificationType {
-  EMAIL = 'EMAIL',
-  PHONE = 'PHONE',
+  EMAIL = 'email',
+  PHONE = 'phone',
 }
 
 export class VerifyCodeDTO {
