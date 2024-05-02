@@ -108,12 +108,12 @@ export class AuthService {
       )
     if (getUserByVidDTO.type === VerificationType.PHONE) {
       await this.externalsService.sendSMS(
-        `POOP! \n 인증코드: ${newVerification.code}`,
+        `[풉 POOP] 인증번호 확인 문자입니다. \n 인증코드: ${newVerification.code}`,
         getUserByVidDTO.vid,
       )
     } else if (getUserByVidDTO.type === VerificationType.EMAIL) {
       await this.externalsService.sendEmail(
-        '[PooP!] 계정인증코드입니다.',
+        '[풉 POOP] 인증번호 확인 메일입니다.',
         getUserByVidDTO.vid,
         EmailTemplateName.CONFIRM_EMAIL,
         [
