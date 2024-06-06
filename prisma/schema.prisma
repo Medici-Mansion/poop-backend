@@ -8,6 +8,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+generator kysely {
+  provider     = "prisma-kysely"
+  output       = "../src/database"
+  fileName     = "types.ts"
+  enumFileName = "enums.ts"
+}
+
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model Breed {
   id        String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid

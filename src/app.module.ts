@@ -3,7 +3,6 @@ import { APP_INTERCEPTOR } from '@nestjs/core'
 import { NestjsFormDataModule } from 'nestjs-form-data'
 import { ClsModule } from 'nestjs-cls'
 import { ClsPluginTransactional } from '@nestjs-cls/transactional'
-import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma'
 
 import { AppController } from '@/app.controller'
 
@@ -16,15 +15,16 @@ import { ExternalsModule } from '@/externals/externals.module'
 import { RedisModule } from '@/redis/redis.module'
 import { BreedsModule } from '@/breeds/breeds.module'
 import { CommonModule } from '@/common/common.module'
-import { PrismaModule } from '@/prisma/prisma.module'
 
 import { LoggingMiddleware } from '@/shared/middlewares/logging.middleware'
 
 import { ResponseInterceptor } from '@/shared/interceptors/response.interceptor'
 
 import { BaseService } from '@/shared/services/base.service'
-import { PrismaClient } from '@prisma/client'
-import { ToonModule } from './toon/toon.module';
+import { ToonModule } from './toon/toon.module'
+import { DatabaseModule } from './database/database.module'
+import { TransactionalAdapterKysely } from '@nestjs-cls/transactional-adapter-kysely'
+import { Database } from './database/database.class'
 
 @Module({
   imports: [
@@ -33,9 +33,9 @@ import { ToonModule } from './toon/toon.module';
     ClsModule.forRoot({
       plugins: [
         new ClsPluginTransactional({
-          imports: [PrismaModule],
-          adapter: new TransactionalAdapterPrisma({
-            prismaInjectionToken: PrismaClient,
+          imports: [DatabaseModule],
+          adapter: new TransactionalAdapterKysely({
+            kyselyInstanceToken: Database,
           }),
         }),
       ],
