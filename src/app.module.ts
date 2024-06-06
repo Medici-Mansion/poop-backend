@@ -24,6 +24,7 @@ import { ResponseInterceptor } from '@/shared/interceptors/response.interceptor'
 
 import { BaseService } from '@/shared/services/base.service'
 import { PrismaClient } from '@prisma/client'
+import { ToonModule } from './toon/toon.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { PrismaClient } from '@prisma/client'
     ExternalsModule,
     BreedsModule,
     CommonModule,
+    ToonModule,
   ],
   providers: [
     {
