@@ -3,8 +3,7 @@ import { IsEnum } from 'class-validator'
 
 import { IsYYYYMMDD } from '@/shared/validators/is-YYYY-MM-DD.validator'
 import { IsUserId } from '@/shared/validators/is-user-id.validator'
-
-import { $Enums } from '@prisma/client'
+import { Gender } from '@/database/enums'
 
 interface GetProfileArgs {
   id: string
@@ -13,7 +12,7 @@ interface GetProfileArgs {
   avatarUrl: string | null
   name: string
   birthday: Date
-  gender: $Enums.Gender
+  gender: Gender
   breedId: string
   latestProfileId?: string
 }
@@ -42,10 +41,10 @@ export class ProfileDTO {
     type: 'enum',
     title: '성별',
     description: '성별',
-    enum: $Enums.Gender,
+    enum: Gender,
   })
-  @IsEnum($Enums.Gender)
-  gender: $Enums.Gender
+  @IsEnum(Gender)
+  gender: Gender
 
   @ApiProperty({ title: '품종 아이디' })
   breedId: string

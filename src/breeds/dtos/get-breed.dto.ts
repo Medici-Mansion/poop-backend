@@ -1,10 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { SearchBreeds } from '@prisma/client'
 import { IsOptional, IsString, IsUUID } from 'class-validator'
 
 import { CursorOption } from '@/shared/dtos/common.dto'
 
 import { getImagePath } from '@/shared/utils'
+import { SearchBreeds } from '@/database/types'
+import { Selectable } from 'kysely'
 
 export class GetBreadRequestDTO extends CursorOption {
   @ApiProperty({
@@ -44,7 +45,7 @@ export class GetBreedResponseDTO {
   })
   avatar: string
 
-  constructor(breeds: SearchBreeds) {
+  constructor(breeds: Selectable<SearchBreeds>) {
     this.id = breeds.id
     this.name = breeds.nameKR
     this.nameEN = breeds.nameEN!

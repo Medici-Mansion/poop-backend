@@ -17,7 +17,6 @@ import { IsUserId } from '@/shared/validators/is-user-id.validator'
 import { IsYYYYMMDD } from '@/shared/validators/is-YYYY-MM-DD.validator'
 
 import { Gender } from '@/shared/constants/common.constant'
-import { $Enums } from '@prisma/client'
 
 interface CreateUserArgs {
   id: string
@@ -30,7 +29,7 @@ interface CreateUserArgs {
   email: string
   phone: string
   birthday: Date
-  gender: $Enums.Gender
+  gender: Gender
   verified: Date
   refreshToken: string
   latestProfileId: string

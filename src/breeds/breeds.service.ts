@@ -1,29 +1,22 @@
-import { DataSourceService } from '@/prisma/datasource.service'
 import { Injectable, NotFoundException } from '@nestjs/common'
 
 import { GetBreedResponseDTO } from '@/breeds/dtos/get-breed.dto'
+import { BreedsRepository } from './breeds.repository'
 
 @Injectable()
 export class BreedsService {
-  constructor(private readonly dataSourceService: DataSourceService) {}
+  constructor(private readonly breedsRepository: BreedsRepository) {}
 
   async findById(id: string) {
-    const foundBreeds = await this.dataSourceService.manager.breed.findUnique({
-      where: {
-        id,
-      },
-    })
+    const foundBreeds = await this.breedsRepository.findOne(id)
+
     if (!foundBreeds) throw new NotFoundException()
+
     return foundBreeds
   }
 
   async getAllBreeds() {
-    const allBreeds =
-      await this.dataSourceService.manager.searchBreeds.findMany({
-        orderBy: {
-          nameKR: 'asc',
-        },
-      })
+    const allBreeds = await this.breedsRepository.findAllBreeds()
 
     const breedsObj = allBreeds.reduce((acc, cur) => {
       if (!cur.searchKey) return acc
