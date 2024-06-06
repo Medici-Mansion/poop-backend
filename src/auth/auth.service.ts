@@ -1,5 +1,4 @@
 import bcrypt from 'bcrypt'
-import { Transactional } from '@nestjs-cls/transactional'
 import {
   BadRequestException,
   ConflictException,
@@ -16,8 +15,6 @@ import { UsersService } from '@/users/users.service'
 import { VerificationsService } from '@/verifications/verifications.service'
 import { ExternalsService } from '@/externals/externals.service'
 import { RedisService } from '@/redis/redis.service'
-import { BaseService } from '@/shared/services/base.service'
-import { DataSourceService } from '@/prisma/datasource.service'
 
 import { CreateUserDTO } from '@/users/dtos/create-user.dto'
 import {
@@ -31,12 +28,13 @@ import { GetUserByVidDTO } from '@/users/dtos/get-user-by-vid.dto'
 import { EmailTemplateName } from '@/shared/constants/common.constant'
 
 import { TokenPayload } from '@/shared/interfaces/token.interface'
+import { AuthRepository } from './auth.repository'
+import { Transactional } from '@nestjs-cls/transactional'
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly baseService: BaseService,
-    private readonly dataSourceService: DataSourceService,
+    private readonly authRepository: AuthRepository,
     private readonly jwtService: JwtService,
     private readonly usersService: UsersService,
     private readonly verificationsService: VerificationsService,
@@ -46,54 +44,28 @@ export class AuthService {
 
   @Transactional()
   async signup(createUserDTO: CreateUserDTO): Promise<boolean> {
-    this.dataSourceService
-    const existUser = await this.dataSourceService.manager.user.findFirst({
-      where: {
-        OR: [
-          {
-            accountId: createUserDTO.id,
-          },
-          {
-            nickname: createUserDTO.nickname,
-          },
-          {
-            phone: createUserDTO.phone,
-          },
-          {
-            email: createUserDTO.email,
-          },
-        ],
-      },
-    })
+    const existUser = await this.authRepository.findOne(createUserDTO)
     if (existUser) {
       throw new ConflictException()
     }
-    const { id, ...newUserData } = createUserDTO
     const hashedPassword = await this.usersService.hashPassword(
-      newUserData.password,
+      createUserDTO.password,
     )
-    const newUser = await this.dataSourceService.manager.user.create({
-      data: {
-        accountId: id,
-        ...newUserData,
-        password: hashedPassword,
-        birthday: new Date(newUserData.birthday),
-      },
+
+    const newUser = await this.authRepository.create({
+      ...createUserDTO,
+      password: hashedPassword,
     })
 
-    await this.dataSourceService.manager.verification.create({
-      data: {
-        user: {
-          connect: {
-            id: newUser.id,
-          },
-        },
-        code: this.verificationsService.generateRandomString({
-          onlyString: false,
-          length: 6,
-        }),
-      },
+    await this.verificationsService.create({
+      userId: newUser.id,
+      code: this.verificationsService.generateRandomString({
+        onlyString: false,
+        length: 6,
+      }),
+      updatedAt: new Date(),
     })
+
     return true
   }
 
@@ -134,13 +106,8 @@ export class AuthService {
     const foundVerification =
       await this.verificationsService.getVerificationByVid(verifyCodeDTO)
 
-    await this.dataSourceService.manager.user.update({
-      where: {
-        id: foundVerification.userId,
-      },
-      data: {
-        verified: new Date(),
-      },
+    await this.usersService.update(foundVerification.userId, {
+      verified: new Date(),
     })
 
     await this.verificationsService.removeVerification(foundVerification.id)
@@ -151,22 +118,12 @@ export class AuthService {
     loginRequestDTO: LoginRequestDTO,
   ): Promise<VerifyingCodeResponseDTO> {
     const userWhereCond = {
-      OR: [
-        {
-          email: loginRequestDTO.id,
-        },
-        {
-          phone: loginRequestDTO.id,
-        },
-        {
-          nickname: loginRequestDTO.id,
-        },
-      ],
+      email: loginRequestDTO.id,
+      phone: loginRequestDTO.id,
+      nickname: loginRequestDTO.id,
     }
 
-    const foundUser = await this.dataSourceService.manager.user.findFirst({
-      where: userWhereCond,
-    })
+    const foundUser = await this.authRepository.findOne(userWhereCond)
 
     if (!foundUser) throw new NotFoundException()
     if (!foundUser.verified) throw new ForbiddenException('미인증 계정')
@@ -174,6 +131,7 @@ export class AuthService {
       loginRequestDTO.password,
       foundUser.password,
     )
+
     if (!validPassword) throw new BadRequestException('비밀번호가 다릅니다.')
 
     // TODO: 커스텀에러를 통해 인증되지 않은 계정의 로그인 요청 분기 필요합니다.
@@ -288,12 +246,7 @@ export class AuthService {
       accessToken: await this.sign(id),
     }
 
-    await this.dataSourceService.manager.user.update({
-      where: { id },
-      data: {
-        latestToken: token.accessToken,
-      },
-    })
+    await this.usersService.update(id, { latestToken: token.accessToken })
 
     return new VerifyingCodeResponseDTO(token)
   }

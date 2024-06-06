@@ -5,15 +5,28 @@ import { Inject } from '@nestjs/common'
 export class AuthRepository {
   constructor(@Inject(Database) private readonly database: Database) {}
 
-  async findOne(createUserDTO: CreateUserDTO) {
+  async findOne(
+    createUserDTO: Partial<{
+      id: string
+      nickname: string
+      phone: string
+      email: string
+    }>,
+  ) {
     return this.database
       .selectFrom('users')
       .where((eb) =>
         eb.or([
-          eb('accountId', '=', createUserDTO.id),
-          eb('nickname', '=', createUserDTO.nickname),
-          eb('phone', '=', createUserDTO.phone),
-          eb('email', '=', createUserDTO.email),
+          ...(createUserDTO.id ? [eb('accountId', '=', createUserDTO.id)] : []),
+          ...(createUserDTO.nickname
+            ? [eb('nickname', '=', createUserDTO.nickname)]
+            : []),
+          ...(createUserDTO.phone
+            ? [eb('phone', '=', createUserDTO.phone)]
+            : []),
+          ...(createUserDTO.email
+            ? [eb('email', '=', createUserDTO.email)]
+            : []),
         ]),
       )
       .selectAll()

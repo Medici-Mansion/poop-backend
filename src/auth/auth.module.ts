@@ -10,6 +10,7 @@ import { AuthController } from '@/auth/auth.controller'
 
 import { AuthService } from '@/auth/auth.service'
 import { BaseService } from '@/shared/services/base.service'
+import { AuthRepository } from './auth.repository'
 
 @Global()
 @Module({
@@ -23,11 +24,8 @@ import { BaseService } from '@/shared/services/base.service'
     VerificationsModule,
     ExternalsModule,
   ],
-  providers: [BaseService, AuthService],
+  providers: [BaseService, AuthService, AuthRepository],
   controllers: [AuthController],
   exports: [AuthService],
 })
 export class AuthModule {}
-
-console.log(process.env.JWT_PRIVATE_KEY)
-console.log(process.env.JWT_PUBLIC_KEY)
