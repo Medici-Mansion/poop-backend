@@ -1,7 +1,8 @@
 import { Database } from '@/database/database.class'
-import { DB, User } from '@/database/types'
+import { User } from '@/database/types'
+import { VerificationType } from '@/verifications/dtos/verify-code.dto'
 import { Inject } from '@nestjs/common'
-import { ExpressionOrFactory, SqlBool, Updateable } from 'kysely'
+import { Selectable, Updateable } from 'kysely'
 
 import { jsonObjectFrom } from 'kysely/helpers/postgres'
 
@@ -17,39 +18,37 @@ export class UsersRepository {
       .executeTakeFirstOrThrow()
   }
 
-  findOne(eb: ExpressionOrFactory<DB, 'users', SqlBool>): Promise<unknown>
-  findOne(id: string): Promise<unknown>
-  async findOne(
-    id: ExpressionOrFactory<DB, 'users', SqlBool> | string,
-  ): Promise<unknown> {
-    if (typeof id === 'string') {
-      const result = await this.database
-        .selectFrom('users')
-        .selectAll('users')
-        .select((eb) => [
-          jsonObjectFrom(
-            eb
-              .selectFrom('profiles as latestProfile')
-              .whereRef('latestProfile.id', '=', 'users.latestProfileId'),
-          ).as('latestProfile'),
-        ])
-        .where('users.id', '=', id)
-        .executeTakeFirstOrThrow()
-      return result
-    }
-
-    return this.database
+  async findOne(id: string) {
+    const result = await this.database
       .selectFrom('users')
       .selectAll('users')
       .select((eb) => [
         jsonObjectFrom(
           eb
             .selectFrom('profiles as latestProfile')
+            .selectAll('latestProfile')
             .whereRef('latestProfile.id', '=', 'users.latestProfileId'),
         ).as('latestProfile'),
       ])
-      .where(id)
-      .selectAll()
+      .where('users.id', '=', id)
       .executeTakeFirstOrThrow()
+    return result
+  }
+
+  async findByVid(type: VerificationType, vid: string) {
+    return this.database
+      .selectFrom('users')
+      .selectAll()
+      .where(type, '=', vid)
+      .executeTakeFirst()
+  }
+
+  async findOneBy<K extends keyof User>(key: K, value: Selectable<User>[K]) {
+    value
+    return this.database
+      .selectFrom('users')
+      .selectAll()
+      .where(key, '=', value as any)
+      .executeTakeFirst()
   }
 }

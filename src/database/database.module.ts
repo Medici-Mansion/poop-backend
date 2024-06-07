@@ -1,14 +1,12 @@
 import { Global, Module } from '@nestjs/common'
-import {
-  ConfigurableDatabaseModule,
-  DATABASE_OPTIONS,
-} from './database.module-definition'
+import { ConfigurableDatabaseModule } from './database.module-definition'
 
 import { Pool } from 'pg'
 import { ParseJSONResultsPlugin, PostgresDialect } from 'kysely'
 
-import { DatabaseOptions } from './database.option'
 import { Database } from './database.class'
+import { ConfigService } from '@nestjs/config'
+import { Env } from '@/shared/interfaces/env.interface'
 
 @Global()
 @Module({
@@ -16,19 +14,22 @@ import { Database } from './database.class'
   providers: [
     {
       provide: Database,
-      inject: [DATABASE_OPTIONS],
-      useFactory: (databaseOptions: DatabaseOptions) => {
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService<Env>) => {
         const dialect = new PostgresDialect({
           pool: new Pool({
-            host: databaseOptions.host,
-            port: databaseOptions.port,
-            user: databaseOptions.user,
-            password: databaseOptions.password,
-            database: databaseOptions.database,
+            host: configService.get('DB_HOST'),
+            port: configService.get('DB_PORT'),
+            user: configService.get('DB_USER'),
+            password: configService.get('DB_PWD'),
+            database: configService.get('DB_NAME'),
+            ssl: {
+              rejectUnauthorized: false,
+            },
           }),
         })
 
-        return new Database({
+        const db = new Database({
           dialect,
           log: (event) => {
             console.log(`
@@ -42,6 +43,8 @@ ${event.query.sql}
           },
           plugins: [new ParseJSONResultsPlugin()],
         })
+
+        return db
       },
     },
   ],

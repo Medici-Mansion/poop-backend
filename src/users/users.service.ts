@@ -1,19 +1,20 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import bcrypt from 'bcrypt'
-import { Prisma, User } from '@prisma/client'
 
 import { RedisService } from '@/redis/redis.service'
-import { DataSourceService } from '@/prisma/datasource.service'
 
 import { GetUserByVidDTO } from '@/users/dtos/get-user-by-vid.dto'
 import { PatchPasswordDTO } from '@/users/dtos/patch-password.dto'
 import { GetMeResponseDTO } from '@/users/dtos/get-me.dto'
+import { UsersRepository } from './users.repository'
+import { Updateable } from 'kysely'
+import { User } from '@/database/types'
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly redisService: RedisService,
-    private readonly dataSourceService: DataSourceService,
+    private readonly usersRepository: UsersRepository,
   ) {}
 
   async getMe(id: string) {
@@ -21,15 +22,12 @@ export class UsersService {
     return new GetMeResponseDTO(foundUser)
   }
 
+  async update(id: string, updateUserDTO: Updateable<User>) {
+    return this.usersRepository.update(id, updateUserDTO)
+  }
+
   async getUserById(id: string) {
-    const foundUser = await this.dataSourceService.manager.user.findUnique({
-      where: {
-        id,
-      },
-      include: {
-        latestProfile: true,
-      },
-    })
+    const foundUser = await this.usersRepository.findOne(id)
 
     if (!foundUser) throw new NotFoundException()
 
@@ -37,11 +35,10 @@ export class UsersService {
   }
 
   async getUserByAccountId(accountId: string) {
-    const foundUser = await this.dataSourceService.manager.user.findFirst({
-      where: {
-        accountId,
-      },
-    })
+    const foundUser = await this.usersRepository.findOneBy(
+      'accountId',
+      accountId,
+    )
 
     if (!foundUser) throw new NotFoundException()
 
@@ -53,11 +50,8 @@ export class UsersService {
       patchPasswordDTO.code,
     )
     if (!id) throw new NotFoundException()
-    await this.dataSourceService.manager.user.update({
-      where: { id },
-      data: {
-        password: await this.hashPassword(patchPasswordDTO.password),
-      },
+    await this.usersRepository.update(id, {
+      password: await this.hashPassword(patchPasswordDTO.password),
     })
 
     await this.redisService.removeByKey(key)
@@ -65,17 +59,12 @@ export class UsersService {
     return true
   }
 
-  // TODO 사용자 응답 DTO 리턴하기
-  async getUserByVid(getUserByVidDTO: GetUserByVidDTO): Promise<User> {
-    const userWhereCond: Prisma.UserWhereInput = {
-      [getUserByVidDTO.type.toLowerCase()]: getUserByVidDTO.vid,
-    }
+  async getUserByVid(getUserByVidDTO: GetUserByVidDTO) {
+    const foundUser = await this.usersRepository.findByVid(
+      getUserByVidDTO.type,
+      getUserByVidDTO.vid,
+    )
 
-    const foundUser = await this.dataSourceService.manager.user.findFirst({
-      where: {
-        ...userWhereCond,
-      },
-    })
     if (!foundUser) {
       throw new NotFoundException()
     }

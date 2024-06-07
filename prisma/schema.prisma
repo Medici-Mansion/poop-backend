@@ -69,8 +69,7 @@ model User {
   latestProfile   Profile? @relation(name: "latestLoggedIn", fields: [latestProfileId], references: [id])
   latestProfileId String?  @unique @db.Uuid
 
-  verification   verification? @relation("verification")
-  verificationId String?       @unique @ignore @db.Uuid
+  verification verification? @relation("verification")
 
   @@map("users")
 }

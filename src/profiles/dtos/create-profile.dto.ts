@@ -17,12 +17,12 @@ export class CreateProfileDTO {
     title: '아바타 이미지파일',
     type: 'string',
     format: 'binary',
-    description: '최대 이미지 사이즈 width :320, height : 320',
+    description: '최대 이미지 사이즈 width :400, height : 400',
   })
   @IsFile()
   @MaxFileSize(1e6)
   @HasMimeType(['image/jpeg', 'image/png'])
-  @MaxImageSize({ height: 320, width: 320 })
+  @MaxImageSize({ height: 400, width: 400 })
   avatar: MemoryStoredFile
 
   @ApiProperty({

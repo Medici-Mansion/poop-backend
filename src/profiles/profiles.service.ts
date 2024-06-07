@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { Transactional } from '@nestjs-cls/transactional'
 
-import { DataSourceService } from '@/prisma/datasource.service'
 import { UsersService } from '@/users/users.service'
 import { ExternalsService } from '@/externals/externals.service'
 import { BreedsService } from '@/breeds/breeds.service'
@@ -9,14 +8,15 @@ import { BreedsService } from '@/breeds/breeds.service'
 import { CreateProfileDTO } from '@/profiles/dtos/create-profile.dto'
 import { GetProfileDTO } from '@/profiles/dtos/get-profile.dto'
 import { LoginProfileDTO } from '@/profiles/dtos/login-profile.dto'
+import { ProfilesRepository } from './profiles.repository'
 
 @Injectable()
 export class ProfilesService {
   constructor(
-    private readonly dataSourceService: DataSourceService,
     private readonly externalsService: ExternalsService,
     private readonly usersService: UsersService,
     private readonly breedsService: BreedsService,
+    private readonly profilesRepository: ProfilesRepository,
   ) {}
 
   @Transactional()
@@ -31,37 +31,22 @@ export class ProfilesService {
     const foundBreeds = await this.breedsService.findById(
       createProfileDTO.breedId,
     )
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    await this.dataSourceService.manager.profile.create({
-      data: {
-        name: createProfileDTO.name,
-        gender: createProfileDTO.gender,
-        avatarUrl: avatarUrl[0].secureUrl,
-        birthday: new Date(createProfileDTO.birthday),
-        user: {
-          connect: {
-            id: userId,
-          },
-        },
-        breed: {
-          connect: {
-            id: foundBreeds.id,
-          },
-        },
-      },
+
+    await this.profilesRepository.create({
+      name: createProfileDTO.name,
+      gender: createProfileDTO.gender,
+      avatarUrl: avatarUrl[0].secureUrl,
+      birthday: new Date(createProfileDTO.birthday),
+      breedId: foundBreeds.id,
+      userId,
+      updatedAt: new Date(),
     })
+
     return true
   }
 
   async getMyProfileList(userId: string) {
-    const profiles = await this.dataSourceService.manager.profile.findMany({
-      where: {
-        userId,
-      },
-      include: {
-        user: true,
-      },
-    })
+    const profiles = await this.profilesRepository.findByUserId(userId)
     return profiles.map((profile) => {
       profile.gender
       return new GetProfileDTO(profile)
@@ -70,11 +55,8 @@ export class ProfilesService {
 
   async loginProfile(userId: string, loginProfileDTO: LoginProfileDTO) {
     const user = await this.usersService.getUserById(userId)
-    await this.dataSourceService.manager.user.update({
-      where: { id: user.id },
-      data: {
-        latestProfileId: loginProfileDTO.profileId,
-      },
+    await this.usersService.update(user.id, {
+      latestProfileId: loginProfileDTO.profileId,
     })
 
     return true

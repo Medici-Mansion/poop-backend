@@ -1,4 +1,3 @@
-import { DataSourceService } from './../prisma/datasource.service'
 import {
   ForbiddenException,
   Injectable,
@@ -7,28 +6,23 @@ import {
 
 import { VerifyCodeDTO } from '@/verifications/dtos/verify-code.dto'
 import { GetUserByVidDTO } from '@/users/dtos/get-user-by-vid.dto'
-import { Prisma } from '@prisma/client'
+import { Insertable } from 'kysely'
+import { verification } from '@/database/types'
+import { VerificationsRepository } from './verifications.repository'
 
 @Injectable()
 export class VerificationsService {
-  constructor(private readonly dataSourceService: DataSourceService) {}
+  constructor(
+    private readonly verificationsRepository: VerificationsRepository,
+  ) {}
 
   async getVerificationByVid(getUserByVidDTO: GetUserByVidDTO) {
-    const userWhereCond: Prisma.UserWhereInput = {
-      [getUserByVidDTO.type.toLowerCase()]: getUserByVidDTO.vid,
-      verified: null,
-    }
     const foundUserVerification =
-      await this.dataSourceService.manager.verification.findFirst({
-        where: {
-          user: {
-            ...userWhereCond,
-          },
-        },
-        include: {
-          user: true,
-        },
-      })
+      await this.verificationsRepository.findOneByUserVid(
+        getUserByVidDTO.type,
+        getUserByVidDTO.vid,
+      )
+
     if (!foundUserVerification) {
       throw new NotFoundException()
     }
@@ -49,23 +43,28 @@ export class VerificationsService {
   }
 
   async removeVerification(id: string) {
-    return this.dataSourceService.manager.verification.delete({ where: { id } })
+    return this.verificationsRepository.delete(id)
   }
 
   async refreshVerificationCode(verificationId: string) {
-    const foundVerification =
-      await this.dataSourceService.manager.verification.findUnique({
-        where: { id: verificationId },
-      })
+    const foundVerification = await this.verificationsRepository.findOneBy(
+      'id',
+      verificationId,
+    )
 
     if (!foundVerification) throw new NotFoundException()
-    const newVerification = this.dataSourceService.manager.verification.update({
-      where: { id: foundVerification.id },
-      data: {
+
+    const newVerification = await this.verificationsRepository.update(
+      foundVerification.id,
+      {
         code: this.generateRandomString({ onlyString: false, length: 6 }),
       },
-    })
+    )
     return newVerification
+  }
+
+  async create(createVerificationDTO: Insertable<verification>) {
+    return this.verificationsRepository.create(createVerificationDTO)
   }
 
   generateRandomString(options?: {

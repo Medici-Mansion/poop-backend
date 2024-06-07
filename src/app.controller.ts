@@ -7,7 +7,7 @@ import { Database } from './database/database.class'
 })
 @ApiTags('Base')
 export class AppController {
-  constructor(@Inject(Database) private readonly dataSourceService: Database) {}
+  constructor(@Inject(Database) private readonly database: Database) {}
   @ApiOperation({ description: 'Health check', summary: 'Health check' })
   @Get()
   healthCheck() {
@@ -20,12 +20,11 @@ export class AppController {
   })
   @Get('clear')
   async reset() {
-    await Promise.allSettled([
-      this.dataSourceService.deleteFrom('users'),
-      this.dataSourceService.deleteFrom('verification'),
-      this.dataSourceService.deleteFrom('profiles'),
-    ])
-
+    await this.database.transaction().execute(async (trx) => {
+      await trx.deleteFrom('verification').execute()
+      trx.deleteFrom('profiles').execute()
+      trx.deleteFrom('users').execute()
+    })
     return true
   }
 }

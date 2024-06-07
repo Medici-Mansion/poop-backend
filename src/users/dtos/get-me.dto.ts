@@ -1,7 +1,8 @@
+import { Gender } from '@/database/enums'
+import { User } from '@/database/types'
 import { IsAccountId } from '@/shared/validators/is-account-id.validator'
 import { IsOnlyDate } from '@/shared/validators/is-date-string.validator'
 import { ApiProperty } from '@nestjs/swagger'
-import { Gender, User } from '@prisma/client'
 import { Transform } from 'class-transformer'
 import {
   IsEmail,
@@ -12,6 +13,7 @@ import {
   MaxLength,
 } from 'class-validator'
 import dayjs from 'dayjs'
+import { Selectable } from 'kysely'
 
 export class GetMeResponseDTO {
   @IsAccountId()
@@ -73,7 +75,7 @@ export class GetMeResponseDTO {
   @IsOptional()
   verified: Date | null
 
-  constructor(user: User) {
+  constructor(user: Selectable<User>) {
     this.id = user.id
     this.birthday = dayjs(user.birthday).format('YYYY-MM-DD')
     this.nickname = user.nickname
