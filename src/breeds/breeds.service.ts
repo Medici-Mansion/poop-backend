@@ -1,7 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 
 import { GetBreedResponseDTO } from '@/breeds/dtos/get-breed.dto'
-import { BreedsRepository } from './breeds.repository'
+
+import { BreedsRepository } from '@/breeds/breeds.repository'
 
 @Injectable()
 export class BreedsService {

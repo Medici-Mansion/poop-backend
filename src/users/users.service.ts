@@ -6,7 +6,7 @@ import { RedisService } from '@/redis/redis.service'
 import { GetUserByVidDTO } from '@/users/dtos/get-user-by-vid.dto'
 import { PatchPasswordDTO } from '@/users/dtos/patch-password.dto'
 import { GetMeResponseDTO } from '@/users/dtos/get-me.dto'
-import { UsersRepository } from './users.repository'
+import { UsersRepository } from '@/users/users.repository'
 import { Updateable } from 'kysely'
 import { User } from '@/database/types'
 

@@ -8,7 +8,7 @@ import { VerifyCodeDTO } from '@/verifications/dtos/verify-code.dto'
 import { GetUserByVidDTO } from '@/users/dtos/get-user-by-vid.dto'
 import { Insertable } from 'kysely'
 import { verification } from '@/database/types'
-import { VerificationsRepository } from './verifications.repository'
+import { VerificationsRepository } from '@/verifications/verifications.repository'
 
 @Injectable()
 export class VerificationsService {

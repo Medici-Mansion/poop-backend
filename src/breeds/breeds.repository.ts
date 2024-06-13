@@ -1,6 +1,8 @@
-import { Database } from '@/database/database.class'
-import { Order } from '@/shared/dtos/common.dto'
 import { Inject } from '@nestjs/common'
+
+import { Database } from '@/database/database.class'
+
+import { Order } from '@/shared/dtos/common.dto'
 
 export class BreedsRepository {
   constructor(@Inject(Database) private readonly database: Database) {}

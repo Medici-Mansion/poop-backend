@@ -4,7 +4,7 @@ import { BaseService } from '@/shared/services/base.service'
 import { VerificationsService } from '@/verifications/verifications.service'
 
 import { VerificationsController } from '@/verifications/verifications.controller'
-import { VerificationsRepository } from './verifications.repository'
+import { VerificationsRepository } from '@/verifications/verifications.repository'
 
 @Module({
   controllers: [VerificationsController],

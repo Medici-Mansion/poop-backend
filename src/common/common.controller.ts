@@ -32,9 +32,6 @@ export class CommonController {
     summary: '견종정보 조회',
     description: '견종정보를 조회합니다.',
   })
-  // additionalProperties: {
-  //   type: Object,
-  // },
   @ApiOkResponse({
     schema: {
       title: 'GetBreeds',

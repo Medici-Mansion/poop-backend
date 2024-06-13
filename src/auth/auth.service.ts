@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { validateOrReject } from 'class-validator'
+import { Transactional } from '@nestjs-cls/transactional'
 
 import { UsersService } from '@/users/users.service'
 import { VerificationsService } from '@/verifications/verifications.service'
@@ -28,8 +29,7 @@ import { GetUserByVidDTO } from '@/users/dtos/get-user-by-vid.dto'
 import { EmailTemplateName } from '@/shared/constants/common.constant'
 
 import { TokenPayload } from '@/shared/interfaces/token.interface'
-import { AuthRepository } from './auth.repository'
-import { Transactional } from '@nestjs-cls/transactional'
+import { AuthRepository } from '@/auth/auth.repository'
 
 @Injectable()
 export class AuthService {

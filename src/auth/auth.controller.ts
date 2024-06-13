@@ -26,7 +26,9 @@ import {
 } from '@/verifications/dtos/verify-code.dto'
 import { LoginRequestDTO } from '@/auth/dtos/login.dto'
 import { GetUserByVidDTO } from '@/users/dtos/get-user-by-vid.dto'
+
 import { PlainToken, Refresh } from '@/shared/decorators/refresh.decorator'
+
 import { AccessGuard } from '@/auth/guards/access.guard'
 
 @Controller('auth')

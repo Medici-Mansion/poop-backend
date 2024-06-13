@@ -7,7 +7,7 @@ import { UsersService } from '@/users/users.service'
 import { UsersController } from '@/users/users.controller'
 
 import { VerificationsModule } from '@/verifications/verifications.module'
-import { UsersRepository } from './users.repository'
+import { UsersRepository } from '@/users/users.repository'
 
 @Module({
   imports: [RedisModule, VerificationsModule],

@@ -1,7 +1,8 @@
-import { UsersService } from '@/users/users.service'
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
-
 import { FastifyRequest } from 'fastify'
+
+import { UsersService } from '@/users/users.service'
+
 import { TokenPayload } from '@/shared/interfaces/token.interface'
 
 @Injectable()
