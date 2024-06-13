@@ -1,6 +1,7 @@
 import { Controller, Get, Inject } from '@nestjs/common'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import { Database } from './database/database.class'
+import { Api } from './shared/dtos/api.dto'
 
 @Controller({
   version: '1',
@@ -11,7 +12,7 @@ export class AppController {
   @ApiOperation({ description: 'Health check', summary: 'Health check' })
   @Get()
   healthCheck() {
-    return true
+    return Api.OK(true)
   }
 
   @ApiOperation({
