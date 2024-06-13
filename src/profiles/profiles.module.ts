@@ -9,7 +9,8 @@ import { ProfilesController } from '@/profiles/profiles.controller'
 import { UsersModule } from '@/users/users.module'
 import { ExternalsModule } from '@/externals/externals.module'
 import { BreedsModule } from '@/breeds/breeds.module'
-import { ProfilesRepository } from './profiles.repository'
+
+import { ProfilesRepository } from '@/profiles/profiles.repository'
 
 @Module({
   imports: [NestjsFormDataModule, UsersModule, ExternalsModule, BreedsModule],

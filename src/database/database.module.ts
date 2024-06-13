@@ -1,11 +1,12 @@
 import { Global, Module } from '@nestjs/common'
-import { ConfigurableDatabaseModule } from './database.module-definition'
-
 import { Pool } from 'pg'
+import { ConfigService } from '@nestjs/config'
 import { ParseJSONResultsPlugin, PostgresDialect } from 'kysely'
 
-import { Database } from './database.class'
-import { ConfigService } from '@nestjs/config'
+import { ConfigurableDatabaseModule } from '@/database/database.module-definition'
+
+import { Database } from '@/database/database.class'
+
 import { Env } from '@/shared/interfaces/env.interface'
 
 @Global()

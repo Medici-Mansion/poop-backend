@@ -8,7 +8,7 @@ import { BreedsService } from '@/breeds/breeds.service'
 import { CreateProfileDTO } from '@/profiles/dtos/create-profile.dto'
 import { GetProfileDTO } from '@/profiles/dtos/get-profile.dto'
 import { LoginProfileDTO } from '@/profiles/dtos/login-profile.dto'
-import { ProfilesRepository } from './profiles.repository'
+import { ProfilesRepository } from '@/profiles/profiles.repository'
 
 @Injectable()
 export class ProfilesService {
