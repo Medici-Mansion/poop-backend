@@ -1,13 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { ErrorCodeIfs } from '@/shared/errors/error.interface'
+import { IPoopError } from '@/shared/errors/error.interface'
 import { Result } from '@/shared/dtos/result.dto'
+import { Expose } from 'class-transformer'
 
 export class Api<T = any> {
   @ApiProperty()
-  private readonly result: Result
+  result: Result
 
-  @ApiProperty()
-  private readonly body?: T | null
+  @ApiProperty({ type: 'generic' })
+  @Expose()
+  body?: T | null
 
   constructor(result: Result, body?: T) {
     this.result = result
@@ -18,12 +20,16 @@ export class Api<T = any> {
     return new Api<T>(Result.OK(), data)
   }
 
-  static ERROR(errorCodeIfs: ErrorCodeIfs): Api<null>
-  static ERROR(result: Result | ErrorCodeIfs): Api<null>
-  static ERROR(result: Result | ErrorCodeIfs, description?: string): Api<null> {
-    if (result instanceof Result) {
-      return new Api<null>(result, null)
+  static ERROR(poopError: IPoopError): Api<null> {
+    return new Api<null>(Result.ERROR(poopError))
+  }
+
+  toScheme() {
+    return class {
+      constructor(
+        public readonly result: Result,
+        public readonly body: T,
+      ) {}
     }
-    return new Api<null>(Result.ERROR(result, description))
   }
 }

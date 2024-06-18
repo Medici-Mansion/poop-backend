@@ -1,43 +1,24 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { ErrorCode, ErrorCodes } from '../errors/error.code'
-import { ErrorCodeIfs } from '../errors/error.interface'
+import { CommonCodes } from '@/shared/errors/code/common.code'
+import { IPoopError } from '../errors/error.interface'
 
-export class Result<T = unknown> {
-  @ApiProperty()
-  public resultCode: number
-  @ApiProperty()
-  public resultMessage: string
-  @ApiProperty()
-  public resultDescription: string
-  @ApiProperty()
-  public data?: T
+export class Result {
+  @ApiProperty({ example: 200 })
+  resultCode: number
+  @ApiProperty({ example: '설명' })
+  resultMessage: string
 
-  constructor(
-    resultCode: number,
-    resultMessage: string,
-    resultDescription: string,
-    data?: T,
-  ) {
+  constructor(resultCode: number, resultMessage: string) {
     this.resultCode = resultCode
     this.resultMessage = resultMessage
-    this.resultDescription = resultDescription
-    this.data = data
   }
 
   static OK(): Result {
-    const errorCode = ErrorCodes[ErrorCode.OK]
-    return new Result(
-      errorCode.getErrorCode(),
-      errorCode.getDescription(),
-      '성공',
-    )
+    const errorCode = CommonCodes.OK
+    return new Result(errorCode.getErrorCode(), errorCode.getDescription())
   }
 
-  static ERROR(errorCodeIfs: ErrorCodeIfs, message?: string | Error): Result {
-    return new Result(
-      errorCodeIfs.getErrorCode(),
-      errorCodeIfs.getDescription(),
-      (message instanceof Error ? message.message : message) || '에러발생',
-    )
+  static ERROR(poopError: IPoopError): Result {
+    return new Result(poopError.getErrorCode(), poopError.getDescription())
   }
 }

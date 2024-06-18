@@ -1,3 +1,9 @@
+generator markdown {
+  provider = "prisma-markdown"
+  output   = "./ERD.md"
+  title    = "Poop-backend"
+}
+
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["views"]
@@ -15,7 +21,6 @@ generator kysely {
   enumFileName = "enums.ts"
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model Breed {
   id        String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   createdAt DateTime  @default(now()) @db.Timestamp(6)
@@ -85,7 +90,6 @@ model verification {
   userId String @unique @db.Uuid
 }
 
-/// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 view SearchBreeds {
   id            String    @id @db.Uuid
   createdAt     DateTime  @db.Timestamp(6)

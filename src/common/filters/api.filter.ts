@@ -10,7 +10,7 @@ export class ApiExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<FastifyReply>()
     console.log(`[API FILTER LOG]: ${exception}`)
     response
-      .status(exception.errorCodeIfs.getHttpStatusCode())
-      .send(Api.ERROR(exception.errorCodeIfs))
+      .status(exception.poopError.getHttpStatusCode())
+      .send(Api.ERROR(exception.poopError))
   }
 }

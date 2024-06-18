@@ -30,6 +30,9 @@ import { GetUserByVidDTO } from '@/users/dtos/get-user-by-vid.dto'
 import { PlainToken, Refresh } from '@/shared/decorators/refresh.decorator'
 
 import { AccessGuard } from '@/auth/guards/access.guard'
+import { ApiResult } from '@/shared/decorators/swagger/response.decorator'
+import { Api } from '@/shared/dtos/api.dto'
+import { CommonCodes } from '@/shared/errors/code/common.code'
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -54,10 +57,11 @@ export class AuthController {
     summary: '인증번호 요청 API',
     description: 'VID와 매칭되는 매체를 통해 인증번호를 전송받는다',
   })
-  @ApiOkResponse({
-    type: Boolean,
-    description: '선택한 매체를 통해 인증번호 전송',
-  })
+  // @ApiResult({
+  //   status: 200,
+  //   responseType: 'boolean',
+  //   description: '선택한 매체를 통해 인증번호를 전송한다.',
+  // })
   @Get('verify')
   async requestVerificationCode(@Query() getUserByVidDTO: GetUserByVidDTO) {
     return this.authService.requestVerificationCode(getUserByVidDTO)
@@ -72,10 +76,10 @@ export class AuthController {
     summary: '인증번호 검증 API',
     description: '인증코드를 통한 계정정보 인증',
   })
-  @ApiOkResponse({
-    type: Boolean,
-    description: '인증코드 검증 완료 처리',
-  })
+  // @ApiResult({
+  //   responseType: 'boolean',
+  //   description: '인증코드 검증 완료 처리',
+  // })
   @Post('verify')
   @HttpCode(200)
   async verifyingCode(@Body() verifyCodeDTO: VerifyCodeDTO): Promise<boolean> {
@@ -87,15 +91,18 @@ export class AuthController {
       '아이디와 패스워드를 통해 로그인합니다. 엑세스토큰과 리프레시토큰을 응답하며, 쿠키에 자동저장됩니다. 인증코드를 통한 인증을 하지 않은 경우, 로그인되지 않습니다.',
     summary: '로그인',
   })
-  @ApiOkResponse({
-    type: VerifyingCodeResponseDTO,
-    description: '로그인 성공 시 토큰이 발행됩니다.',
-  })
+  @ApiResult(CommonCodes.OK, [
+    {
+      model: VerifyingCodeResponseDTO,
+      exampleDescription: '로그인 성공 시 토큰이 발행됩니다.',
+      exampleTitle: '로그인 성공',
+    },
+  ])
   @Post('login')
   @HttpCode(200)
   async login(
     @Body() loginRequestDTO: LoginRequestDTO,
-  ): Promise<VerifyingCodeResponseDTO> {
+  ): Promise<Api<VerifyingCodeResponseDTO>> {
     return this.authService.login(loginRequestDTO)
   }
 
@@ -105,13 +112,16 @@ export class AuthController {
     summary: '새로운 토큰발급',
     description: 'refresh token을 통해 새로운 토큰을 발급한다',
   })
-  @ApiOkResponse({
-    type: VerifyingCodeResponseDTO,
-    description: '성공 시 토큰이 발행됩니다.',
-  })
+  @ApiResult(CommonCodes.OK, [
+    {
+      model: VerifyingCodeResponseDTO,
+      exampleDescription: '재발급 성공 시 토큰이 발행됩니다.',
+      exampleTitle: '재발급 성공',
+    },
+  ])
   @HttpCode(200)
   @Post('refresh')
-  refresh(@PlainToken() token: string) {
+  refresh(@PlainToken() token: string): Promise<Api<VerifyingCodeResponseDTO>> {
     return this.authService.refresh(token)
   }
 
@@ -120,10 +130,13 @@ export class AuthController {
     description:
       'VID와 매칭되는 매체를 통해 인증번호를 전송받는다 1시간의 제한시간이 있으며, 유효시간이 지나면 인증이 불가능하다',
   })
-  @ApiOkResponse({
-    type: Boolean,
-    description: '선택한 매체를 통해 인증번호 전송',
-  })
+  @ApiResult(CommonCodes.OK, [
+    {
+      model: Boolean,
+      exampleDescription: '선택한 매체를 통해 인증번호 전송',
+      exampleTitle: '패스워드 변경 코드 전송',
+    },
+  ])
   @Get('password-code')
   getChangePasswordCode(@Query() getUserByVidDTO: GetUserByVidDTO) {
     return this.authService.getChangePasswordCode(getUserByVidDTO)

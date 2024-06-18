@@ -1219,6 +1219,13 @@
     cross-spawn "7.0.3"
     kleur "4.1.5"
 
+"@prisma/generator-helper@^5.0.0":
+  version "5.15.0"
+  resolved "https://registry.yarnpkg.com/@prisma/generator-helper/-/generator-helper-5.15.0.tgz#21fc7141a613fdd621750a508bb3233869002881"
+  integrity sha512-7pB3v57GU4Q/iBauGbvQQGenMJSu2ArQboge4Ca6bw0gA7nConfIHP48MdNIYCrBbNPcIVFmrNomyhqCb3IuWQ==
+  dependencies:
+    "@prisma/debug" "5.15.0"
+
 "@prisma/get-platform@5.15.0":
   version "5.15.0"
   resolved "https://registry.yarnpkg.com/@prisma/get-platform/-/get-platform-5.15.0.tgz#d39fbe8458432f76afeb6c9199bffae73db4f5cc"
@@ -6124,6 +6131,13 @@ prisma-kysely@^1.8.0:
     "@prisma/internals" "5.3.1"
     typescript "^5.2.2"
     zod "^3.22.2"
+
+prisma-markdown@^1.0.9:
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/prisma-markdown/-/prisma-markdown-1.0.9.tgz#90fce43ff7b9aa3173bceef6fc09e9ee912a5e90"
+  integrity sha512-Y/aWUgDnzYt7JFjhUOmLzNs+09eoITq8ZK9CmG3L6TTKc/prYr+2EClD4jRcfEgyElfJlvH2/4QeZponu9D92Q==
+  dependencies:
+    "@prisma/generator-helper" "^5.0.0"
 
 prisma@^5.12.1:
   version "5.15.0"

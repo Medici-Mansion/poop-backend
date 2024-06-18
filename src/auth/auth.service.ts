@@ -1,7 +1,6 @@
 import bcrypt from 'bcrypt'
 import {
   BadRequestException,
-  ConflictException,
   ForbiddenException,
   Injectable,
   InternalServerErrorException,
@@ -30,6 +29,9 @@ import { EmailTemplateName } from '@/shared/constants/common.constant'
 
 import { TokenPayload } from '@/shared/interfaces/token.interface'
 import { AuthRepository } from '@/auth/auth.repository'
+import { ApiException } from '@/shared/exceptions/exception.interface'
+import { AuthCodes } from '@/shared/errors/code/auth.code'
+import { Api } from '@/shared/dtos/api.dto'
 
 @Injectable()
 export class AuthService {
@@ -46,7 +48,7 @@ export class AuthService {
   async signup(createUserDTO: CreateUserDTO): Promise<boolean> {
     const existUser = await this.authRepository.findOne(createUserDTO)
     if (existUser) {
-      throw new ConflictException()
+      throw new ApiException(AuthCodes['CONFLICT_ USER'])
     }
     const hashedPassword = await this.usersService.hashPassword(
       createUserDTO.password,
@@ -97,7 +99,7 @@ export class AuthService {
       )
     }
 
-    return true
+    return Api.OK(true)
   }
 
   @Transactional()
@@ -116,7 +118,7 @@ export class AuthService {
 
   async login(
     loginRequestDTO: LoginRequestDTO,
-  ): Promise<VerifyingCodeResponseDTO> {
+  ): Promise<Api<VerifyingCodeResponseDTO>> {
     const userWhereCond = {
       email: loginRequestDTO.id,
       phone: loginRequestDTO.id,
@@ -137,7 +139,7 @@ export class AuthService {
     // TODO: 커스텀에러를 통해 인증되지 않은 계정의 로그인 요청 분기 필요합니다.
     const newVerifyToken = await this.publishToken(foundUser.id)
 
-    return newVerifyToken
+    return Api.OK(newVerifyToken)
   }
 
   /**
@@ -192,7 +194,7 @@ export class AuthService {
     return changePasswordKey
   }
 
-  async refresh(token: string) {
+  async refresh(token: string): Promise<Api<VerifyingCodeResponseDTO>> {
     const verifiedToken = this.verify(token, {
       ignoreExpiration: true,
     })
@@ -207,7 +209,7 @@ export class AuthService {
 
     const newToken = await this.publishToken(foundUser.id)
 
-    return newToken
+    return Api.OK(newToken)
   }
 
   verify(
