@@ -38,3 +38,8 @@ jobs:
           scp -o StrictHostKeyChecking=no -i key.pem build.tar.gz $SSH_USERNAME@$LIGHTSAIL_IP:~/build.tar.gz
           ssh -o StrictHostKeyChecking=no -i key.pem $SSH_USERNAME@$LIGHTSAIL_IP << 'EOF'
             cd ~/
+            pm2 stop all || true
+            if [ -d dist ]; then rm -rf dist; fi
+            tar -xzf build.tar.gz
+            pm2 start dist/main.js
+            if [ -f build.tar.gz ]; then rm build.tar.gz; fi
