@@ -25,6 +25,10 @@ jobs:
         run: yarn build
 
       - name: Archive production artifacts
+        run: |
+          tar -czf build.tar.gz dist node_modules
+
+      - name: Archive production artifacts
         run: tar -czf build.tar.gz dist
 
       - name: Deploy to Lightsail
