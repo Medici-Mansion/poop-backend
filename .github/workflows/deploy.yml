@@ -18,15 +18,18 @@ jobs:
         with:
           node-version: '20.11.1'
 
+      - name: Create .env file
+        run: echo "${{ secrets.ENV_FILE }}" > .env
+    
+
       - name: Install dependencies
-        run: yarn install
+        run: yarn install --production
 
       - name: Build the project
         run: yarn build
 
       - name: Archive production artifacts
-        run: |
-          tar -czf build.tar.gz dist node_modules
+        run: tar -czf build.tar.gz dist node_modules .env
 
       - name: Deploy to Lightsail
         env:
@@ -42,5 +45,5 @@ jobs:
             pm2 stop all || true
             if [ -d dist ]; then rm -rf dist; fi
             tar -xzf build.tar.gz
-            pm2 start dist/main.js
+            pm2 start dist/main.js --env .env
             if [ -f build.tar.gz ]; then rm build.tar.gz; fi
