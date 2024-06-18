@@ -19,7 +19,9 @@ jobs:
           node-version: '20.11.1'
 
       - name: Create .env file
-        run: echo "${{ secrets.ENV_FILE }}" > .env
+        run: |
+          echo "${{ secrets.ENV_FILE }}" | awk 'BEGIN { RS=""; FS="\n" } { for(i=1; i<=NF; i++) print $i }' > .env
+
     
 
       - name: Install dependencies
