@@ -45,5 +45,5 @@ jobs:
             pm2 stop all || true
             if [ -d dist ]; then rm -rf dist; fi
             tar -xzf build.tar.gz
-            pm2 start dist/main.js --env .env
             if [ -f build.tar.gz ]; then rm build.tar.gz; fi
+            pm2 start dist/main.js --env .env
