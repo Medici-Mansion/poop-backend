@@ -1,9 +1,4 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common'
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Observable } from 'rxjs'
 import { Reflector } from '@nestjs/core'
 import { FastifyRequest } from 'fastify'
@@ -11,6 +6,7 @@ import { FastifyRequest } from 'fastify'
 import { AuthService } from '@/auth/auth.service'
 
 import { TOKEN_KEY } from '@/shared/constants/common.constant'
+import { AuthException } from '@/shared/exceptions/auth.exception'
 
 @Injectable()
 export class AccessGuard implements CanActivate {
@@ -33,7 +29,7 @@ export class AccessGuard implements CanActivate {
 
     const token = request.headers[TOKEN_KEY] as string
     if (!token) {
-      throw new UnauthorizedException()
+      throw AuthException.UNAUTHROIZED
     }
     const payload = this.authService.verify(token, {
       ignoreExpiration: !!isRefreshRequest,

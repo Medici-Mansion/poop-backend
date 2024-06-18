@@ -10,12 +10,13 @@ import fastifyCookie from '@fastify/cookie'
 import fastifyCsrfProtection from '@fastify/csrf-protection'
 import fastifyMultipart from '@fastify/multipart'
 
-import { AppModule } from './app.module'
+import { AppModule } from '@/app.module'
 
 import { TOKEN_KEY } from '@/shared/constants/common.constant'
 
-import { GlobalExceptionFilter } from '@/shared/global.filter'
-import { ApiExceptionFilter } from './common/filters/api.filter'
+import { GlobalExceptionFilter } from '@/common/filters/global.filter'
+import { ApiExceptionFilter } from '@/common/filters/api.filter'
+import { NotFoundExceptionFilter } from '@/common/filters/not-found.filter'
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -23,7 +24,11 @@ async function bootstrap() {
     new FastifyAdapter(),
   )
 
-  app.useGlobalFilters(new GlobalExceptionFilter(), new ApiExceptionFilter())
+  app.useGlobalFilters(
+    new GlobalExceptionFilter(),
+    new NotFoundExceptionFilter(),
+    new ApiExceptionFilter(),
+  )
 
   app.useGlobalPipes(
     new ValidationPipe({

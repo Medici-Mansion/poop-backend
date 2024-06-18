@@ -29,9 +29,9 @@ import { EmailTemplateName } from '@/shared/constants/common.constant'
 
 import { TokenPayload } from '@/shared/interfaces/token.interface'
 import { AuthRepository } from '@/auth/auth.repository'
-import { ApiException } from '@/shared/exceptions/exception.interface'
-import { AuthCodes } from '@/shared/errors/code/auth.code'
 import { Api } from '@/shared/dtos/api.dto'
+
+import { UserException } from '@/shared/exceptions/user.exception'
 
 @Injectable()
 export class AuthService {
@@ -48,7 +48,7 @@ export class AuthService {
   async signup(createUserDTO: CreateUserDTO): Promise<boolean> {
     const existUser = await this.authRepository.findOne(createUserDTO)
     if (existUser) {
-      throw new ApiException(AuthCodes['CONFLICT_ USER'])
+      throw UserException.CONFLICT
     }
     const hashedPassword = await this.usersService.hashPassword(
       createUserDTO.password,

@@ -9,6 +9,8 @@ import { GetMeResponseDTO } from '@/users/dtos/get-me.dto'
 import { UsersRepository } from '@/users/users.repository'
 import { Updateable } from 'kysely'
 import { User } from '@/database/types'
+import { UserException } from '@/shared/exceptions/user.exception'
+import { ResultCode } from '@/shared/errors/dtos/resultCode.dto'
 
 @Injectable()
 export class UsersService {
@@ -29,7 +31,7 @@ export class UsersService {
   async getUserById(id: string) {
     const foundUser = await this.usersRepository.findOne(id)
 
-    if (!foundUser) throw new NotFoundException()
+    if (!foundUser) throw new UserException(new ResultCode(400, 1002, ''))
 
     return foundUser
   }

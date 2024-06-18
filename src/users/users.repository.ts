@@ -1,5 +1,7 @@
 import { Database } from '@/database/database.class'
 import { User } from '@/database/types'
+import { ResultCode } from '@/shared/errors/dtos/resultCode.dto'
+import { UserException } from '@/shared/exceptions/user.exception'
 import { VerificationType } from '@/verifications/dtos/verify-code.dto'
 import { Inject } from '@nestjs/common'
 import { Selectable, Updateable } from 'kysely'
@@ -31,7 +33,9 @@ export class UsersRepository {
         ).as('latestProfile'),
       ])
       .where('users.id', '=', id)
-      .executeTakeFirstOrThrow()
+      .executeTakeFirstOrThrow(
+        () => new UserException(new ResultCode(400, 1002, '')),
+      )
     return result
   }
 
