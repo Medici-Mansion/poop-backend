@@ -7,7 +7,7 @@ export class Api<T = any> {
   @ApiProperty()
   result: Result
 
-  @ApiProperty({ type: 'generic' })
+  @ApiProperty()
   @Expose()
   body?: T | null
 
