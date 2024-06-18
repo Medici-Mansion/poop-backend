@@ -35,7 +35,7 @@ jobs:
         run: |
           echo "$SSH_PRIVATE_KEY" > key.pem
           chmod 600 key.pem
-          scp -o StrictHostKeyChecking=no -i key.pem build.tar.gz $SSH_USERNAME@$LIGHTSAIL_IP:~/app/build.tar.gz
+          scp -o StrictHostKeyChecking=no -i key.pem build.tar.gz $SSH_USERNAME@$LIGHTSAIL_IP:~/build.tar.gz
           ssh -o StrictHostKeyChecking=no -i key.pem $SSH_USERNAME@$LIGHTSAIL_IP << 'EOF'
             cd ~/app
             tar -xzf build.tar.gz
