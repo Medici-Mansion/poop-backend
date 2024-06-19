@@ -22,6 +22,7 @@ import { LoggingMiddleware } from '@/shared/middlewares/logging.middleware'
 
 import { BaseService } from '@/shared/services/base.service'
 import { Database } from '@/database/database.class'
+import { GraphicsModule } from './graphics/graphics.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { Database } from '@/database/database.class'
     BreedsModule,
     CommonModule,
     ToonModule,
+    GraphicsModule,
   ],
   providers: [BaseService],
   controllers: [AppController],

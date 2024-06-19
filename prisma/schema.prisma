@@ -24,7 +24,7 @@ generator kysely {
 model Breed {
   id        String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   createdAt DateTime  @default(now()) @db.Timestamp(6)
-  updatedAt DateTime  @updatedAt @db.Timestamp(6)
+  updatedAt DateTime  @default(now()) @updatedAt @db.Timestamp(6)
   deletedAt DateTime? @db.Timestamp(6)
   nameKR    String?   @db.VarChar
   nameEN    String?   @db.VarChar
@@ -37,7 +37,7 @@ model Breed {
 model Profile {
   id        String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   createdAt DateTime  @default(now()) @db.Timestamp(6)
-  updatedAt DateTime  @updatedAt @db.Timestamp(6)
+  updatedAt DateTime  @default(now()) @updatedAt @db.Timestamp(6)
   deletedAt DateTime? @db.Timestamp(6)
   avatarUrl String?   @db.VarChar
   name      String    @db.VarChar(13)
@@ -57,7 +57,7 @@ model Profile {
 model User {
   id          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   createdAt   DateTime  @default(now()) @db.Timestamp(6)
-  updatedAt   DateTime  @updatedAt @db.Timestamp(6)
+  updatedAt   DateTime  @default(now()) @updatedAt @db.Timestamp(6)
   deletedAt   DateTime? @db.Timestamp(6)
   accountId   String    @db.VarChar(20)
   password    String    @db.VarChar
@@ -82,7 +82,7 @@ model User {
 model verification {
   id        String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   createdAt DateTime  @default(now()) @db.Timestamp(6)
-  updatedAt DateTime  @updatedAt @db.Timestamp(6)
+  updatedAt DateTime  @default(now()) @updatedAt @db.Timestamp(6)
   deletedAt DateTime? @db.Timestamp(6)
   code      String    @db.VarChar
 
@@ -102,6 +102,32 @@ view SearchBreeds {
   searchKeyCode Int?
 
   @@map("search_breeds")
+}
+
+model Graphics {
+  id        String            @id @default(dbgenerated("uuid_generate_v4()"))
+  createdAt DateTime          @default(now()) @db.Timestamp(6)
+  updatedAt DateTime          @default(now()) @updatedAt @db.Timestamp(6)
+  deletedAt DateTime?         @db.Timestamp(6)
+  name      String?           @db.VarChar
+  url       String?           @db.VarChar
+  type      GraphicType
+  category  GraphicsCategory?
+
+  @@map("graphics")
+}
+
+enum GraphicsCategory {
+  Message
+  Sticker
+  Challenge
+}
+
+enum GraphicType {
+  Lottie
+  GIF
+
+  @@map("graphics_type")
 }
 
 enum Gender {
