@@ -1,6 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 
-import { GetBreedResponseDTO } from '@/breeds/dtos/get-breed.dto'
+import {
+  GetBreedRequestDTO,
+  GetBreedResponseDTO,
+} from '@/breeds/dtos/get-breed.dto'
 
 import { BreedsRepository } from '@/breeds/breeds.repository'
 
@@ -30,5 +33,9 @@ export class BreedsService {
     }, {})
 
     return breedsObj
+  }
+
+  async getBreedsByCursor(getBreedRequestDTO: GetBreedRequestDTO) {
+    return this.breedsRepository.findByCursor(getBreedRequestDTO)
   }
 }

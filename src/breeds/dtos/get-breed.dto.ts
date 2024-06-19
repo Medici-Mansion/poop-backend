@@ -7,7 +7,7 @@ import { getImagePath } from '@/shared/utils'
 import { SearchBreeds } from '@/database/types'
 import { Selectable } from 'kysely'
 
-export class GetBreadRequestDTO extends CursorOption {
+export class GetBreedRequestDTO extends CursorOption {
   @ApiProperty({
     description: '초성검색 키워드',
     required: false,
