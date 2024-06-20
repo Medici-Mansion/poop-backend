@@ -10,12 +10,16 @@ import { Controller, Get } from '@nestjs/common'
 import { BreedsService } from '@/breeds/breeds.service'
 
 import { GetBreedResponseDTO } from '@/breeds/dtos/get-breed.dto'
+import { GraphicsService } from '@/graphics/graphics.service'
 
 @ApiExtraModels(GetBreedResponseDTO)
 @ApiTags('Common')
 @Controller('common')
 export class CommonController {
-  constructor(private readonly breedsService: BreedsService) {}
+  constructor(
+    private readonly breedsService: BreedsService,
+    private readonly graphicsService: GraphicsService,
+  ) {}
 
   // @Get('breeds')
   // @ApiOperation({
@@ -47,5 +51,10 @@ export class CommonController {
   })
   async getBreeds() {
     return this.breedsService.getAllBreeds()
+  }
+
+  @Get('graphics')
+  async getAllGraphics() {
+    return this.graphicsService.getAllGraphics()
   }
 }
