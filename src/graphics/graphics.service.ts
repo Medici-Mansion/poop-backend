@@ -9,7 +9,7 @@ import { CreateGraphicsDTO } from '@/graphics/dtos/create-graphics.dto'
 import { ExternalsService } from '@/externals/externals.service'
 import { Transactional } from '@nestjs-cls/transactional'
 import { ApiException } from '@/shared/exceptions/exception.interface'
-import { GraphicType } from '@prisma/client'
+import { GraphicType } from '@/database/enums'
 
 @Injectable()
 export class GraphicsService {
