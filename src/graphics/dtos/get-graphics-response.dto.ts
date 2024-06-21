@@ -31,7 +31,6 @@ export class GetGraphicsResponseDTO {
   url!: string | null
 
   constructor(graphic: Selectable<Graphics>) {
-    console.log(graphic)
     this.category = graphic.category
     this.id = graphic.id
     this.name = graphic.name
