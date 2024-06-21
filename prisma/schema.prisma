@@ -109,8 +109,8 @@ model Graphics {
   createdAt DateTime          @default(now()) @db.Timestamp(6)
   updatedAt DateTime          @default(now()) @updatedAt @db.Timestamp(6)
   deletedAt DateTime?         @db.Timestamp(6)
-  name      String?           @db.VarChar
-  url       String?           @db.VarChar
+  name      String            @unique @db.VarChar
+  url       String            @unique @db.VarChar
   type      GraphicType
   category  GraphicsCategory?
 

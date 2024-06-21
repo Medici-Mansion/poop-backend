@@ -8,6 +8,10 @@ import {
   ApiResponse,
   getSchemaPath,
 } from '@nestjs/swagger'
+import {
+  ReferenceObject,
+  SchemaObject,
+} from '@nestjs/swagger/dist/interfaces/open-api-spec.interface'
 
 // 스웨거 메타데이터 키
 const DECORATORS_PREFIX = 'swagger'
@@ -163,7 +167,7 @@ export function makeInstanceByApiProperty<T>(
 
 interface SuccessResponseOption {
   /**
-   * 응답 디티오를 인자로받습니다
+   * 응답 DTO를 인자로받습니다
    */
   model: Type<any>
   /**
@@ -179,6 +183,8 @@ interface SuccessResponseOption {
    * 제네릭 형태가 필요할 때 기술합니다.
    */
   generic?: Type<any>
+
+  custom?: SchemaObject | ReferenceObject
 }
 
 export const ApiResult = (

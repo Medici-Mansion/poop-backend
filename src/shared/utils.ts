@@ -1,4 +1,4 @@
-// https://res.cloudinary.com/poop-storage/image/upload/f_auto,q_auto/v1/
+import { STORAGE_BASE_URL } from '@/shared/constants/storage.constant'
 
 interface GetImageOptions {
   width?: number
@@ -8,7 +8,8 @@ interface GetImageOptions {
 
 export function getImagePath(imageName?: string, options?: GetImageOptions) {
   const { width = 'auto', quality = 'auto', prefix = '' } = options ?? {}
+
   return imageName
-    ? `https://res.cloudinary.com/poop-storage/image/upload/f_auto,w_${width},q_${quality}/v1/${[prefix, imageName].filter((item) => item).join('/')}`
+    ? `${STORAGE_BASE_URL}/image/upload/f_auto,w_${width},q_${quality}/v1/${[prefix, imageName].filter((item) => item).join('/')}`
     : ''
 }
