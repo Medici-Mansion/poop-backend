@@ -10,12 +10,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common'
-import {
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiOperation,
-  ApiTags,
-} from '@nestjs/swagger'
+import { ApiOperation, ApiTags } from '@nestjs/swagger'
 
 import { AuthService } from '@/auth/auth.service'
 
@@ -33,6 +28,7 @@ import { AccessGuard } from '@/auth/guards/access.guard'
 import { ApiResult } from '@/shared/decorators/swagger/response.decorator'
 import { Api } from '@/shared/dtos/api.dto'
 import { CommonCodes } from '@/shared/errors/code/common.code'
+import { ChangePasswordCodeResponseDTO } from './dtos/change-password-code-response.dto'
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -40,14 +36,20 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
   @ApiOperation({
     summary: '회원가입 / 사용자 생성',
-    description:
-      '사용자 생성, 회원가입 용도로 사용됩니다. 정상응답 시 인증코드가 발송됩니다.',
+    description: '사용자 생성, 회원가입 용도로 사용됩니다.',
   })
-  @ApiCreatedResponse({
-    type: Boolean,
-  })
+  @ApiResult(CommonCodes.CREATED, [
+    {
+      model: Boolean,
+      exampleDescription:
+        '회원 성성 완료 후 (인증번호 요청 API)인증코드를 통해 verify 필요.',
+      exampleTitle: '회원 생성 완료',
+    },
+  ])
   @Put('signup')
-  async createUser(@Body() createUserDTO: CreateUserDTO): Promise<boolean> {
+  async createUser(
+    @Body() createUserDTO: CreateUserDTO,
+  ): Promise<Api<boolean>> {
     if (!createUserDTO.email && !createUserDTO.phone)
       throw new BadRequestException(['이메일 또는 전화번호는 필수에요.'])
     return this.authService.signup(createUserDTO)
@@ -57,13 +59,18 @@ export class AuthController {
     summary: '인증번호 요청 API',
     description: 'VID와 매칭되는 매체를 통해 인증번호를 전송받는다',
   })
-  // @ApiResult({
-  //   status: 200,
-  //   responseType: 'boolean',
-  //   description: '선택한 매체를 통해 인증번호를 전송한다.',
-  // })
+  @ApiResult(CommonCodes.OK, [
+    {
+      model: Boolean,
+      exampleDescription:
+        '인증이 필요한 회원 ( verified 하지 않은 회원 ) 일 경우 전송 성공',
+      exampleTitle: '인증번호 전송 성공',
+    },
+  ])
   @Get('verify')
-  async requestVerificationCode(@Query() getUserByVidDTO: GetUserByVidDTO) {
+  async requestVerificationCode(
+    @Query() getUserByVidDTO: GetUserByVidDTO,
+  ): Promise<Api<boolean>> {
     return this.authService.requestVerificationCode(getUserByVidDTO)
   }
 
@@ -76,13 +83,18 @@ export class AuthController {
     summary: '인증번호 검증 API',
     description: '인증코드를 통한 계정정보 인증',
   })
-  // @ApiResult({
-  //   responseType: 'boolean',
-  //   description: '인증코드 검증 완료 처리',
-  // })
+  @ApiResult(CommonCodes.OK, [
+    {
+      model: Boolean,
+      exampleDescription: '인증번호 검증 성공 이후 로그인 가능',
+      exampleTitle: '인증번호 검증 성공',
+    },
+  ])
   @Post('verify')
   @HttpCode(200)
-  async verifyingCode(@Body() verifyCodeDTO: VerifyCodeDTO): Promise<boolean> {
+  async verifyingCode(
+    @Body() verifyCodeDTO: VerifyCodeDTO,
+  ): Promise<Api<boolean>> {
     return this.authService.verifyingCode(verifyCodeDTO)
   }
 
@@ -146,18 +158,19 @@ export class AuthController {
     summary: '인증번호 검증 API (비밀번호찾기)',
     description: '인증코드를 통한 계정정보 인증',
   })
-  @ApiOkResponse({
-    schema: {
-      type: 'string',
-      example: 'ERJ492WE338EWEQ1',
-      description: '비밀번호 변경 요청 시 전달해야할 토큰',
+  @ApiResult(CommonCodes.OK, [
+    {
+      model: ChangePasswordCodeResponseDTO,
+      exampleDescription:
+        '인증코드 검증 완료 처리 (비밀번호찾기) 응답으로 16자리 문자열이 오는데, 비밀번호 변경 시 해당 문자열을 함께 던져야함',
+      exampleTitle: '패스워드 변경 코드 전송',
     },
-    description:
-      '인증코드 검증 완료 처리 (비밀번호찾기) 응답으로 16자리 문자열이 오는데, 비밀번호 변경 시 해당 문자열을 함께 던져야함',
-  })
+  ])
   @HttpCode(200)
   @Post('password-code')
-  verifyChangePasswordCode(@Body() verifyCodeDTO: VerifyCodeDTO) {
+  verifyChangePasswordCode(
+    @Body() verifyCodeDTO: VerifyCodeDTO,
+  ): Promise<Api<ChangePasswordCodeResponseDTO>> {
     return this.authService.verifyChangePasswordCode(verifyCodeDTO)
   }
 }

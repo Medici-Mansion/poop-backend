@@ -32,6 +32,7 @@ import { AuthRepository } from '@/auth/auth.repository'
 import { Api } from '@/shared/dtos/api.dto'
 
 import { UserException } from '@/shared/exceptions/user.exception'
+import { ChangePasswordCodeResponseDTO } from './dtos/change-password-code-response.dto'
 
 @Injectable()
 export class AuthService {
@@ -45,7 +46,7 @@ export class AuthService {
   ) {}
 
   @Transactional()
-  async signup(createUserDTO: CreateUserDTO): Promise<boolean> {
+  async signup(createUserDTO: CreateUserDTO): Promise<Api<boolean>> {
     const existUser = await this.authRepository.findOne(createUserDTO)
     if (existUser) {
       throw UserException.CONFLICT
@@ -68,7 +69,7 @@ export class AuthService {
       updatedAt: new Date(),
     })
 
-    return true
+    return Api.OK(true)
   }
 
   @Transactional()
@@ -103,7 +104,7 @@ export class AuthService {
   }
 
   @Transactional()
-  async verifyingCode(verifyCodeDTO: VerifyCodeDTO): Promise<boolean> {
+  async verifyingCode(verifyCodeDTO: VerifyCodeDTO): Promise<Api<boolean>> {
     await this.verificationsService.verifyingCode(verifyCodeDTO)
     const foundVerification =
       await this.verificationsService.getVerificationByVid(verifyCodeDTO)
@@ -113,7 +114,7 @@ export class AuthService {
     })
 
     await this.verificationsService.removeVerification(foundVerification.id)
-    return true
+    return Api.OK(true)
   }
 
   async login(
@@ -170,12 +171,12 @@ export class AuthService {
       )
     }
     await this.redisService.setPasswordCode(foundUser.id, code)
-    return true
+    return Api.OK(true)
   }
 
   async verifyChangePasswordCode(
     verifyCodeDTO: VerifyCodeDTO,
-  ): Promise<string> {
+  ): Promise<Api<ChangePasswordCodeResponseDTO>> {
     const foundUser = await this.usersService.getUserByVid(verifyCodeDTO)
 
     const code = await this.redisService.findById(foundUser.id)
@@ -191,7 +192,7 @@ export class AuthService {
       changePasswordKey,
     )
 
-    return changePasswordKey
+    return Api.OK(new ChangePasswordCodeResponseDTO(changePasswordKey))
   }
 
   async refresh(token: string): Promise<Api<VerifyingCodeResponseDTO>> {

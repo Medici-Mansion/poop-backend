@@ -53,7 +53,7 @@ export class VerificationsService {
       verificationId,
     )
 
-    if (!foundVerification) throw new NotFoundException()
+    if (!foundVerification) throw AuthException.NOTFOUND
 
     const newVerification = await this.verificationsRepository.update(
       foundVerification.id,
