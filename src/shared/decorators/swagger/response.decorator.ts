@@ -1,6 +1,6 @@
 import { Api } from '@/shared/dtos/api.dto'
 import { Result } from '@/shared/dtos/result.dto'
-import { IPoopError } from '@/shared/errors/error.interface'
+import { TPoopError } from '@/shared/errors/error.interface'
 import { Type, applyDecorators } from '@nestjs/common'
 import {
   ApiExtraModels,
@@ -188,9 +188,10 @@ interface SuccessResponseOption {
 }
 
 export const ApiResult = (
-  resultCode: IPoopError,
+  poopError: TPoopError,
   succesResponseOptions: SuccessResponseOption[],
 ) => {
+  const resultCode = typeof poopError === 'function' ? poopError() : poopError
   const examples = succesResponseOptions
     .map((response: SuccessResponseOption) => {
       // base CommonResponse 를 만듭니다.

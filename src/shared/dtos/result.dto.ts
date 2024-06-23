@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { CommonCodes } from '@/shared/errors/code/common.code'
-import { IPoopError } from '../errors/error.interface'
+import { IPoopError } from '@/shared/errors/error.interface'
 
 export class Result {
   @ApiProperty({ example: 200 })
@@ -14,7 +14,7 @@ export class Result {
   }
 
   static OK(): Result {
-    const errorCode = CommonCodes.OK
+    const errorCode = CommonCodes.OK()
     return new Result(errorCode.getErrorCode(), errorCode.getDescription())
   }
 

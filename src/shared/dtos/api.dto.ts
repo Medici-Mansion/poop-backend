@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger'
+import { Expose } from 'class-transformer'
+
 import { IPoopError } from '@/shared/errors/error.interface'
 import { Result } from '@/shared/dtos/result.dto'
-import { Expose } from 'class-transformer'
 
 export class Api<T = any> {
   @ApiProperty()

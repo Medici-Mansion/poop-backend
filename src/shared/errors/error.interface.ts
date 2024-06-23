@@ -3,6 +3,9 @@ export interface IPoopError {
   getErrorCode(): number
   getDescription(): string
 }
+
+export type TPoopError = (() => IPoopError) | IPoopError
+
 export type IErrorCode<ErrorCode extends string | number | symbol = any> = {
-  [key in ErrorCode]: IPoopError
+  [key in ErrorCode]: TPoopError
 }

@@ -1,7 +1,7 @@
 import { ApiException } from '@/shared/exceptions/exception.interface'
-import { IErrorCode, IPoopError } from '@/shared/errors/error.interface'
+import { IPoopError } from '@/shared/errors/error.interface'
 
-import { ResultCode } from '@/shared/errors/dtos/resultCode.dto'
+import { generateResponse } from '@/shared/utils'
 
 export enum UserCode {
   CONFLICT = 'USER:CONFLICT',
@@ -14,9 +14,9 @@ export enum UserCode {
  * 1100 이미 존재하는 유저
  * 1101 존재하지 않는 유저
  */
-export const UserCodes: IErrorCode<UserCode> = {
-  [UserCode.CONFLICT]: new ResultCode(419, 1100, '이미 존재하는 유저'),
-  [UserCode.NOTFOUND]: new ResultCode(400, 1101, '존재하지 않는 유저'),
+export const UserCodes = {
+  [UserCode.CONFLICT]: generateResponse(419, 1100, '이미 존재하는 유저'),
+  [UserCode.NOTFOUND]: generateResponse(400, 1101, '존재하지 않는 유저'),
 }
 
 export class UserException extends ApiException {
@@ -25,9 +25,9 @@ export class UserException extends ApiException {
   }
 
   static get CONFLICT() {
-    return new UserException(UserCodes['USER:CONFLICT'])
+    return new UserException(UserCodes['USER:CONFLICT']())
   }
   static get NOTFOUND() {
-    return new UserException(UserCodes['USER:NOTFOUND'])
+    return new UserException(UserCodes['USER:NOTFOUND']())
   }
 }

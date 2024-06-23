@@ -17,6 +17,8 @@ import { TOKEN_KEY } from '@/shared/constants/common.constant'
 import { GlobalExceptionFilter } from '@/common/filters/global.filter'
 import { ApiExceptionFilter } from '@/common/filters/api.filter'
 import { NotFoundExceptionFilter } from '@/common/filters/not-found.filter'
+import { ValidationError } from 'class-validator'
+import { ApiException } from './shared/exceptions/exception.interface'
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -36,7 +38,15 @@ async function bootstrap() {
       enableDebugMessages: true,
       transform: true,
       stopAtFirstError: true,
-      skipUndefinedProperties: true,
+      // skipUndefinedProperties: true,
+
+      exceptionFactory: (validationErrors: ValidationError[] = []) => {
+        if (validationErrors[0].constraints) {
+          return ApiException.BAD_REQUEST(
+            Object.values(validationErrors[0].constraints).join(', '),
+          )
+        }
+      },
     }),
   )
 

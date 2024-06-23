@@ -1,6 +1,6 @@
+import { CommonCodes } from '@/shared/errors/code/common.code'
 import { HttpException } from '@nestjs/common'
 import { IPoopError } from '../errors/error.interface'
-import { CommonCodes } from '../errors/code/common.code'
 
 export class ApiException extends HttpException {
   public readonly poopError: IPoopError
@@ -10,6 +10,14 @@ export class ApiException extends HttpException {
   }
 
   static get CONFLICT() {
-    return new ApiException(CommonCodes.CONFLICT)
+    return new ApiException(CommonCodes.CONFLICT())
+  }
+
+  static BAD_REQUEST(message?: string) {
+    return new ApiException(
+      CommonCodes.BAD_REQUEST({
+        message,
+      }),
+    )
   }
 }
