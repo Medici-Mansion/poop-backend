@@ -9,6 +9,7 @@ import { GetUserByVidDTO } from '@/users/dtos/get-user-by-vid.dto'
 import { Insertable } from 'kysely'
 import { verification } from '@/database/types'
 import { VerificationsRepository } from '@/verifications/verifications.repository'
+import { AuthException } from '@/shared/exceptions/auth.exception'
 
 @Injectable()
 export class VerificationsService {
@@ -24,7 +25,7 @@ export class VerificationsService {
       )
 
     if (!foundUserVerification) {
-      throw new NotFoundException()
+      throw AuthException.NOTFOUND
     }
     return foundUserVerification
   }
