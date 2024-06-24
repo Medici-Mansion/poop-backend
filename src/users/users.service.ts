@@ -9,7 +9,7 @@ import { GetMeResponseDTO } from '@/users/dtos/get-me.dto'
 import { UsersRepository } from '@/users/users.repository'
 import { Updateable } from 'kysely'
 import { User } from '@/database/types'
-import { UserException } from '@/shared/exceptions/user.exception'
+import { UserException } from '@/users/users.exception'
 import { ResultCode } from '@/shared/errors/dtos/resultCode.dto'
 
 @Injectable()

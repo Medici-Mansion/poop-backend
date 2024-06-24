@@ -31,7 +31,7 @@ import { TokenPayload } from '@/shared/interfaces/token.interface'
 import { AuthRepository } from '@/auth/auth.repository'
 import { Api } from '@/shared/dtos/api.dto'
 
-import { UserException } from '@/shared/exceptions/user.exception'
+import { UserException } from '@/users/users.exception'
 import { ChangePasswordCodeResponseDTO } from './dtos/change-password-code-response.dto'
 
 @Injectable()
