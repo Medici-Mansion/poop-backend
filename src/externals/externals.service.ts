@@ -1,3 +1,4 @@
+import { FatalLogRequestDTO } from './modules/influxdb/dtos/fatal-log-request.dto'
 import { HttpService } from '@nestjs/axios'
 import { Inject, Injectable } from '@nestjs/common'
 import FormData from 'form-data'
@@ -82,5 +83,9 @@ export class ExternalsService {
 
   async logResponse(logRequestDTO: LogRequestDTO) {
     return this.influxDBService.logRequest(logRequestDTO)
+  }
+
+  async fatalResponse(fatalLogRequestDTO: FatalLogRequestDTO) {
+    return this.influxDBService.fatalRequest(fatalLogRequestDTO)
   }
 }
