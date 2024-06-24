@@ -1,7 +1,7 @@
 import { GraphicType, GraphicsCategory } from '@/database/enums'
 import { Order } from '@/shared/dtos/common.dto'
-import { ApiPropertyOptional } from '@nestjs/swagger'
-import { IsEnum, IsOptional } from 'class-validator'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { IsEnum, IsOptional, IsUUID } from 'class-validator'
 
 export class GetGraphicsRequestDTO {
   @ApiPropertyOptional({
@@ -28,4 +28,13 @@ export class GetGraphicsRequestDTO {
   @IsOptional()
   @IsEnum(Order)
   order?: Order = Order.ASC
+}
+
+export class GetGraphicByIdRequestDTO {
+  @ApiProperty({
+    title: '그래픽 아이디',
+    description: '조회하고자 하는 그래픽요소의 아이디',
+  })
+  @IsUUID('all', { message: '유효하지 않은 아이디에요.' })
+  id: string
 }

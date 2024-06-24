@@ -13,11 +13,19 @@ export class ApiException extends HttpException {
     return new ApiException(CommonCodes.CONFLICT())
   }
 
-  static BAD_REQUEST(message?: string) {
+  static PLAIN_BAD_REQUEST(message?: string) {
     return new ApiException(
       CommonCodes.BAD_REQUEST({
         message,
       }),
     )
+  }
+
+  static PLAIN_NOT_FOUND(args?: {
+    code?: number
+    status?: number
+    message?: string
+  }) {
+    return new ApiException(CommonCodes.NOT_FOUND({ ...(args || {}) }))
   }
 }
