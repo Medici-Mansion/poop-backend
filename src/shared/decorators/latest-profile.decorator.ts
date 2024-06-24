@@ -5,11 +5,11 @@ import {
   createParamDecorator,
 } from '@nestjs/common'
 import { AccessGuard } from '@/auth/guards/access.guard'
-import { LoginProfileGuard } from '@/auth/guards/login-profile.guard'
 import { ProfileDTO } from '@/profiles/dtos/get-profile.dto'
+import { LoginGuard } from '@/auth/guards/login.guard'
 
 export function LatestProfile() {
-  return applyDecorators(UseGuards(AccessGuard, LoginProfileGuard))
+  return applyDecorators(UseGuards(AccessGuard, LoginGuard))
 }
 
 export const ExtractLatestProfile = createParamDecorator(

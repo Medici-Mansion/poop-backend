@@ -22,7 +22,7 @@ import { LoggingMiddleware } from '@/shared/middlewares/logging.middleware'
 
 import { BaseService } from '@/shared/services/base.service'
 import { Database } from '@/database/database.class'
-import { GraphicsModule } from './graphics/graphics.module';
+import { GraphicsModule } from '@/graphics/graphics.module'
 
 @Module({
   imports: [

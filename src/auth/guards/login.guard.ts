@@ -6,7 +6,7 @@ import { UsersService } from '@/users/users.service'
 import { TokenPayload } from '@/shared/interfaces/token.interface'
 
 @Injectable()
-export class LoginProfileGuard implements CanActivate {
+export class LoginGuard implements CanActivate {
   constructor(private readonly usersService: UsersService) {}
 
   async canActivate(context: ExecutionContext) {
@@ -14,9 +14,10 @@ export class LoginProfileGuard implements CanActivate {
     const token = req['token'] as TokenPayload
     if (!token) return false
     const user = await this.usersService.getUserById(token.uid)
+    req['user'] = user
     if (user.latestProfile) {
       req['profile'] = user.latestProfile
     }
-    return !!user.latestProfile
+    return !!user
   }
 }

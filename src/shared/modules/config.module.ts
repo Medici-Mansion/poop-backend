@@ -8,7 +8,9 @@ import { Env } from '@/shared/interfaces/env.interface'
   imports: [
     BaseConfigModule.forRoot({
       isGlobal: true,
-      envFilePath:process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : ".env",
+      envFilePath: process.env.NODE_ENV
+        ? `.env.${process.env.NODE_ENV}`
+        : '.env',
       validationSchema: Joi.object<Required<Env>>({
         NODE_ENV: Joi.valid(
           ...['production', 'development', 'test'],
