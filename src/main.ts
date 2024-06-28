@@ -42,7 +42,7 @@ async function bootstrap() {
 
       exceptionFactory: (validationErrors: ValidationError[] = []) => {
         if (validationErrors[0].constraints) {
-          return ApiException.BAD_REQUEST(
+          return ApiException.PLAIN_BAD_REQUEST(
             Object.values(validationErrors[0].constraints).join(', '),
           )
         }

@@ -51,7 +51,7 @@ export class AuthController {
     @Body() createUserDTO: CreateUserDTO,
   ): Promise<Api<boolean>> {
     if (!createUserDTO.email && !createUserDTO.phone)
-      throw ApiException.BAD_REQUEST('이메일 또는 전화번호는 필수에요.')
+      throw ApiException.PLAIN_BAD_REQUEST('이메일 또는 전화번호는 필수에요.')
     return this.authService.signup(createUserDTO)
   }
 

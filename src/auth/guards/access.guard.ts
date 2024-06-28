@@ -6,7 +6,7 @@ import { FastifyRequest } from 'fastify'
 import { AuthService } from '@/auth/auth.service'
 
 import { TOKEN_KEY } from '@/shared/constants/common.constant'
-import { AuthException } from '@/shared/exceptions/auth.exception'
+import { AuthException } from '@/auth/auth.exception'
 
 @Injectable()
 export class AccessGuard implements CanActivate {

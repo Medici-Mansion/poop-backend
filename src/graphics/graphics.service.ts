@@ -1,16 +1,20 @@
 import { Injectable } from '@nestjs/common'
+import { GraphicType } from '@/database/enums'
 
 import { GraphicsRepository } from '@/graphics/grahics.repository'
 
+import { ExternalsService } from '@/externals/externals.service'
+
 import { Api } from '@/shared/dtos/api.dto'
 import { GetGraphicsResponseDTO } from '@/graphics/dtos/get-graphics-response.dto'
-import { GetGraphicsRequestDTO } from '@/graphics/dtos/get-graphics-request.dto'
+import {
+  GetGraphicByIdRequestDTO,
+  GetGraphicsRequestDTO,
+} from '@/graphics/dtos/get-graphics-request.dto'
 import { CreateGraphicsDTO } from '@/graphics/dtos/create-graphics.dto'
-import { ExternalsService } from '@/externals/externals.service'
+import { UpdateGraphicsDTO } from '@/graphics/dtos/update-graphics.dto'
 import { Transactional } from '@nestjs-cls/transactional'
 import { ApiException } from '@/shared/exceptions/exception.interface'
-import { GraphicType } from '@/database/enums'
-
 @Injectable()
 export class GraphicsService {
   constructor(
@@ -26,6 +30,13 @@ export class GraphicsService {
     )
 
     return Api.OK(allGraphics.map((item) => new GetGraphicsResponseDTO(item)))
+  }
+
+  async getGraphicById(getGraphicByIdRequestDTO: GetGraphicByIdRequestDTO) {
+    const foundGraphic = await this.graphicsRepository.findOne(
+      getGraphicByIdRequestDTO.id,
+    )
+    return Api.OK(new GetGraphicsResponseDTO(foundGraphic))
   }
 
   @Transactional()
@@ -51,5 +62,42 @@ export class GraphicsService {
       url: graphicUrl[0].public_id,
     })
     return Api.OK(new GetGraphicsResponseDTO(res[0]))
+  }
+
+  @Transactional()
+  async updateGraphic(updateGraphicsDTO: UpdateGraphicsDTO) {
+    const foundGraphic = await this.graphicsRepository.findOne(
+      updateGraphicsDTO.id,
+    )
+
+    if (updateGraphicsDTO.name) {
+      const isExistName = await this.graphicsRepository.findOneByName(
+        updateGraphicsDTO.name,
+      )
+      if (isExistName && isExistName.id !== foundGraphic.id) {
+        throw ApiException.CONFLICT
+      }
+    }
+
+    let graphicUrl = ''
+
+    if (updateGraphicsDTO.file) {
+      const isLottieFile = updateGraphicsDTO.file.mimeType.includes('json')
+      const baseFolder = isLottieFile ? 'lottie' : 'gif'
+      const uploadResponse = await this.externalsService.uploadFiles(
+        [updateGraphicsDTO.file],
+        `graphics/${baseFolder}`,
+      )
+      graphicUrl = uploadResponse[0].public_id
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { file: _, ...updateValues } = updateGraphicsDTO
+    const updateResponse = await this.graphicsRepository.update({
+      ...(graphicUrl ? { url: graphicUrl } : {}),
+      ...updateValues,
+    })
+
+    return Api.OK(new GetGraphicsResponseDTO(updateResponse))
   }
 }
