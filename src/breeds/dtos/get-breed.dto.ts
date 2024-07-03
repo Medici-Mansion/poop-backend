@@ -3,7 +3,6 @@ import { IsOptional, IsString, IsUUID } from 'class-validator'
 
 import { CursorOption } from '@/shared/dtos/common.dto'
 
-import { getImagePath } from '@/shared/utils'
 import { SearchBreeds } from '@/database/types'
 import { Selectable } from 'kysely'
 
@@ -49,8 +48,6 @@ export class GetBreedResponseDTO {
     this.id = breeds.id
     this.name = breeds.nameKR
     this.nameEN = breeds.nameEN!
-    this.avatar = breeds.avatar
-      ? getImagePath(breeds.avatar, { width: 160, prefix: 'avatar' })
-      : ''
+    this.avatar = breeds.avatar || ''
   }
 }

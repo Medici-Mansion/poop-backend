@@ -1,7 +1,5 @@
-import { getImagePath } from '@/shared/utils'
 import { GraphicType, GraphicsCategory } from '@/database/enums'
 import { Graphics } from '@/database/types'
-import { STORAGE_BASE_URL } from '@/shared/constants/storage.constant'
 import { ApiProperty } from '@nestjs/swagger'
 import { Selectable } from 'kysely'
 
@@ -35,11 +33,6 @@ export class GetGraphicsResponseDTO {
     this.id = graphic.id
     this.name = graphic.name
     this.type = graphic.type
-    if (graphic.url) {
-      this.url =
-        graphic.type === GraphicType.Lottie
-          ? `${STORAGE_BASE_URL}/raw/upload/v1/${graphic.url}`
-          : getImagePath(graphic.url)
-    }
+    this.url = graphic.url
   }
 }
