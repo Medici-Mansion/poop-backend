@@ -19,7 +19,7 @@ export class AwsService {
         files.map(
           (file) =>
             new Promise<string>(async (resolve) => {
-              const key = folder + '/' + uuid()
+              const key = folder + '/' + uuid() + `.${file.extension}`
               const command = new PutObjectCommand({
                 Key: key,
                 Body: file.buffer,
@@ -27,9 +27,7 @@ export class AwsService {
                 ACL: ObjectCannedACL.public_read,
               })
               await this.s3Client.send(command)
-              resolve(
-                `https://${this.configService.get('AWS_S3_BUCKET_NAME')}.s3.${this.configService.get<string>('AWS_S3_REGION')}.amazonaws.com/${key}`,
-              )
+              resolve(`https://d3j361wruo71ic.cloudfront.net/${key}`)
             }),
         ),
       )
