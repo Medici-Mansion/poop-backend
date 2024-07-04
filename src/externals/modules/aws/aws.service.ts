@@ -19,7 +19,7 @@ export class AwsService {
         files.map(
           (file) =>
             new Promise<string>(async (resolve) => {
-              const key = folder + '/' + uuid() + `.${file.extension}`
+              const key = folder + '/' + uuid()
               const command = new PutObjectCommand({
                 Key: key,
                 Body: file.buffer,
@@ -27,7 +27,7 @@ export class AwsService {
                 ACL: ObjectCannedACL.public_read,
               })
               await this.s3Client.send(command)
-              resolve(`https://d3j361wruo71ic.cloudfront.net/${key}`)
+              resolve(`https://cdn.medici-mansion.com//${key}`)
             }),
         ),
       )
