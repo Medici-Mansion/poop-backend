@@ -27,7 +27,9 @@ export class AwsService {
                 ACL: ObjectCannedACL.public_read,
               })
               await this.s3Client.send(command)
-              resolve(`https://cdn.medici-mansion.com//${key}`)
+              const url = new URL('https://cdn.medici-mansion.com')
+              url.pathname = key
+              resolve(url.toString())
             }),
         ),
       )
