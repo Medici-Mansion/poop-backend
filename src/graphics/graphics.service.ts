@@ -52,14 +52,15 @@ export class GraphicsService {
     }
     const { file, ...rest } = createGraphicsDTO
     const baseFolder = isLottieFile ? 'lottie' : 'gif'
-    const graphicUrl = await this.externalsService.uploadFiles(
-      [file],
-      `graphics/${baseFolder}`,
-    )
+    const graphicUrl = await this.externalsService.uploadFiles({
+      files: [file],
+      folder: `graphics/${baseFolder}`,
+    })
+
     const res = await this.graphicsRepository.create({
       ...rest,
       type: isLottieFile ? GraphicType.Lottie : GraphicType.GIF,
-      url: graphicUrl[0].public_id,
+      url: graphicUrl[0],
     })
     return Api.OK(new GetGraphicsResponseDTO(res[0]))
   }
@@ -84,11 +85,11 @@ export class GraphicsService {
     if (updateGraphicsDTO.file) {
       const isLottieFile = updateGraphicsDTO.file.mimeType.includes('json')
       const baseFolder = isLottieFile ? 'lottie' : 'gif'
-      const uploadResponse = await this.externalsService.uploadFiles(
-        [updateGraphicsDTO.file],
-        `graphics/${baseFolder}`,
-      )
-      graphicUrl = uploadResponse[0].public_id
+      const uploadResponse = await this.externalsService.uploadFiles({
+        files: [updateGraphicsDTO.file],
+        folder: `graphics/${baseFolder}`,
+      })
+      graphicUrl = uploadResponse[0]
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

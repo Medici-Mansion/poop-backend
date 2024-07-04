@@ -9,9 +9,10 @@ import { CloudinaryModule } from '@/externals/modules/cloudinary/cloudinary.modu
 import { InfluxdbModule } from '@/externals/modules/influxdb/influxdb.module'
 import { ConfigService } from '@nestjs/config'
 import { Env } from '@/shared/interfaces/env.interface'
+import { AwsModule } from '@/externals/modules/aws/aws.module'
 
 @Module({
-  imports: [HttpModule, CloudinaryModule, InfluxdbModule],
+  imports: [HttpModule, CloudinaryModule, AwsModule, InfluxdbModule],
   providers: [
     BaseService,
     ExternalsService,

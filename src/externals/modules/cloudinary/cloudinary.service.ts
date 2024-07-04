@@ -3,15 +3,17 @@ import { UploadApiResponse, v2 } from 'cloudinary'
 
 import { CLOUDINARY } from '@/externals/modules/cloudinary/cloudinary.constants'
 
-import { UploadFileDTO } from '@/externals/modules/cloudinary/dto/upload-file.dto'
 import { MemoryStoredFile } from 'nestjs-form-data'
 
 @Injectable()
 export class CloudinaryService {
   constructor(@Inject(CLOUDINARY) private readonly cloudinary: typeof v2) {}
 
-  async uploadFiles(files: MemoryStoredFile[], folder: string = '') {
-    const uploadSettles = await Promise.allSettled(
+  async uploadFiles(
+    files: MemoryStoredFile[],
+    folder: string = '',
+  ): Promise<string[]> {
+    const uploadSettles = await Promise.all(
       files.map(
         (file) =>
           new Promise<UploadApiResponse>((resolve, reject) => {
@@ -29,6 +31,6 @@ export class CloudinaryService {
           }),
       ),
     )
-    return uploadSettles.map((settles) => new UploadFileDTO(settles))
+    return uploadSettles.map((file) => file.secure_url)
   }
 }

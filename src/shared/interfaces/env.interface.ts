@@ -28,4 +28,8 @@ export interface Env {
   readonly REDIS_HOST: string
   readonly REDIS_PORT: string
   readonly REDIS_PWD: string
+  readonly AWS_S3_BUCKET_NAME: string
+  readonly AWS_S3_REGION: string
+  readonly AWS_S3_ACCESS_KEY: string
+  readonly AWS_S3_ACCESS_SECRET_KEY: string
 }

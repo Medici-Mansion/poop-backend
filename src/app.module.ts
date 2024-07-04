@@ -23,6 +23,10 @@ import { LoggingMiddleware } from '@/shared/middlewares/logging.middleware'
 import { BaseService } from '@/shared/services/base.service'
 import { Database } from '@/database/database.class'
 import { GraphicsModule } from '@/graphics/graphics.module'
+import { APP_FILTER } from '@nestjs/core'
+import { GlobalExceptionFilter } from './common/filters/global.filter'
+import { NotFoundExceptionFilter } from './common/filters/not-found.filter'
+import { ApiExceptionFilter } from './common/filters/api.filter'
 
 @Module({
   imports: [
@@ -50,7 +54,21 @@ import { GraphicsModule } from '@/graphics/graphics.module'
     ToonModule,
     GraphicsModule,
   ],
-  providers: [BaseService],
+  providers: [
+    BaseService,
+    {
+      provide: APP_FILTER,
+      useClass: GlobalExceptionFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: NotFoundExceptionFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: ApiExceptionFilter,
+    },
+  ],
   controllers: [AppController],
 })
 export class AppModule implements NestModule {

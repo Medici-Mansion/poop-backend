@@ -1,3 +1,4 @@
+import { FatalLogRequestDTO } from './modules/influxdb/dtos/fatal-log-request.dto'
 import { HttpService } from '@nestjs/axios'
 import { Inject, Injectable } from '@nestjs/common'
 import FormData from 'form-data'
@@ -6,6 +7,7 @@ import CoolsmsMessageService from 'coolsms-node-sdk'
 
 import { BaseService } from '@/shared/services/base.service'
 import { CloudinaryService } from '@/externals/modules/cloudinary/cloudinary.service'
+import { AwsService } from '@/externals/modules/aws/aws.service'
 import { InfluxDBService } from '@/externals/modules/influxdb/influxDB.service'
 
 import { EmailVars } from '@/externals/interfaces/mail.interface'
@@ -13,6 +15,7 @@ import { EmailVars } from '@/externals/interfaces/mail.interface'
 import { LogRequestDTO } from '@/externals/modules/influxdb/dtos/log-request.dto'
 
 import { EmailTemplateName } from '@/shared/constants/common.constant'
+import { ApiException } from '@/shared/exceptions/exception.interface'
 
 @Injectable()
 export class ExternalsService {
@@ -21,6 +24,7 @@ export class ExternalsService {
     private readonly httpService: HttpService,
     private readonly cloudinaryService: CloudinaryService,
     private readonly influxDBService: InfluxDBService,
+    private readonly awsService: AwsService,
     @Inject(CoolsmsMessageService)
     private readonly coolsmsMessageService: CoolsmsMessageService,
   ) {}
@@ -76,11 +80,30 @@ export class ExternalsService {
     return response
   }
 
-  async uploadFiles(files: MemoryStoredFile[], folder: string = '') {
-    return this.cloudinaryService.uploadFiles(files, folder)
+  async uploadFiles({
+    files,
+    folder = '',
+    to = 'aws',
+  }: {
+    files: MemoryStoredFile[]
+    folder?: string
+    to?: 'aws' | 'cloudinary'
+  }) {
+    switch (to) {
+      case 'aws':
+        return this.awsService.uploadFiles(files, folder)
+      case 'cloudinary':
+        return this.cloudinaryService.uploadFiles(files, folder)
+      default:
+        throw ApiException.PLAIN_BAD_REQUEST('유효하지 않은 요청')
+    }
   }
 
   async logResponse(logRequestDTO: LogRequestDTO) {
     return this.influxDBService.logRequest(logRequestDTO)
+  }
+
+  async fatalResponse(fatalLogRequestDTO: FatalLogRequestDTO) {
+    return this.influxDBService.fatalRequest(fatalLogRequestDTO)
   }
 }

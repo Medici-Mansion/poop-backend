@@ -23,9 +23,10 @@ export class ProfilesService {
   async createProfile(userId: string, createProfileDTO: CreateProfileDTO) {
     // 존재하는 회원여부 확인
     await this.usersService.getUserById(userId)
-    const avatarUrl = await this.externalsService.uploadFiles([
-      createProfileDTO.avatar,
-    ])
+    const avatarUrl = await this.externalsService.uploadFiles({
+      files: [createProfileDTO.avatar],
+      folder: 'profile',
+    })
 
     // 존재하는 견종 확인
     const foundBreeds = await this.breedsService.findById(
@@ -35,7 +36,7 @@ export class ProfilesService {
     await this.profilesRepository.create({
       name: createProfileDTO.name,
       gender: createProfileDTO.gender,
-      avatarUrl: avatarUrl[0].secureUrl,
+      avatarUrl: avatarUrl[0],
       birthday: new Date(createProfileDTO.birthday),
       breedId: foundBreeds.id,
       userId,

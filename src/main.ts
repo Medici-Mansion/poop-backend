@@ -14,9 +14,6 @@ import { AppModule } from '@/app.module'
 
 import { TOKEN_KEY } from '@/shared/constants/common.constant'
 
-import { GlobalExceptionFilter } from '@/common/filters/global.filter'
-import { ApiExceptionFilter } from '@/common/filters/api.filter'
-import { NotFoundExceptionFilter } from '@/common/filters/not-found.filter'
 import { ValidationError } from 'class-validator'
 import { ApiException } from './shared/exceptions/exception.interface'
 
@@ -24,12 +21,6 @@ async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter(),
-  )
-
-  app.useGlobalFilters(
-    new GlobalExceptionFilter(),
-    new NotFoundExceptionFilter(),
-    new ApiExceptionFilter(),
   )
 
   app.useGlobalPipes(
