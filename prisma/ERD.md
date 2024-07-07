@@ -61,17 +61,6 @@ erDiagram
   GraphicType type
   GraphicsCategory category "nullable"
 }
-"search_breeds" {
-  String id PK
-  DateTime createdAt
-  DateTime updatedAt
-  DateTime deletedAt "nullable"
-  String nameKR
-  String nameEN "nullable"
-  String avatar "nullable"
-  String searchKey
-  Int searchKeyCode "nullable"
-}
 "profiles" }o--|| "breeds" : breed
 "profiles" }o--|| "users" : user
 "users" |o--o| "profiles" : latestProfile
@@ -142,16 +131,3 @@ erDiagram
   - `url`: 
   - `type`: 
   - `category`: 
-
-### `search_breeds`
-
-**Properties**
-  - `id`: 
-  - `createdAt`: 
-  - `updatedAt`: 
-  - `deletedAt`: 
-  - `nameKR`: 
-  - `nameEN`: 
-  - `avatar`: 
-  - `searchKey`: 
-  - `searchKeyCode`: 

@@ -90,19 +90,19 @@ model verification {
   userId String @unique @db.Uuid
 }
 
-view SearchBreeds {
-  id            String    @id @db.Uuid
-  createdAt     DateTime  @db.Timestamp(6)
-  updatedAt     DateTime  @updatedAt @db.Timestamp(6)
-  deletedAt     DateTime? @db.Timestamp(6)
-  nameKR        String    @db.VarChar
-  nameEN        String?   @db.VarChar
-  avatar        String?   @db.VarChar
-  searchKey     String
-  searchKeyCode Int?
+// view SearchBreeds {
+//   id            String    @id @db.Uuid
+//   createdAt     DateTime  @db.Timestamp(6)
+//   updatedAt     DateTime  @updatedAt @db.Timestamp(6)
+//   deletedAt     DateTime? @db.Timestamp(6)
+//   nameKR        String    @db.VarChar
+//   nameEN        String?   @db.VarChar
+//   avatar        String?   @db.VarChar
+//   searchKey     String
+//   searchKeyCode Int?
 
-  @@map("search_breeds")
-}
+//   @@map("search_breeds")
+// }
 
 model Graphics {
   id        String            @id @default(dbgenerated("uuid_generate_v4()"))

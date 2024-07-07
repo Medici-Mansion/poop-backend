@@ -9,7 +9,7 @@ export class BreedsRepository {
 
   async findAllBreeds(order: Order = Order.ASC) {
     return this.database
-      .selectFrom('search_breeds')
+      .selectFrom('breeds')
       .orderBy('nameKR', order === Order.ASC ? 'asc' : 'desc')
       .selectAll()
       .execute()
