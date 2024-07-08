@@ -128,7 +128,7 @@ export class AuthService {
 
     const foundUser = await this.authRepository.findOne(userWhereCond)
 
-    if (!foundUser) throw new NotFoundException()
+    if (!foundUser) throw UserException.NOTFOUND
     if (!foundUser.verified) throw new ForbiddenException('미인증 계정')
     const validPassword = await this.checkPassword(
       loginRequestDTO.password,

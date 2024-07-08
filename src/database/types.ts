@@ -11,7 +11,7 @@ export type Breed = {
     createdAt: Generated<Timestamp>;
     updatedAt: Generated<Timestamp>;
     deletedAt: Timestamp | null;
-    nameKR: string | null;
+    nameKR: string;
     nameEN: string | null;
     avatar: string | null;
 };

@@ -11,7 +11,7 @@ erDiagram
   DateTime createdAt
   DateTime updatedAt
   DateTime deletedAt "nullable"
-  String nameKR "nullable"
+  String nameKR
   String nameEN "nullable"
   String avatar "nullable"
 }

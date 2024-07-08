@@ -3,8 +3,8 @@ import { IsOptional, IsString, IsUUID } from 'class-validator'
 
 import { CursorOption } from '@/shared/dtos/common.dto'
 
-import { SearchBreeds } from '@/database/types'
 import { Selectable } from 'kysely'
+import { Breed } from '@/database/types'
 
 export class GetBreadRequestDTO extends CursorOption {
   @ApiProperty({
@@ -44,7 +44,7 @@ export class GetBreedResponseDTO {
   })
   avatar: string
 
-  constructor(breeds: Selectable<SearchBreeds>) {
+  constructor(breeds: Selectable<Breed>) {
     this.id = breeds.id
     this.name = breeds.nameKR
     this.nameEN = breeds.nameEN!
