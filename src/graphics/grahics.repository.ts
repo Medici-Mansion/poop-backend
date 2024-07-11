@@ -78,4 +78,12 @@ export class GraphicsRepository {
       .selectAll()
       .execute()
   }
+
+  async removeGraphic(id: string) {
+    return this.database
+      .deleteFrom('graphics')
+      .where('id', '=', id)
+      .returningAll()
+      .execute()
+  }
 }

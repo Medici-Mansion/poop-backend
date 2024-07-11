@@ -15,6 +15,7 @@ import { CreateGraphicsDTO } from '@/graphics/dtos/create-graphics.dto'
 import { UpdateGraphicsDTO } from '@/graphics/dtos/update-graphics.dto'
 import { Transactional } from '@nestjs-cls/transactional'
 import { ApiException } from '@/shared/exceptions/exception.interface'
+import { RemoveGraphicsDTO } from './dtos/remove-graphics.dto'
 @Injectable()
 export class GraphicsService {
   constructor(
@@ -100,5 +101,11 @@ export class GraphicsService {
     })
 
     return Api.OK(new GetGraphicsResponseDTO(updateResponse))
+  }
+
+  @Transactional()
+  async removeGraphic(removeGraphicsDTO: RemoveGraphicsDTO) {
+    await this.graphicsRepository.removeGraphic(removeGraphicsDTO.id)
+    return Api.OK(true)
   }
 }

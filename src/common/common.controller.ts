@@ -5,7 +5,16 @@ import {
   ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger'
-import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common'
 
 import { BreedsService } from '@/breeds/breeds.service'
 
@@ -23,6 +32,7 @@ import { FormDataRequest } from 'nestjs-form-data'
 import { Api } from '@/shared/dtos/api.dto'
 import { UpdateGraphicsDTO } from '@/graphics/dtos/update-graphics.dto'
 import { GraphicsCode, GraphicsCodes } from '@/graphics/graphics.exception'
+import { RemoveGraphicsDTO } from '@/graphics/dtos/remove-graphics.dto'
 
 @ApiExtraModels(GetBreedResponseDTO)
 @ApiTags('Common')
@@ -150,5 +160,21 @@ export class CommonController {
     @Body() updateGraphicsDTO: UpdateGraphicsDTO,
   ): Promise<Api<GetGraphicsResponseDTO>> {
     return this.graphicsService.updateGraphic(updateGraphicsDTO)
+  }
+
+  @Delete('graphic')
+  @ApiOperation({
+    summary: '그래픽 정보 삭제',
+    description: '선택한 그래픽을 삭제합니다.',
+  })
+  @ApiResult(CommonCodes.DELETE, [
+    {
+      model: Boolean,
+      exampleDescription: '삭제 성공',
+      exampleTitle: '삭제 성공',
+    },
+  ])
+  async removeGraphic(@Body() removeGraphicsDTO: RemoveGraphicsDTO) {
+    return this.graphicsService.removeGraphic(removeGraphicsDTO)
   }
 }
