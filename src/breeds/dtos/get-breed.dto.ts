@@ -27,7 +27,7 @@ export class GetBreedResponseDTO {
   id!: string
 
   @ApiProperty({ description: '이름', example: '나폴리탄 마스티프' })
-  name!: string
+  nameKR!: string
 
   @ApiProperty({
     description: '영어 이름',
@@ -46,7 +46,7 @@ export class GetBreedResponseDTO {
 
   constructor(breeds: Selectable<Breed>) {
     this.id = breeds.id
-    this.name = breeds.nameKR
+    this.nameKR = breeds.nameKR
     this.nameEN = breeds.nameEN!
     this.avatar = breeds.avatar || ''
   }

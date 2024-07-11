@@ -29,7 +29,6 @@ import { EmailTemplateName } from '@/shared/constants/common.constant'
 
 import { TokenPayload } from '@/shared/interfaces/token.interface'
 import { AuthRepository } from '@/auth/auth.repository'
-import { Api } from '@/shared/dtos/api.dto'
 
 import { UserException } from '@/users/users.exception'
 import { ChangePasswordCodeResponseDTO } from './dtos/change-password-code-response.dto'
@@ -46,7 +45,7 @@ export class AuthService {
   ) {}
 
   @Transactional()
-  async signup(createUserDTO: CreateUserDTO): Promise<Api<boolean>> {
+  async signup(createUserDTO: CreateUserDTO): Promise<boolean> {
     const existUser = await this.authRepository.findOne(createUserDTO)
     if (existUser) {
       throw UserException.CONFLICT
@@ -69,11 +68,13 @@ export class AuthService {
       updatedAt: new Date(),
     })
 
-    return Api.OK(true)
+    return true
   }
 
   @Transactional()
-  async requestVerificationCode(getUserByVidDTO: GetUserByVidDTO) {
+  async requestVerificationCode(
+    getUserByVidDTO: GetUserByVidDTO,
+  ): Promise<boolean> {
     const foundVerification =
       await this.verificationsService.getVerificationByVid(getUserByVidDTO)
 
@@ -100,11 +101,11 @@ export class AuthService {
       )
     }
 
-    return Api.OK(true)
+    return true
   }
 
   @Transactional()
-  async verifyingCode(verifyCodeDTO: VerifyCodeDTO): Promise<Api<boolean>> {
+  async verifyingCode(verifyCodeDTO: VerifyCodeDTO): Promise<boolean> {
     await this.verificationsService.verifyingCode(verifyCodeDTO)
     const foundVerification =
       await this.verificationsService.getVerificationByVid(verifyCodeDTO)
@@ -114,12 +115,12 @@ export class AuthService {
     })
 
     await this.verificationsService.removeVerification(foundVerification.id)
-    return Api.OK(true)
+    return true
   }
 
   async login(
     loginRequestDTO: LoginRequestDTO,
-  ): Promise<Api<VerifyingCodeResponseDTO>> {
+  ): Promise<VerifyingCodeResponseDTO> {
     const userWhereCond = {
       email: loginRequestDTO.id,
       phone: loginRequestDTO.id,
@@ -140,7 +141,7 @@ export class AuthService {
     // TODO: 커스텀에러를 통해 인증되지 않은 계정의 로그인 요청 분기 필요합니다.
     const newVerifyToken = await this.publishToken(foundUser.id)
 
-    return Api.OK(newVerifyToken)
+    return newVerifyToken
   }
 
   /**
@@ -149,7 +150,9 @@ export class AuthService {
    * @param getUserByVidDTO
    * @returns
    */
-  async getChangePasswordCode(getUserByVidDTO: GetUserByVidDTO) {
+  async getChangePasswordCode(
+    getUserByVidDTO: GetUserByVidDTO,
+  ): Promise<boolean> {
     const foundUser = await this.usersService.getUserByVid(getUserByVidDTO)
     const code = this.verificationsService.generateRandomString()
     if (getUserByVidDTO.type === VerificationType.PHONE) {
@@ -171,12 +174,12 @@ export class AuthService {
       )
     }
     await this.redisService.setPasswordCode(foundUser.id, code)
-    return Api.OK(true)
+    return true
   }
 
   async verifyChangePasswordCode(
     verifyCodeDTO: VerifyCodeDTO,
-  ): Promise<Api<ChangePasswordCodeResponseDTO>> {
+  ): Promise<ChangePasswordCodeResponseDTO> {
     const foundUser = await this.usersService.getUserByVid(verifyCodeDTO)
 
     const code = await this.redisService.findById(foundUser.id)
@@ -192,10 +195,10 @@ export class AuthService {
       changePasswordKey,
     )
 
-    return Api.OK(new ChangePasswordCodeResponseDTO(changePasswordKey))
+    return new ChangePasswordCodeResponseDTO(changePasswordKey)
   }
 
-  async refresh(token: string): Promise<Api<VerifyingCodeResponseDTO>> {
+  async refresh(token: string): Promise<VerifyingCodeResponseDTO> {
     const verifiedToken = this.verify(token, {
       ignoreExpiration: true,
     })
@@ -210,7 +213,7 @@ export class AuthService {
 
     const newToken = await this.publishToken(foundUser.id)
 
-    return Api.OK(newToken)
+    return newToken
   }
 
   verify(

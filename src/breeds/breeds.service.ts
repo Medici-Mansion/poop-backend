@@ -8,12 +8,12 @@ import { BreedsRepository } from '@/breeds/breeds.repository'
 export class BreedsService {
   constructor(private readonly breedsRepository: BreedsRepository) {}
 
-  async findById(id: string) {
+  async findById(id: string): Promise<GetBreedResponseDTO> {
     const foundBreeds = await this.breedsRepository.findOne(id)
 
     if (!foundBreeds) throw new NotFoundException()
 
-    return foundBreeds
+    return new GetBreedResponseDTO(foundBreeds)
   }
 
   async getAllBreeds() {

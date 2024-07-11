@@ -46,13 +46,14 @@ export class AuthController {
       exampleTitle: '회원 생성 완료',
     },
   ])
-  @Put('signup')
+  @Put('')
   async createUser(
     @Body() createUserDTO: CreateUserDTO,
   ): Promise<Api<boolean>> {
     if (!createUserDTO.email && !createUserDTO.phone)
       throw ApiException.PLAIN_BAD_REQUEST('이메일 또는 전화번호는 필수에요.')
-    return this.authService.signup(createUserDTO)
+    await this.authService.signup(createUserDTO)
+    return Api.OK(true)
   }
 
   @ApiOperation({
@@ -71,7 +72,8 @@ export class AuthController {
   async requestVerificationCode(
     @Query() getUserByVidDTO: GetUserByVidDTO,
   ): Promise<Api<boolean>> {
-    return this.authService.requestVerificationCode(getUserByVidDTO)
+    await this.authService.requestVerificationCode(getUserByVidDTO)
+    return Api.OK(true)
   }
 
   /**
@@ -95,7 +97,8 @@ export class AuthController {
   async verifyingCode(
     @Body() verifyCodeDTO: VerifyCodeDTO,
   ): Promise<Api<boolean>> {
-    return this.authService.verifyingCode(verifyCodeDTO)
+    await this.authService.verifyingCode(verifyCodeDTO)
+    return Api.OK(true)
   }
 
   @ApiOperation({
@@ -115,7 +118,8 @@ export class AuthController {
   async login(
     @Body() loginRequestDTO: LoginRequestDTO,
   ): Promise<Api<VerifyingCodeResponseDTO>> {
-    return this.authService.login(loginRequestDTO)
+    const newVerifyToken = await this.authService.login(loginRequestDTO)
+    return Api.OK(newVerifyToken)
   }
 
   @UseGuards(AccessGuard)
@@ -133,8 +137,11 @@ export class AuthController {
   ])
   @HttpCode(200)
   @Post('refresh')
-  refresh(@PlainToken() token: string): Promise<Api<VerifyingCodeResponseDTO>> {
-    return this.authService.refresh(token)
+  async refresh(
+    @PlainToken() token: string,
+  ): Promise<Api<VerifyingCodeResponseDTO>> {
+    const newToken = await this.authService.refresh(token)
+    return Api.OK(newToken)
   }
 
   @ApiOperation({
@@ -150,8 +157,12 @@ export class AuthController {
     },
   ])
   @Get('password-code')
-  getChangePasswordCode(@Query() getUserByVidDTO: GetUserByVidDTO) {
-    return this.authService.getChangePasswordCode(getUserByVidDTO)
+  async getChangePasswordCode(
+    @Query() getUserByVidDTO: GetUserByVidDTO,
+  ): Promise<Api<boolean>> {
+    const response =
+      await this.authService.getChangePasswordCode(getUserByVidDTO)
+    return Api.OK(response)
   }
 
   @ApiOperation({
@@ -168,9 +179,11 @@ export class AuthController {
   ])
   @HttpCode(200)
   @Post('password-code')
-  verifyChangePasswordCode(
+  async verifyChangePasswordCode(
     @Body() verifyCodeDTO: VerifyCodeDTO,
   ): Promise<Api<ChangePasswordCodeResponseDTO>> {
-    return this.authService.verifyChangePasswordCode(verifyCodeDTO)
+    const changePasswordCodeResponseDTO =
+      await this.authService.verifyChangePasswordCode(verifyCodeDTO)
+    return Api.OK(changePasswordCodeResponseDTO)
   }
 }

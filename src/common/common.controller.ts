@@ -85,9 +85,11 @@ export class CommonController {
   async getAllGraphics(
     @Query() getGraphicsRequestDTO: GetGraphicsRequestDTO,
   ): Promise<Api<GetGraphicsResponseDTO[]>> {
-    return this.graphicsService.getAllGraphicsByCategorOrType(
-      getGraphicsRequestDTO,
-    )
+    const getGraphicsResponseDTO =
+      await this.graphicsService.getAllGraphicsByCategorOrType(
+        getGraphicsRequestDTO,
+      )
+    return Api.OK(getGraphicsResponseDTO)
   }
 
   @Get('graphics/:id')
@@ -119,7 +121,10 @@ export class CommonController {
   async getGraphicById(
     @Param() getGraphicByIdRequestDTO: GetGraphicByIdRequestDTO,
   ): Promise<Api<GetGraphicsResponseDTO>> {
-    return this.graphicsService.getGraphicById(getGraphicByIdRequestDTO)
+    const response = await this.graphicsService.getGraphicById(
+      getGraphicByIdRequestDTO,
+    )
+    return Api.OK(response)
   }
 
   @Put('graphics')
@@ -139,7 +144,9 @@ export class CommonController {
   async createGraphic(
     @Body() createGraphicsDTO: CreateGraphicsDTO,
   ): Promise<Api<GetGraphicsResponseDTO>> {
-    return this.graphicsService.createGraphic(createGraphicsDTO)
+    const getGraphicsResponseDTO =
+      await this.graphicsService.createGraphic(createGraphicsDTO)
+    return Api.OK(getGraphicsResponseDTO)
   }
 
   @Post('graphics')
@@ -159,7 +166,10 @@ export class CommonController {
   async updateGraphic(
     @Body() updateGraphicsDTO: UpdateGraphicsDTO,
   ): Promise<Api<GetGraphicsResponseDTO>> {
-    return this.graphicsService.updateGraphic(updateGraphicsDTO)
+    const getGraphicsResponseDTO =
+      await this.graphicsService.updateGraphic(updateGraphicsDTO)
+
+    return Api.OK(getGraphicsResponseDTO)
   }
 
   @Delete('graphic')
@@ -175,6 +185,7 @@ export class CommonController {
     },
   ])
   async removeGraphic(@Body() removeGraphicsDTO: RemoveGraphicsDTO) {
-    return this.graphicsService.removeGraphic(removeGraphicsDTO)
+    const response = await this.graphicsService.removeGraphic(removeGraphicsDTO)
+    return Api.OK(response)
   }
 }

@@ -5,7 +5,6 @@ import { GraphicsRepository } from '@/graphics/grahics.repository'
 
 import { ExternalsService } from '@/externals/externals.service'
 
-import { Api } from '@/shared/dtos/api.dto'
 import { GetGraphicsResponseDTO } from '@/graphics/dtos/get-graphics-response.dto'
 import {
   GetGraphicByIdRequestDTO,
@@ -25,23 +24,27 @@ export class GraphicsService {
 
   async getAllGraphicsByCategorOrType(
     getGraphicsRequestDTO: GetGraphicsRequestDTO,
-  ) {
+  ): Promise<GetGraphicsResponseDTO[]> {
     const allGraphics = await this.graphicsRepository.findAllByCategoryOrType(
       getGraphicsRequestDTO,
     )
 
-    return Api.OK(allGraphics.map((item) => new GetGraphicsResponseDTO(item)))
+    return allGraphics.map((item) => new GetGraphicsResponseDTO(item))
   }
 
-  async getGraphicById(getGraphicByIdRequestDTO: GetGraphicByIdRequestDTO) {
+  async getGraphicById(
+    getGraphicByIdRequestDTO: GetGraphicByIdRequestDTO,
+  ): Promise<GetGraphicsResponseDTO> {
     const foundGraphic = await this.graphicsRepository.findOne(
       getGraphicByIdRequestDTO.id,
     )
-    return Api.OK(new GetGraphicsResponseDTO(foundGraphic))
+    return new GetGraphicsResponseDTO(foundGraphic)
   }
 
   @Transactional()
-  async createGraphic(createGraphicsDTO: CreateGraphicsDTO) {
+  async createGraphic(
+    createGraphicsDTO: CreateGraphicsDTO,
+  ): Promise<GetGraphicsResponseDTO> {
     const isLottieFile = createGraphicsDTO.file.mimeType.includes('json')
 
     const isExistName = await this.graphicsRepository.findOneByName(
@@ -63,11 +66,13 @@ export class GraphicsService {
       type: isLottieFile ? GraphicType.Lottie : GraphicType.GIF,
       url: graphicUrl[0],
     })
-    return Api.OK(new GetGraphicsResponseDTO(res[0]))
+    return new GetGraphicsResponseDTO(res[0])
   }
 
   @Transactional()
-  async updateGraphic(updateGraphicsDTO: UpdateGraphicsDTO) {
+  async updateGraphic(
+    updateGraphicsDTO: UpdateGraphicsDTO,
+  ): Promise<GetGraphicsResponseDTO> {
     const foundGraphic = await this.graphicsRepository.findOne(
       updateGraphicsDTO.id,
     )
@@ -100,12 +105,12 @@ export class GraphicsService {
       ...updateValues,
     })
 
-    return Api.OK(new GetGraphicsResponseDTO(updateResponse))
+    return new GetGraphicsResponseDTO(updateResponse)
   }
 
   @Transactional()
   async removeGraphic(removeGraphicsDTO: RemoveGraphicsDTO) {
     await this.graphicsRepository.removeGraphic(removeGraphicsDTO.id)
-    return Api.OK(true)
+    return true
   }
 }
