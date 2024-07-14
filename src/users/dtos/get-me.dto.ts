@@ -5,7 +5,6 @@ import { IsOnlyDate } from '@/shared/validators/is-date-string.validator'
 import { ApiProperty } from '@nestjs/swagger'
 import { Transform } from 'class-transformer'
 import {
-  IsEmail,
   IsEnum,
   IsOptional,
   IsPhoneNumber,
@@ -55,17 +54,17 @@ export class GetMeResponseDTO {
   @Transform(({ value }) => (value === '' ? undefined : value))
   @IsOptional()
   @IsPhoneNumber('KR', { message: '유효하지 않은 번호에요.' })
-  phone?: string | null
+  phone: string | null
 
-  @ApiProperty({
-    description: '사용자 이메일',
-    example: 'akdfhr2@gmail.com',
-    nullable: true,
-  })
-  @Transform(({ value }) => (value === '' ? null : value))
-  @IsOptional()
-  @IsEmail({}, { message: '유효하지 않은 이메일이에요.' })
-  email?: string | null
+  // @ApiProperty({
+  //   description: '사용자 이메일',
+  //   example: 'akdfhr2@gmail.com',
+  //   nullable: true,
+  // })
+  // @Transform(({ value }) => (value === '' ? null : value))
+  // @IsOptional()
+  // @IsEmail({}, { message: '유효하지 않은 이메일이에요.' })
+  // email?: string | null
 
   @ApiProperty({
     description: '인증 일자',
@@ -79,9 +78,7 @@ export class GetMeResponseDTO {
     this.id = user.id
     this.birthday = dayjs(user.birthday).format('YYYY-MM-DD')
     this.nickname = user.nickname
-    this.gender = user.gender
     this.phone = user.phone
-    this.email = user.email
     this.verified = user.verified
     this.latestProfileId = user.latestProfileId
   }

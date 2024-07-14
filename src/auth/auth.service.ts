@@ -25,13 +25,12 @@ import {
 import { LoginRequestDTO } from '@/auth/dtos/login.dto'
 import { GetUserByVidDTO } from '@/users/dtos/get-user-by-vid.dto'
 
-import { EmailTemplateName } from '@/shared/constants/common.constant'
-
 import { TokenPayload } from '@/shared/interfaces/token.interface'
 import { AuthRepository } from '@/auth/auth.repository'
 
 import { UserException } from '@/users/users.exception'
 import { ChangePasswordCodeResponseDTO } from './dtos/change-password-code-response.dto'
+import { AuthException } from './auth.exception'
 
 @Injectable()
 export class AuthService {
@@ -87,21 +86,22 @@ export class AuthService {
         `[풉 POOP] 인증번호 확인 문자입니다. \n 인증코드: ${newVerification.code}`,
         getUserByVidDTO.vid,
       )
-    } else if (getUserByVidDTO.type === VerificationType.EMAIL) {
-      await this.externalsService.sendEmail(
-        '[풉 POOP] 인증번호 확인 메일입니다.',
-        getUserByVidDTO.vid,
-        EmailTemplateName.CONFIRM_EMAIL,
-        [
-          {
-            key: 'code',
-            value: newVerification.code,
-          },
-        ],
-      )
+      return true
     }
-
-    return true
+    throw AuthException.NOTFOUND
+    // else if (getUserByVidDTO.type === VerificationType.EMAIL) {
+    //   await this.externalsService.sendEmail(
+    //     '[풉 POOP] 인증번호 확인 메일입니다.',
+    //     getUserByVidDTO.vid,
+    //     EmailTemplateName.CONFIRM_EMAIL,
+    //     [
+    //       {
+    //         key: 'code',
+    //         value: newVerification.code,
+    //       },
+    //     ],
+    //   )
+    // }
   }
 
   @Transactional()
@@ -122,7 +122,7 @@ export class AuthService {
     loginRequestDTO: LoginRequestDTO,
   ): Promise<VerifyingCodeResponseDTO> {
     const userWhereCond = {
-      email: loginRequestDTO.id,
+      // email: loginRequestDTO.id,
       phone: loginRequestDTO.id,
       nickname: loginRequestDTO.id,
     }
@@ -160,21 +160,24 @@ export class AuthService {
         `POOP! \n 인증코드: ${code}`,
         getUserByVidDTO.vid,
       )
-    } else if (getUserByVidDTO.type === VerificationType.EMAIL) {
-      await this.externalsService.sendEmail(
-        '[PooP!] 계정인증코드입니다.',
-        getUserByVidDTO.vid,
-        EmailTemplateName.CONFIRM_EMAIL,
-        [
-          {
-            key: 'code',
-            value: code,
-          },
-        ],
-      )
+      await this.redisService.setPasswordCode(foundUser.id, code)
+      return true
     }
-    await this.redisService.setPasswordCode(foundUser.id, code)
-    return true
+    // else if (getUserByVidDTO.type === VerificationType.EMAIL) {
+    //   await this.externalsService.sendEmail(
+    //     '[PooP!] 계정인증코드입니다.',
+    //     getUserByVidDTO.vid,
+    //     EmailTemplateName.CONFIRM_EMAIL,
+    //     [
+    //       {
+    //         key: 'code',
+    //         value: code,
+    //       },
+    //     ],
+    //   )
+    // }
+
+    throw AuthException.NOTFOUND
   }
 
   async verifyChangePasswordCode(

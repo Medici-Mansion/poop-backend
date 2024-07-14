@@ -7,25 +7,19 @@ export class AuthRepository {
 
   async findOne(
     createUserDTO: Partial<{
-      id: string
       nickname: string
       phone: string
-      email: string
     }>,
   ) {
     return this.database
       .selectFrom('users')
       .where((eb) =>
         eb.or([
-          ...(createUserDTO.id ? [eb('accountId', '=', createUserDTO.id)] : []),
           ...(createUserDTO.nickname
             ? [eb('nickname', '=', createUserDTO.nickname)]
             : []),
           ...(createUserDTO.phone
             ? [eb('phone', '=', createUserDTO.phone)]
-            : []),
-          ...(createUserDTO.email
-            ? [eb('email', '=', createUserDTO.email)]
             : []),
         ]),
       )
@@ -33,12 +27,10 @@ export class AuthRepository {
       .executeTakeFirst()
   }
 
-  async create(createUserDTO: CreateUserDTO & { password: string }) {
-    const { id, ...newUserData } = createUserDTO
-
+  async create(createUserDTO: CreateUserDTO) {
     return this.database
       .insertInto('users')
-      .values([{ accountId: id, ...newUserData, updatedAt: new Date() }])
+      .values([{ ...createUserDTO, updatedAt: new Date() }])
       .returning('id')
       .executeTakeFirstOrThrow()
   }

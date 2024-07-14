@@ -24,8 +24,8 @@ export class PatchPasswordDTO {
   code: string
 
   @ApiProperty({
-    description: '코드를 전송받은 매체 (이메일, 휴대전화)',
-    example: VerificationType.EMAIL,
+    description: '코드를 전송받은 매체 ( 휴대전화)',
+    example: VerificationType.PHONE,
     type: VerificationType,
     enum: VerificationType,
   })
@@ -33,8 +33,8 @@ export class PatchPasswordDTO {
   type: VerificationType
 
   @ApiProperty({
-    description: '인증받은 매체의 값 (이메일주소, 휴대전화번호)',
-    example: 'akdfhr2@gmail.com',
+    description: '인증받은 매체의 값 ( 휴대전화번호)',
+    example: '01099999999',
   })
   @IsEmailOrPhoneNumber({ message: '유효하지 않은 형식이에요.' })
   vid: string

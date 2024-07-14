@@ -25,7 +25,7 @@ export class LoginRequestDTO {
 
   @ApiProperty({
     description: '로그인에 사용할 아이디',
-    example: 'akdfhr2@gmail.com',
+    example: '01099999999',
   })
   @IsString()
   id: string

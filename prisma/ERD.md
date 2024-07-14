@@ -32,13 +32,10 @@ erDiagram
   DateTime createdAt
   DateTime updatedAt
   DateTime deletedAt "nullable"
-  String accountId
   String password
   String nickname UK
-  String email UK "nullable"
-  String phone UK "nullable"
+  String phone UK
   DateTime birthday
-  Gender gender
   DateTime verified "nullable"
   String latestToken "nullable"
   String latestProfileId FK "nullable"
@@ -99,13 +96,10 @@ erDiagram
   - `createdAt`: 
   - `updatedAt`: 
   - `deletedAt`: 
-  - `accountId`: 
   - `password`: 
   - `nickname`: 
-  - `email`: 
   - `phone`: 
   - `birthday`: 
-  - `gender`: 
   - `verified`: 
   - `latestToken`: 
   - `latestProfileId`: 

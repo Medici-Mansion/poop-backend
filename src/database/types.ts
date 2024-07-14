@@ -42,13 +42,10 @@ export type User = {
     createdAt: Generated<Timestamp>;
     updatedAt: Generated<Timestamp>;
     deletedAt: Timestamp | null;
-    accountId: string;
     password: string;
     nickname: string;
-    email: string | null;
-    phone: string | null;
+    phone: string;
     birthday: Timestamp;
-    gender: Generated<Gender>;
     verified: Timestamp | null;
     latestToken: string | null;
     latestProfileId: string | null;

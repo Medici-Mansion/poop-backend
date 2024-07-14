@@ -11,6 +11,8 @@ import { Updateable } from 'kysely'
 import { User } from '@/database/types'
 import { UserException } from '@/users/users.exception'
 import { ResultCode } from '@/shared/errors/dtos/resultCode.dto'
+import { CheckNicknameDTO } from './dtos/check-nickname.dto'
+import { Api } from '@/shared/dtos/api.dto'
 
 @Injectable()
 export class UsersService {
@@ -24,6 +26,13 @@ export class UsersService {
     return new GetMeResponseDTO(foundUser)
   }
 
+  async checkNicknameDuplicated(CheckNicknameDTO: CheckNicknameDTO) {
+    const hasNickname = this.usersRepository.findOneByNickname(
+      CheckNicknameDTO.nickname,
+    )
+    return Api.OK(!!hasNickname)
+  }
+
   async update(id: string, updateUserDTO: Updateable<User>) {
     return this.usersRepository.update(id, updateUserDTO)
   }
@@ -32,17 +41,6 @@ export class UsersService {
     const foundUser = await this.usersRepository.findOne(id)
 
     if (!foundUser) throw new UserException(new ResultCode(400, 1002, ''))
-
-    return foundUser
-  }
-
-  async getUserByAccountId(accountId: string) {
-    const foundUser = await this.usersRepository.findOneBy(
-      'accountId',
-      accountId,
-    )
-
-    if (!foundUser) throw new NotFoundException()
 
     return foundUser
   }

@@ -1,7 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
 import {
-  IsEmail,
-  IsEnum,
   IsNotEmpty,
   IsOptional,
   IsPhoneNumber,
@@ -10,7 +8,6 @@ import {
 } from 'class-validator'
 import { Transform } from 'class-transformer'
 
-import { IsAccountId } from '@/shared/validators/is-account-id.validator'
 import { IsAccountPassword } from '@/shared/validators/is-account-password.validator'
 import { IsOnlyDate } from '@/shared/validators/is-date-string.validator'
 import { IsUserId } from '@/shared/validators/is-user-id.validator'
@@ -36,8 +33,8 @@ interface CreateUserArgs {
 }
 
 export class CreateUserDTO {
-  @IsAccountId()
-  id: string
+  // @IsAccountId()
+  // id: string
   @IsAccountPassword()
   password: string
 
@@ -59,14 +56,6 @@ export class CreateUserDTO {
   nickname: string
 
   @ApiProperty({
-    description: '사용자 성별',
-    type: Gender,
-    enum: Gender,
-  })
-  @IsEnum(Gender, { message: '유효하지 않은 성별이에요.' })
-  gender: Gender
-
-  @ApiProperty({
     description: '사용자 전화번호',
     example: '01093367663',
     nullable: true,
@@ -76,15 +65,23 @@ export class CreateUserDTO {
   @IsPhoneNumber('KR', { message: '유효하지 않은 번호에요.' })
   phone: string
 
-  @ApiProperty({
-    description: '사용자 이메일',
-    example: 'akdfhr2@gmail.com',
-    nullable: true,
-  })
-  @Transform(({ value }) => (value === '' ? null : value))
-  @IsOptional()
-  @IsEmail({}, { message: '유효하지 않은 이메일이에요.' })
-  email: string
+  // @ApiProperty({
+  //   description: '사용자 성별',
+  //   type: Gender,
+  //   enum: Gender,
+  // })
+  // @IsEnum(Gender, { message: '유효하지 않은 성별이에요.' })
+  // gender: Gender
+
+  // @ApiProperty({
+  //   description: '사용자 이메일',
+  //   example: 'akdfhr2@gmail.com',
+  //   nullable: true,
+  // })
+  // @Transform(({ value }) => (value === '' ? null : value))
+  // @IsOptional()
+  // @IsEmail({}, { message: '유효하지 않은 이메일이에요.' })
+  // email: string
 }
 
 export class CreateUserResponseDTO {
@@ -92,20 +89,20 @@ export class CreateUserResponseDTO {
   id: string
 
   @ApiProperty({
-    description: '사용자 아이디',
+    description: '사용자 닉네임',
     example: 'poopcoco123',
     maxLength: 16,
     minLength: 6,
   })
-  @IsNotEmpty({ message: '아이디는 필수에요.' })
-  accountId: string
+  @IsNotEmpty({ message: '닉네임은 필수에요.' })
+  nickname: string
 
   @IsYYYYMMDD()
   birthday: Date
 
   constructor(user: CreateUserArgs) {
     this.id = user.id
-    this.accountId = user.accountId
+    this.nickname = user.nickname
     this.birthday = user.birthday
   }
 }

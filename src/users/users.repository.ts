@@ -11,6 +11,14 @@ import { jsonObjectFrom } from 'kysely/helpers/postgres'
 export class UsersRepository {
   constructor(@Inject(Database) private readonly database: Database) {}
 
+  async findOneByNickname(nickname: string) {
+    return this.database
+      .selectFrom('users')
+      .select('nickname')
+      .where('users.nickname', '=', nickname)
+      .executeTakeFirst()
+  }
+
   async update(id: string, updateUserDTO: Updateable<User>) {
     return this.database
       .updateTable('users')

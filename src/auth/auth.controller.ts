@@ -28,7 +28,6 @@ import { ApiResult } from '@/shared/decorators/swagger/response.decorator'
 import { Api } from '@/shared/dtos/api.dto'
 import { CommonCodes } from '@/shared/errors/code/common.code'
 import { ChangePasswordCodeResponseDTO } from './dtos/change-password-code-response.dto'
-import { ApiException } from '@/shared/exceptions/exception.interface'
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -50,8 +49,6 @@ export class AuthController {
   async createUser(
     @Body() createUserDTO: CreateUserDTO,
   ): Promise<Api<boolean>> {
-    if (!createUserDTO.email && !createUserDTO.phone)
-      throw ApiException.PLAIN_BAD_REQUEST('이메일 또는 전화번호는 필수에요.')
     await this.authService.signup(createUserDTO)
     return Api.OK(true)
   }

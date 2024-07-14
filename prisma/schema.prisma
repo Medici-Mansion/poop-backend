@@ -59,13 +59,10 @@ model User {
   createdAt   DateTime  @default(now()) @db.Timestamp(6)
   updatedAt   DateTime  @default(now()) @updatedAt @db.Timestamp(6)
   deletedAt   DateTime? @db.Timestamp(6)
-  accountId   String    @db.VarChar(20)
   password    String    @db.VarChar
   nickname    String    @unique @db.VarChar(20)
-  email       String?   @unique @db.VarChar
-  phone       String?   @unique @db.VarChar
+  phone       String    @unique @db.VarChar
   birthday    DateTime  @db.Date
-  gender      Gender    @default(NONE)
   verified    DateTime? @db.Timestamp(6)
   latestToken String?   @db.VarChar
 
