@@ -45,7 +45,7 @@ export class AuthController {
       exampleTitle: '회원 생성 완료',
     },
   ])
-  @Put('')
+  @Put('signup')
   async createUser(
     @Body() createUserDTO: CreateUserDTO,
   ): Promise<Api<boolean>> {
