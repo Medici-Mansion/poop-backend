@@ -1,10 +1,6 @@
-import {
-  ApiConsumes,
-  ApiExtraModels,
-  ApiOperation,
-  ApiTags,
-  getSchemaPath,
-} from '@nestjs/swagger'
+import { GraphicsService } from '@/graphics/graphics.service'
+import { ApiResult } from '@/shared/decorators/swagger/response.decorator'
+import { CommonCodes } from '@/shared/errors/code/common.code'
 import {
   Body,
   Controller,
@@ -15,51 +11,29 @@ import {
   Put,
   Query,
 } from '@nestjs/common'
-
-import { BreedsService } from '@/breeds/breeds.service'
-
-import { GetBreedResponseDTO } from '@/breeds/dtos/get-breed.dto'
-import { GraphicsService } from '@/graphics/graphics.service'
-import { ApiResult } from '@/shared/decorators/swagger/response.decorator'
-import { CommonCodes } from '@/shared/errors/code/common.code'
-import { GetGraphicsResponseDTO } from '@/graphics/dtos/get-graphics-response.dto'
+import {
+  ApiConsumes,
+  ApiOperation,
+  ApiTags,
+  getSchemaPath,
+} from '@nestjs/swagger'
+import { GetGraphicsResponseDTO } from './dtos/get-graphics-response.dto'
 import {
   GetGraphicByIdRequestDTO,
   GetGraphicsRequestDTO,
-} from '@/graphics/dtos/get-graphics-request.dto'
-import { CreateGraphicsDTO } from '@/graphics/dtos/create-graphics.dto'
-import { FormDataRequest } from 'nestjs-form-data'
+} from './dtos/get-graphics-request.dto'
 import { Api } from '@/shared/dtos/api.dto'
-import { UpdateGraphicsDTO } from '@/graphics/dtos/update-graphics.dto'
-import { GraphicsCode, GraphicsCodes } from '@/graphics/graphics.exception'
-import { RemoveGraphicsDTO } from '@/graphics/dtos/remove-graphics.dto'
+import { GraphicsCode, GraphicsCodes } from './graphics.exception'
+import { FormDataRequest } from 'nestjs-form-data'
+import { CreateGraphicsDTO } from './dtos/create-graphics.dto'
+import { UpdateGraphicsDTO } from './dtos/update-graphics.dto'
+import { RemoveGraphicsDTO } from './dtos/remove-graphics.dto'
 
-@ApiExtraModels(GetBreedResponseDTO)
-@ApiTags('Common')
-@Controller('common')
-export class CommonController {
-  constructor(
-    private readonly breedsService: BreedsService,
-    private readonly graphicsService: GraphicsService,
-  ) {}
-
-  @Get('breeds')
-  @ApiOperation({
-    summary: '견종정보 조회',
-    description: '견종정보를 조회합니다.',
-  })
-  @ApiResult(CommonCodes.OK, [
-    {
-      model: [GetBreedResponseDTO],
-      exampleDescription: '조회 성공',
-      exampleTitle: '조회 성공',
-    },
-  ])
-  async getBreeds() {
-    return this.breedsService.getAllBreeds()
-  }
-
-  @Get('graphics')
+@ApiTags('Grahpics')
+@Controller('graphics')
+export class GraphicsController {
+  constructor(private readonly graphicsService: GraphicsService) {}
+  @Get('')
   @ApiOperation({
     summary: '그래픽 정보 전체 조회',
     description:
@@ -92,7 +66,7 @@ export class CommonController {
     return Api.OK(getGraphicsResponseDTO)
   }
 
-  @Get('graphics/:id')
+  @Get('/:id')
   @ApiOperation({
     summary: '그래픽 정보 단건 조회',
     description: '아이디를 통해 그래픽 정보 단건을 조회합니다.',
@@ -127,7 +101,7 @@ export class CommonController {
     return Api.OK(response)
   }
 
-  @Put('graphics')
+  @Put('')
   @ApiOperation({
     summary: '그래픽 정보 등록',
     description: '그래픽 정보를 등록(생성) 합니다. ',
@@ -149,7 +123,7 @@ export class CommonController {
     return Api.OK(getGraphicsResponseDTO)
   }
 
-  @Post('graphics')
+  @Post('')
   @ApiOperation({
     summary: '그래픽 정보 수정',
     description: '그래픽 아이디에 맞는 요소의 정보를 수정합니다.',
@@ -172,7 +146,7 @@ export class CommonController {
     return Api.OK(getGraphicsResponseDTO)
   }
 
-  @Delete('graphic')
+  @Delete('')
   @ApiOperation({
     summary: '그래픽 정보 삭제',
     description: '선택한 그래픽을 삭제합니다.',

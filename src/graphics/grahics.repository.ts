@@ -79,10 +79,10 @@ export class GraphicsRepository {
       .execute()
   }
 
-  async removeGraphic(id: string) {
+  async removeGraphic(ids: string[]) {
     return this.database
       .deleteFrom('graphics')
-      .where('id', '=', id)
+      .where('id', 'in', ids)
       .returningAll()
       .execute()
   }

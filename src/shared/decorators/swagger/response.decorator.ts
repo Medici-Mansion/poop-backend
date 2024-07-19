@@ -304,6 +304,14 @@ export const ApiResult = (
   const examples = succesResponseOptions
     .map((response: SuccessResponseOption) => {
       // base CommonResponse 를 만듭니다.
+      if (response.custom) {
+        return {
+          [response.exampleTitle]: {
+            value: response.custom,
+            description: response.exampleDescription,
+          },
+        }
+      }
       const commonResponseInstance = makeInstanceByApiProperty<Api<any>>(
         Api,
         response.model,
