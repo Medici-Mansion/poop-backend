@@ -1,7 +1,7 @@
+import { Breed } from '@/database/types'
 import { IsYYYYMMDD } from '@/shared/validators/is-YYYY-MM-DD.validator'
 import { IsUserId } from '@/shared/validators/is-user-id.validator'
 import { ApiProperty } from '@nestjs/swagger'
-import { Breed } from '@prisma/client'
 import { Selectable } from 'kysely'
 
 export class UpdateBreedResponseDTO {
