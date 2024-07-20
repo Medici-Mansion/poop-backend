@@ -30,6 +30,7 @@ import { TokenPayload } from '@/shared/interfaces/token.interface'
 import { CreateProfileDTO } from '@/profiles/dtos/create-profile.dto'
 import { LoginProfileDTO } from '@/profiles/dtos/login-profile.dto'
 import { GetProfileDTO, ProfileDTO } from '@/profiles/dtos/get-profile.dto'
+import { Api } from '@/shared/dtos/api.dto'
 
 @ApiPoopSecurity()
 @ApiTags('Profiles')
@@ -52,7 +53,7 @@ export class ProfilesController {
     @UserId() { uid }: TokenPayload,
     @Body() loginProfileDTO: LoginProfileDTO,
   ) {
-    return this.profilesService.loginProfile(uid, loginProfileDTO)
+    return Api.OK(this.profilesService.loginProfile(uid, loginProfileDTO))
   }
 
   @Put()
@@ -69,7 +70,7 @@ export class ProfilesController {
     @UserId() { uid }: TokenPayload,
     @Body() createProfileDTO: CreateProfileDTO,
   ) {
-    return this.profilesService.createProfile(uid, createProfileDTO)
+    return Api.OK(this.profilesService.createProfile(uid, createProfileDTO))
   }
 
   @Get()
@@ -81,7 +82,7 @@ export class ProfilesController {
     type: [GetProfileDTO],
   })
   getProfileList(@UserId() { uid }: TokenPayload) {
-    return this.profilesService.getMyProfileList(uid)
+    return Api.OK(this.profilesService.getMyProfileList(uid))
   }
 
   @Get('latest')
@@ -94,6 +95,6 @@ export class ProfilesController {
   })
   @LatestProfile()
   getLatestProfile(@ExtractLatestProfile() profile: ProfileDTO) {
-    return profile
+    return Api.OK(profile)
   }
 }
