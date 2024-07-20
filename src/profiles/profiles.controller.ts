@@ -49,11 +49,15 @@ export class ProfilesController {
     type: Boolean,
     status: '2XX',
   })
-  loginProfile(
+  async loginProfile(
     @UserId() { uid }: TokenPayload,
     @Body() loginProfileDTO: LoginProfileDTO,
   ) {
-    return Api.OK(this.profilesService.loginProfile(uid, loginProfileDTO))
+    const response = await this.profilesService.loginProfile(
+      uid,
+      loginProfileDTO,
+    )
+    return Api.OK(response)
   }
 
   @Put()
@@ -66,11 +70,15 @@ export class ProfilesController {
     type: Boolean,
   })
   @FormDataRequest()
-  createProfile(
+  async createProfile(
     @UserId() { uid }: TokenPayload,
     @Body() createProfileDTO: CreateProfileDTO,
   ) {
-    return Api.OK(this.profilesService.createProfile(uid, createProfileDTO))
+    const response = await this.profilesService.createProfile(
+      uid,
+      createProfileDTO,
+    )
+    return Api.OK(response)
   }
 
   @Get()
@@ -81,8 +89,9 @@ export class ProfilesController {
   @ApiOkResponse({
     type: [GetProfileDTO],
   })
-  getProfileList(@UserId() { uid }: TokenPayload) {
-    return Api.OK(this.profilesService.getMyProfileList(uid))
+  async getProfileList(@UserId() { uid }: TokenPayload) {
+    const response = await this.profilesService.getMyProfileList(uid)
+    return Api.OK(response)
   }
 
   @Get('latest')
