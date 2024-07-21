@@ -13,6 +13,7 @@ import { UserException } from '@/users/users.exception'
 import { ResultCode } from '@/shared/errors/dtos/resultCode.dto'
 import { CheckNicknameDTO } from './dtos/check-nickname.dto'
 import { Api } from '@/shared/dtos/api.dto'
+import { ApiException } from '@/shared/exceptions/exception.interface'
 
 @Injectable()
 export class UsersService {
@@ -27,10 +28,14 @@ export class UsersService {
   }
 
   async checkNicknameDuplicated(CheckNicknameDTO: CheckNicknameDTO) {
-    const hasNickname = this.usersRepository.findOneByNickname(
+    const hasNickname = await this.usersRepository.findOneByNickname(
       CheckNicknameDTO.nickname,
     )
-    return Api.OK(!!hasNickname)
+    if (hasNickname?.nickname) {
+      throw ApiException.CONFLICT
+    }
+
+    return Api.OK(true)
   }
 
   async update(id: string, updateUserDTO: Updateable<User>) {
