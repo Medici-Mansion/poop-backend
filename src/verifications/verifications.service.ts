@@ -27,6 +27,7 @@ export class VerificationsService {
     if (!foundUserVerification) {
       throw AuthException.NOTFOUND
     }
+
     return foundUserVerification
   }
 

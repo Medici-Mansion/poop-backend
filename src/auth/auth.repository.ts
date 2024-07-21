@@ -31,7 +31,7 @@ export class AuthRepository {
     return this.database
       .insertInto('users')
       .values([{ ...createUserDTO, updatedAt: new Date() }])
-      .returning('id')
+      .returning(['id', 'phone'])
       .executeTakeFirstOrThrow()
   }
 }

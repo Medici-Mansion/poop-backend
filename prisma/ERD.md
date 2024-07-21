@@ -21,7 +21,7 @@ erDiagram
   DateTime updatedAt
   DateTime deletedAt "nullable"
   String avatarUrl "nullable"
-  String name
+  String name UK
   DateTime birthday
   Gender gender
   String breedId FK
@@ -38,7 +38,7 @@ erDiagram
   DateTime birthday
   DateTime verified "nullable"
   String latestToken "nullable"
-  String latestProfileId FK "nullable"
+  String latestProfileId UK "nullable"
 }
 "verification" {
   String id PK
@@ -60,7 +60,6 @@ erDiagram
 }
 "profiles" }o--|| "breeds" : breed
 "profiles" }o--|| "users" : user
-"users" |o--o| "profiles" : latestProfile
 "verification" |o--|| "users" : user
 ```
 

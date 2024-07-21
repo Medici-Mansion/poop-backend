@@ -11,9 +11,16 @@ import { ExternalsModule } from '@/externals/externals.module'
 import { BreedsModule } from '@/breeds/breeds.module'
 
 import { ProfilesRepository } from '@/profiles/profiles.repository'
+import { EsModule } from '@/externals/modules/es/es.module'
 
 @Module({
-  imports: [NestjsFormDataModule, UsersModule, ExternalsModule, BreedsModule],
+  imports: [
+    NestjsFormDataModule,
+    UsersModule,
+    ExternalsModule,
+    BreedsModule,
+    EsModule,
+  ],
   controllers: [ProfilesController],
   providers: [BaseService, ProfilesService, ProfilesRepository],
 })

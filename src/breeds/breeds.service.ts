@@ -1,6 +1,10 @@
+import { EsService } from './../externals/modules/es/es.service'
 import { Injectable, NotFoundException } from '@nestjs/common'
 
-import { GetBreedResponseDTO } from '@/breeds/dtos/request/get-breed.dto'
+import {
+  GetBreedResponseDTO,
+  OrderBreedDTO,
+} from '@/breeds/dtos/request/get-breed.dto'
 
 import { BreedsRepository } from '@/breeds/breeds.repository'
 import { ExternalsService } from '@/externals/externals.service'
@@ -9,12 +13,14 @@ import { UpdateBreedDTO } from './dtos/request/update-breed.dto'
 import { UpdateBreedResponseDTO } from './dtos/response/update-breed-response.dto'
 import { Transactional } from '@nestjs-cls/transactional'
 import { RemoveBreedsDTO } from './dtos/request/remove-breeds.dto'
+import dayjs from 'dayjs'
 
 @Injectable()
 export class BreedsService {
   constructor(
     private readonly breedsRepository: BreedsRepository,
     private readonly externalsService: ExternalsService,
+    private readonly esService: EsService,
   ) {}
 
   async findById(id: string): Promise<GetBreedResponseDTO> {
@@ -25,8 +31,9 @@ export class BreedsService {
     return new GetBreedResponseDTO(foundBreeds)
   }
 
-  async getAllBreeds() {
-    const allBreeds = await this.breedsRepository.findAllBreeds()
+  async getAllBreeds(orderBreedDTO: OrderBreedDTO) {
+    const { rows: allBreeds } =
+      await this.breedsRepository.findAllBreeds(orderBreedDTO)
     const breedsObj = allBreeds.reduce((acc, cur) => {
       const curSearchKey = extractInitialConsonant(cur.nameKR || '')
       if (!curSearchKey) return acc
@@ -57,7 +64,20 @@ export class BreedsService {
       nameEN: createBreedDTO.nameEN,
       avatar: avatarUrl[0],
     })
-
+    if (createBreed) {
+      await this.esService.createIndex({
+        target: 'poop-breeds',
+        targetData: {
+          ...createBreed,
+          nameKR: createBreed?.nameKR || '',
+          nameEN: createBreed.nameEN || '',
+          avatar: createBreed.avatar || '',
+          createdAt: dayjs(createBreed.createdAt).format(),
+          updatedAt: dayjs(createBreed.updatedAt).format(),
+          ['@timestamp']: dayjs().format(),
+        },
+      })
+    }
     return !!createBreed
   }
 
@@ -88,6 +108,20 @@ export class BreedsService {
     const updatedBreed = await this.breedsRepository.update({
       ...dto,
       avatar: avatarUrl,
+    })
+
+    await this.esService.updateIndex({
+      target: 'poop-breeds',
+      id: updatedBreed.id,
+      targetData: {
+        ...updatedBreed,
+        ['@timestamp']: dayjs().format(),
+        nameKR: updatedBreed?.nameKR || '',
+        nameEN: updatedBreed.nameEN || '',
+        avatar: updatedBreed.avatar || '',
+        createdAt: dayjs(updatedBreed.createdAt).format(),
+        updatedAt: dayjs(updatedBreed.updatedAt).format(),
+      },
     })
 
     return new UpdateBreedResponseDTO(updatedBreed)

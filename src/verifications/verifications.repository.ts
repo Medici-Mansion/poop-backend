@@ -12,7 +12,7 @@ export class VerificationsRepository {
     return this.database
       .insertInto('verification')
       .values(createVerificationDTO)
-      .returning('id')
+      .returning(['id', 'code'])
       .executeTakeFirstOrThrow()
   }
 

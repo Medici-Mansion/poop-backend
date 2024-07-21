@@ -6204,6 +6204,11 @@ kleur@^3.0.3:
   resolved "https://registry.yarnpkg.com/kleur/-/kleur-3.0.3.tgz#a79c9ecc86ee1ce3fa6206d1216c501f147fc07e"
   integrity sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==
 
+kysely-paginate@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/kysely-paginate/-/kysely-paginate-0.3.1.tgz#75487420f0340d4548c14a999233e58a826a4ba6"
+  integrity sha512-isZh9lFExDp8C6GFXUyQLxn18tQzRtEcs7jf1DftDRBYJSZi+OdIa4gMf5THwwAM5kEaihk7+cdyv9Fr7xCvyw==
+
 kysely@^0.27.3:
   version "0.27.3"
   resolved "https://registry.yarnpkg.com/kysely/-/kysely-0.27.3.tgz#6cc6c757040500b43c4ac596cdbb12be400ee276"

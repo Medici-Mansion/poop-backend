@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Post, Put } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Post, Put, Query } from '@nestjs/common'
 import { BreedsService } from './breeds.service'
 import {
   ApiConsumes,
@@ -9,7 +9,10 @@ import {
 } from '@nestjs/swagger'
 import { ApiResult } from '@/shared/decorators/swagger/response.decorator'
 import { CommonCodes } from '@/shared/errors/code/common.code'
-import { GetBreedResponseDTO } from './dtos/request/get-breed.dto'
+import {
+  GetBreedResponseDTO,
+  OrderBreedDTO,
+} from './dtos/request/get-breed.dto'
 import { Api } from '@/shared/dtos/api.dto'
 import { FormDataRequest } from 'nestjs-form-data'
 import { CreateBreedDTO } from './dtos/request/create-breed.dto'
@@ -35,12 +38,12 @@ export class BreedsController {
       exampleTitle: '조회 성공',
     },
   ])
-  async getBreeds(): Promise<
+  async getBreeds(@Query() orderBreedDTO: OrderBreedDTO): Promise<
     Api<{
       [key: string]: GetBreedResponseDTO[]
     }>
   > {
-    const allBreeds = await this.breedsService.getAllBreeds()
+    const allBreeds = await this.breedsService.getAllBreeds(orderBreedDTO)
     return Api.OK(allBreeds)
   }
 

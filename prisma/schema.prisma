@@ -10,8 +10,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider     = "postgresql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 generator kysely {
@@ -49,8 +50,9 @@ model Profile {
   user   User   @relation("profile", fields: [userId], references: [id])
   userId String @db.Uuid
 
-  latestUser User? @relation("latestLoggedIn")
-
+  @@unique([name])
+  @@index([breedId])
+  @@index([userId])
   @@map("profiles")
 }
 
@@ -68,8 +70,8 @@ model User {
 
   profiles Profile[] @relation("profile")
 
-  latestProfile   Profile? @relation(name: "latestLoggedIn", fields: [latestProfileId], references: [id])
-  latestProfileId String?  @unique @db.Uuid
+  // 가장 최근 접속한 프로필의 아이디
+  latestProfileId String? @unique @db.Uuid
 
   verification verification? @relation("verification")
 

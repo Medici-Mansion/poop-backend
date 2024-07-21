@@ -1,3 +1,4 @@
+import { EsService } from './../externals/modules/es/es.service'
 import { Injectable } from '@nestjs/common'
 import { Transactional } from '@nestjs-cls/transactional'
 
@@ -9,6 +10,7 @@ import { CreateProfileDTO } from '@/profiles/dtos/create-profile.dto'
 import { GetProfileDTO } from '@/profiles/dtos/get-profile.dto'
 import { LoginProfileDTO } from '@/profiles/dtos/login-profile.dto'
 import { ProfilesRepository } from '@/profiles/profiles.repository'
+import dayjs from 'dayjs'
 
 @Injectable()
 export class ProfilesService {
@@ -17,6 +19,7 @@ export class ProfilesService {
     private readonly usersService: UsersService,
     private readonly breedsService: BreedsService,
     private readonly profilesRepository: ProfilesRepository,
+    private readonly esService: EsService,
   ) {}
 
   @Transactional()
@@ -33,7 +36,7 @@ export class ProfilesService {
       createProfileDTO.breedId,
     )
 
-    await this.profilesRepository.create({
+    const newProfile = await this.profilesRepository.create({
       name: createProfileDTO.name,
       gender: createProfileDTO.gender,
       avatarUrl: avatarUrl[0],
@@ -42,6 +45,19 @@ export class ProfilesService {
       userId,
       updatedAt: new Date(),
     })
+    if (newProfile) {
+      await this.esService.createIndex({
+        target: 'poop-profiles',
+        targetData: {
+          ...newProfile,
+          ['@timestamp']: dayjs().format(),
+          createdAt: dayjs(newProfile.createdAt).format(),
+          updatedAt: dayjs(newProfile.updatedAt).format(),
+          avatarUrl: newProfile.avatarUrl || '',
+          birthday: dayjs(newProfile.birthday).format(),
+        },
+      })
+    }
 
     return true
   }

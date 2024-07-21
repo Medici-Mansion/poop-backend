@@ -58,7 +58,7 @@ export class AuthService {
       password: hashedPassword,
     })
 
-    await this.verificationsService.create({
+    const newVerification = await this.verificationsService.create({
       userId: newUser.id,
       code: this.verificationsService.generateRandomString({
         onlyString: false,
@@ -67,6 +67,11 @@ export class AuthService {
       updatedAt: new Date(),
     })
 
+    await this.externalsService.sendSMS(
+      `[풉 POOP] 인증번호 확인 문자입니다. \n 인증코드: ${newVerification.code}`,
+      newUser.phone,
+    )
+
     return true
   }
 
@@ -74,6 +79,9 @@ export class AuthService {
   async requestVerificationCode(
     getUserByVidDTO: GetUserByVidDTO,
   ): Promise<boolean> {
+    /**
+     * 가입요청을 한 적이 있는지 확인
+     */
     const foundVerification =
       await this.verificationsService.getVerificationByVid(getUserByVidDTO)
 
@@ -89,19 +97,6 @@ export class AuthService {
       return true
     }
     throw AuthException.NOTFOUND
-    // else if (getUserByVidDTO.type === VerificationType.EMAIL) {
-    //   await this.externalsService.sendEmail(
-    //     '[풉 POOP] 인증번호 확인 메일입니다.',
-    //     getUserByVidDTO.vid,
-    //     EmailTemplateName.CONFIRM_EMAIL,
-    //     [
-    //       {
-    //         key: 'code',
-    //         value: newVerification.code,
-    //       },
-    //     ],
-    //   )
-    // }
   }
 
   @Transactional()

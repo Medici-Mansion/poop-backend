@@ -2,20 +2,32 @@ import { Inject } from '@nestjs/common'
 
 import { Database } from '@/database/database.class'
 
-import { Order } from '@/shared/dtos/common.dto'
 import { Insertable, Updateable } from 'kysely'
 import { Breed, DB } from '@/database/types'
 import { ApiException } from '@/shared/exceptions/exception.interface'
+import { executeWithCursorPagination } from 'kysely-paginate'
+import { OrderBreedDTO } from './dtos/request/get-breed.dto'
 
 export class BreedsRepository {
   constructor(@Inject(Database) private readonly database: Database) {}
 
-  async findAllBreeds(order: Order = Order.ASC) {
-    return this.database
-      .selectFrom('breeds')
-      .orderBy('nameKR', order === Order.ASC ? 'asc' : 'desc')
-      .selectAll()
-      .execute()
+  async findAllBreeds(orderBreedDTO: OrderBreedDTO) {
+    orderBreedDTO.direction
+    orderBreedDTO.orderKey
+    const query = this.database.selectFrom('breeds').selectAll()
+    const result = await executeWithCursorPagination(query, {
+      perPage: 10,
+      fields: [
+        {
+          expression: 'createdAt',
+          direction: 'desc',
+        },
+      ],
+      parseCursor: (cursor) => ({
+        createdAt: new Date(cursor.createdAt),
+      }),
+    })
+    return result
   }
 
   async findOne(id: string) {
@@ -30,7 +42,7 @@ export class BreedsRepository {
     return this.database
       .insertInto('breeds')
       .values(breedValue)
-      .returning(['avatar', 'nameEN', 'nameKR'])
+      .returningAll()
       .executeTakeFirst()
   }
 

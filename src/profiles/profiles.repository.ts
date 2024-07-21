@@ -1,5 +1,6 @@
 import { Database } from '@/database/database.class'
 import { Profile } from '@/database/types'
+import { ApiException } from '@/shared/exceptions/exception.interface'
 import { Inject } from '@nestjs/common'
 import { Insertable } from 'kysely'
 import { jsonObjectFrom } from 'kysely/helpers/postgres'
@@ -11,6 +12,10 @@ export class ProfilesRepository {
     return this.database
       .insertInto('profiles')
       .values(createProfilesDTO)
+      .onConflict((b) => {
+        throw ApiException.CONFLICT
+      })
+      .returningAll()
       .executeTakeFirst()
   }
 

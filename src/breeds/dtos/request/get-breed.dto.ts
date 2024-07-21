@@ -1,10 +1,48 @@
-import { ApiProperty } from '@nestjs/swagger'
-import { IsOptional, IsString, IsUUID } from 'class-validator'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { IsEnum, IsOptional, IsString, IsUUID } from 'class-validator'
 
 import { CursorOption } from '@/shared/dtos/common.dto'
 
 import { Selectable } from 'kysely'
 import { Breed } from '@/database/types'
+
+export enum OrderKey {
+  CREATED_AT = 'createdAt',
+  NAME_KR = 'nameKR',
+  NAME_EN = 'nameEN',
+}
+
+export enum Direction {
+  ASC = 'asc',
+  DESC = 'desc',
+}
+
+export class OrderBreedDTO {
+  @ApiPropertyOptional({
+    enum: OrderKey,
+    description: 'Order key',
+    default: OrderKey.CREATED_AT,
+  })
+  @IsOptional()
+  @IsEnum(OrderKey, {
+    message: 'orderKey must be one of createdAt, nameKR, nameEN',
+  })
+  orderKey?: OrderKey
+
+  @ApiPropertyOptional({
+    enum: Direction,
+    description: 'Order direction',
+    default: Direction.DESC,
+  })
+  @IsOptional()
+  @IsEnum(Direction, { message: 'direction must be one of asc, desc' })
+  direction?: Direction
+
+  @IsOptional()
+  @IsString()
+  @ApiPropertyOptional({ description: '커서', required: false })
+  cursor?: string
+}
 
 export class GetBreadRequestDTO extends CursorOption {
   @ApiProperty({
