@@ -27,7 +27,6 @@ export class BreedsService {
 
   async getAllBreeds() {
     const allBreeds = await this.breedsRepository.findAllBreeds()
-
     const breedsObj = allBreeds.reduce((acc, cur) => {
       const curSearchKey = extractInitialConsonant(cur.nameKR || '')
       if (!curSearchKey) return acc
@@ -100,7 +99,6 @@ export class BreedsService {
     return !!response
   }
 }
-
 function extractInitialConsonant(text: string): string | null {
   const HANGUL_SYLLABLES_START = 0xac00
   const HANGUL_SYLLABLES_END = 0xd7a3
@@ -128,6 +126,49 @@ function extractInitialConsonant(text: string): string | null {
     'ㅎ',
   ]
 
+  // 숫자와 알파벳에 대한 한글 초성 매핑
+  const NUMBER_TO_HANGUL_INITIAL = {
+    '1': 'ㅇ',
+    '2': 'ㅇ',
+    '3': 'ㅅ',
+    '4': 'ㅇ',
+    '5': 'ㅇ',
+    '6': 'ㅇ',
+    '7': 'ㅊ',
+    '8': 'ㅍ',
+    '9': 'ㄱ',
+    '0': 'ㅇ',
+  }
+
+  const ALPHABET_TO_HANGUL_INITIAL = {
+    a: 'ㅇ',
+    b: 'ㅂ',
+    c: 'ㅅ',
+    d: 'ㄷ',
+    e: 'ㅇ',
+    f: 'ㅍ',
+    g: 'ㄱ',
+    h: 'ㅎ',
+    i: 'ㅇ',
+    j: 'ㅈ',
+    k: 'ㅋ',
+    l: 'ㄹ',
+    m: 'ㅁ',
+    n: 'ㄴ',
+    o: 'ㅇ',
+    p: 'ㅍ',
+    q: 'ㅋ',
+    r: 'ㄹ',
+    s: 'ㅅ',
+    t: 'ㅌ',
+    u: 'ㅇ',
+    v: 'ㅂ',
+    w: 'ㅇ',
+    x: 'ㅅ',
+    y: 'ㅇ',
+    z: 'ㅈ',
+  }
+
   if (!text) {
     return null
   }
@@ -143,7 +184,13 @@ function extractInitialConsonant(text: string): string | null {
     const unicodeOffset = firstCharCode - HANGUL_SYLLABLES_START
     const choSungIndex = Math.floor(unicodeOffset / (21 * 28))
     return CHO_SUNG_LIST[choSungIndex]
+  } else if (NUMBER_TO_HANGUL_INITIAL[firstChar]) {
+    // 첫 글자가 숫자인 경우
+    return NUMBER_TO_HANGUL_INITIAL[firstChar]
+  } else if (ALPHABET_TO_HANGUL_INITIAL[firstChar.toLowerCase()]) {
+    // 첫 글자가 알파벳인 경우
+    return ALPHABET_TO_HANGUL_INITIAL[firstChar.toLowerCase()]
   } else {
-    return null
+    return firstChar // 그 외의 경우 원본 그대로 리턴
   }
 }
