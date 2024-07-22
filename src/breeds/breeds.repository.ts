@@ -12,20 +12,17 @@ export class BreedsRepository {
   constructor(@Inject(Database) private readonly database: Database) {}
 
   async findAllBreeds(orderBreedDTO: OrderBreedDTO) {
-    orderBreedDTO.direction
-    orderBreedDTO.orderKey
     const query = this.database.selectFrom('breeds').selectAll()
     const result = await executeWithCursorPagination(query, {
       perPage: 10,
       fields: [
         {
-          expression: 'createdAt',
-          direction: 'desc',
+          expression: orderBreedDTO.orderKey || 'createdAt',
+          direction: orderBreedDTO.direction || 'asc',
         },
       ],
-      parseCursor: (cursor) => ({
-        createdAt: new Date(cursor.createdAt),
-      }),
+      parseCursor: (cursor) =>
+        cursor[orderBreedDTO.orderKey || ('createdAt' as any)].toString(),
     })
     return result
   }

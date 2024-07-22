@@ -16,9 +16,11 @@ export class CreateBreedDTO {
     description: '최대 이미지 사이즈 width :400, height : 400',
   })
   @IsFile()
-  @MaxFileSize(1e6)
+
+  // FIXME
+  // @MaxFileSize(1e6)
+  // @MaxImageSize({ height: 400, width: 400 })
   @HasMimeType(['image/jpeg', 'image/png'])
-  @MaxImageSize({ height: 400, width: 400 })
   avatar: MemoryStoredFile
 
   @ApiProperty({

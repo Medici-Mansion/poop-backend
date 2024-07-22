@@ -1,11 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { IsEnum, IsString, IsUUID } from 'class-validator'
-import {
-  HasMimeType,
-  IsFile,
-  MaxFileSize,
-  MemoryStoredFile,
-} from 'nestjs-form-data'
+import { HasMimeType, IsFile, MemoryStoredFile } from 'nestjs-form-data'
 
 import { Gender } from '@/shared/constants/common.constant'
 
@@ -20,9 +15,10 @@ export class CreateProfileDTO {
     description: '최대 이미지 사이즈 width :400, height : 400',
   })
   @IsFile()
-  @MaxFileSize(1e6)
+  // FIXME
+  // @MaxFileSize(1e6)
+  // @MaxImageSize({ height: 800, width: 800 })
   @HasMimeType(['image/jpeg', 'image/png'])
-  @MaxImageSize({ height: 400, width: 400 })
   avatar: MemoryStoredFile
 
   @ApiProperty({

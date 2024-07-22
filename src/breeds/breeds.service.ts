@@ -60,7 +60,7 @@ export class BreedsService {
       folder: 'breed',
     })
     const createBreed = await this.breedsRepository.create({
-      nameKR: createBreedDTO.nameEN,
+      nameKR: createBreedDTO.nameKR,
       nameEN: createBreedDTO.nameEN,
       avatar: avatarUrl[0],
     })
