@@ -49,13 +49,13 @@ export class BreedsController {
     summary: '초성기반 견종정보 조회',
     description: '견종정보를 조회합니다.',
   })
-  // @ApiResult(CommonCodes.OK, [
-  //   {
-  //     model: GetBreedResponseDTO,
-  //     exampleDescription: '조회 성공',
-  //     exampleTitle: '조회 성공',
-  //   },
-  // ])
+  @ApiResult(CommonCodes.OK, [
+    {
+      model: GetBreedResponseDTO,
+      exampleDescription: '조회 성공',
+      exampleTitle: '조회 성공',
+    },
+  ])
   async getBreedsWithCursor(
     @Query() orderBreedDTO: OrderBreedDTO,
   ): Promise<Api<{ data: { [key: string]: GetBreedResponseDTO[] } } & Meta>> {
