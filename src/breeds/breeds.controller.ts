@@ -19,6 +19,7 @@ import { CreateBreedDTO } from './dtos/request/create-breed.dto'
 import { UpdateBreedDTO } from './dtos/request/update-breed.dto'
 import { UpdateBreedResponseDTO } from './dtos/response/update-breed-response.dto'
 import { RemoveBreedsDTO } from './dtos/request/remove-breeds.dto'
+import { Meta } from '@/shared/dtos/meta.dto'
 
 @ApiExtraModels(GetBreedResponseDTO)
 @ApiTags('Breeds')
@@ -38,12 +39,28 @@ export class BreedsController {
       exampleTitle: '조회 성공',
     },
   ])
-  async getBreeds(@Query() orderBreedDTO: OrderBreedDTO): Promise<
-    Api<{
-      [key: string]: GetBreedResponseDTO[]
-    }>
-  > {
-    const allBreeds = await this.breedsService.getAllBreeds(orderBreedDTO)
+  async getBreeds(): Promise<Api<GetBreedResponseDTO[]>> {
+    const allBreeds = await this.breedsService.getAllBreeds()
+    return Api.OK(allBreeds)
+  }
+
+  @Get('char')
+  @ApiOperation({
+    summary: '초성기반 견종정보 조회',
+    description: '견종정보를 조회합니다.',
+  })
+  // @ApiResult(CommonCodes.OK, [
+  //   {
+  //     model: GetBreedResponseDTO,
+  //     exampleDescription: '조회 성공',
+  //     exampleTitle: '조회 성공',
+  //   },
+  // ])
+  async getBreedsWithCursor(
+    @Query() orderBreedDTO: OrderBreedDTO,
+  ): Promise<Api<{ data: { [key: string]: GetBreedResponseDTO[] } } & Meta>> {
+    const allBreeds =
+      await this.breedsService.getAllBreedsWithCursor(orderBreedDTO)
     return Api.OK(allBreeds)
   }
 

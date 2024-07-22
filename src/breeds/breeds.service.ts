@@ -14,6 +14,7 @@ import { UpdateBreedResponseDTO } from './dtos/response/update-breed-response.dt
 import { Transactional } from '@nestjs-cls/transactional'
 import { RemoveBreedsDTO } from './dtos/request/remove-breeds.dto'
 import dayjs from 'dayjs'
+import { Meta } from '@/shared/dtos/meta.dto'
 
 @Injectable()
 export class BreedsService {
@@ -31,9 +32,17 @@ export class BreedsService {
     return new GetBreedResponseDTO(foundBreeds)
   }
 
-  async getAllBreeds(orderBreedDTO: OrderBreedDTO) {
-    const { rows: allBreeds } =
-      await this.breedsRepository.findAllBreeds(orderBreedDTO)
+  async getAllBreedsWithCursor(
+    orderBreedDTO: OrderBreedDTO,
+  ): Promise<{ data: { [key: string]: GetBreedResponseDTO[] } } & Meta> {
+    const {
+      rows: allBreeds,
+      endCursor,
+      startCursor,
+      hasNextPage,
+      hasPrevPage,
+    } = await this.breedsRepository.findAllBreedsWithCursor(orderBreedDTO)
+
     const breedsObj = allBreeds.reduce((acc, cur) => {
       const curSearchKey = extractInitialConsonant(cur.nameKR || '')
       if (!curSearchKey) return acc
@@ -45,7 +54,18 @@ export class BreedsService {
       return acc
     }, {})
 
-    return breedsObj as { [key: string]: GetBreedResponseDTO[] }
+    return {
+      data: breedsObj,
+      endCursor,
+      startCursor,
+      hasNextPage: !!hasNextPage,
+      hasPrevPage: !!hasPrevPage,
+    }
+  }
+  async getAllBreeds() {
+    const foundBreeds = await this.breedsRepository.findAllBreeds()
+
+    return foundBreeds.map((breed) => new GetBreedResponseDTO(breed))
   }
 
   /**

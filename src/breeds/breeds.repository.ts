@@ -11,10 +11,11 @@ import { OrderBreedDTO } from './dtos/request/get-breed.dto'
 export class BreedsRepository {
   constructor(@Inject(Database) private readonly database: Database) {}
 
-  async findAllBreeds(orderBreedDTO: OrderBreedDTO) {
+  async findAllBreedsWithCursor(orderBreedDTO: OrderBreedDTO) {
     const query = this.database.selectFrom('breeds').selectAll()
     const result = await executeWithCursorPagination(query, {
       perPage: 10,
+      after: orderBreedDTO.cursor,
       fields: [
         {
           expression: orderBreedDTO.orderKey || 'createdAt',
@@ -25,6 +26,10 @@ export class BreedsRepository {
         cursor[orderBreedDTO.orderKey || ('createdAt' as any)].toString(),
     })
     return result
+  }
+
+  async findAllBreeds() {
+    return this.database.selectFrom('breeds').selectAll().execute()
   }
 
   async findOne(id: string) {
