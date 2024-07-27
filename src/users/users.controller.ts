@@ -11,6 +11,7 @@ import { PatchPasswordDTO } from '@/users/dtos/patch-password.dto'
 import { TokenPayload } from '@/shared/interfaces/token.interface'
 import { UserId } from '@/shared/decorators/user-id.decorator'
 import { CheckNicknameDTO } from './dtos/check-nickname.dto'
+import { Api } from '@/shared/dtos/api.dto'
 
 @Controller('users')
 @ApiTags('Users')
@@ -37,7 +38,8 @@ export class UsersController {
   })
   @UseGuards(AccessGuard)
   @Get('me')
-  getMe(@UserId() { uid }: TokenPayload) {
-    return this.usersService.getMe(uid)
+  async getMe(@UserId() { uid }: TokenPayload) {
+    const response = await this.usersService.getMe(uid)
+    return Api.OK(response)
   }
 }
