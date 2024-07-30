@@ -28,6 +28,7 @@ import { ApiResult } from '@/shared/decorators/swagger/response.decorator'
 import { Api } from '@/shared/dtos/api.dto'
 import { CommonCodes } from '@/shared/errors/code/common.code'
 import { ChangePasswordCodeResponseDTO } from './dtos/change-password-code-response.dto'
+import { SocialDTO } from './dtos/social.dto'
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -117,6 +118,19 @@ export class AuthController {
   ): Promise<Api<VerifyingCodeResponseDTO>> {
     const newVerifyToken = await this.authService.login(loginRequestDTO)
     return Api.OK(newVerifyToken)
+  }
+
+  @Post('social')
+  @ApiResult(CommonCodes.OK, [
+    {
+      model: Boolean,
+      exampleDescription: '소셜로그인 성공 시 토큰이 발행됩니다.',
+      exampleTitle: '소셜 로그인 성공',
+    },
+  ])
+  async social(@Body() socialDTO: SocialDTO) {
+    const auth = await this.authService.socialAuth(socialDTO)
+    return Api.OK(auth)
   }
 
   @UseGuards(AccessGuard)

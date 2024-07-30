@@ -57,18 +57,18 @@ model Profile {
 }
 
 model User {
-  id          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  createdAt   DateTime  @default(now()) @db.Timestamp(6)
-  updatedAt   DateTime  @default(now()) @updatedAt @db.Timestamp(6)
-  deletedAt   DateTime? @db.Timestamp(6)
-  password    String    @db.VarChar
-  nickname    String    @unique @db.VarChar(20)
-  phone       String    @unique @db.VarChar
-  birthday    DateTime  @db.Date
-  verified    DateTime? @db.Timestamp(6)
-  latestToken String?   @db.VarChar
-
-  profiles Profile[] @relation("profile")
+  id          String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  createdAt   DateTime      @default(now()) @db.Timestamp(6)
+  updatedAt   DateTime      @default(now()) @updatedAt @db.Timestamp(6)
+  deletedAt   DateTime?     @db.Timestamp(6)
+  password    String        @db.VarChar
+  userId      String        @unique @db.VarChar(100)
+  phone       String?       @unique @db.VarChar
+  birthday    DateTime?     @db.Date
+  verified    DateTime?     @db.Timestamp(6)
+  latestToken String?       @db.VarChar
+  provider    SocialProvier @default(CREDENTIAL)
+  profiles    Profile[]     @relation("profile")
 
   // 가장 최근 접속한 프로필의 아이디
   latestProfileId String? @unique @db.Uuid
@@ -133,4 +133,11 @@ enum Gender {
   MALE
   FEMALE
   NONE
+}
+
+enum SocialProvier {
+  APPLE
+  GOOGLE
+  KAKAO
+  CREDENTIAL
 }

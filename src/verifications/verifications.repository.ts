@@ -56,7 +56,7 @@ export class VerificationsRepository {
           .select([
             'users.id as users_id',
             // 'users.accountId as users_accountId',
-            'users.nickname as users_nickname',
+            'users.userId as users_userId',
             // 'users.email as users_email',
             'users.birthday as users_birthday',
             // 'users.gender as users_gender',
@@ -83,7 +83,7 @@ export class VerificationsRepository {
           jsonObjectFrom(
             qb.selectFrom('v').select([
               // 'v.users_accountId as accountId',
-              'v.users_nickname as nickname',
+              'v.users_userId as userId',
               // 'v.users_email as email ',
               'v.users_birthday as birthday',
               // 'v.users_gender as gender',

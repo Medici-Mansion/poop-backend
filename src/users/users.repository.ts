@@ -11,11 +11,11 @@ import { jsonObjectFrom } from 'kysely/helpers/postgres'
 export class UsersRepository {
   constructor(@Inject(Database) private readonly database: Database) {}
 
-  async findOneByNickname(nickname: string) {
+  async findOneByUserId(userId: string) {
     return this.database
       .selectFrom('users')
-      .select('nickname')
-      .where('users.nickname', '=', nickname)
+      .select('userId')
+      .where('users.userId', '=', userId)
       .executeTakeFirst()
   }
 

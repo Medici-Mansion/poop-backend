@@ -39,7 +39,7 @@ export class BreedsController {
       exampleTitle: '조회 성공',
     },
   ])
-  async getBreeds(): Promise<Api<GetBreedResponseDTO[]>> {
+  async getBreeds() {
     const allBreeds = await this.breedsService.getAllBreeds()
     return Api.OK(allBreeds)
   }

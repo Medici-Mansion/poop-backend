@@ -1,13 +1,14 @@
 import { Database } from '@/database/database.class'
-import { CreateUserDTO } from '@/users/dtos/create-user.dto'
+import { User } from '@/database/types'
 import { Inject } from '@nestjs/common'
+import { Insertable } from 'kysely'
 
 export class AuthRepository {
   constructor(@Inject(Database) private readonly database: Database) {}
 
   async findOne(
     createUserDTO: Partial<{
-      nickname: string
+      userId: string
       phone: string
     }>,
   ) {
@@ -15,8 +16,8 @@ export class AuthRepository {
       .selectFrom('users')
       .where((eb) =>
         eb.or([
-          ...(createUserDTO.nickname
-            ? [eb('nickname', '=', createUserDTO.nickname)]
+          ...(createUserDTO.userId
+            ? [eb('userId', '=', createUserDTO.userId)]
             : []),
           ...(createUserDTO.phone
             ? [eb('phone', '=', createUserDTO.phone)]
@@ -27,7 +28,7 @@ export class AuthRepository {
       .executeTakeFirst()
   }
 
-  async create(createUserDTO: CreateUserDTO) {
+  async create(createUserDTO: Insertable<User>) {
     return this.database
       .insertInto('users')
       .values([{ ...createUserDTO, updatedAt: new Date() }])

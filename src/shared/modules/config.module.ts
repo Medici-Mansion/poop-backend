@@ -47,6 +47,8 @@ import { Env } from '@/shared/interfaces/env.interface'
         AWS_S3_ACCESS_KEY: Joi.string().required(),
         AWS_S3_ACCESS_SECRET_KEY: Joi.string().required(),
         SEARCH_API_URL: Joi.string().required(),
+        GOOGLE_CLIENT_ID: Joi.string().required(),
+        GOOGLE_CLIENT_SECRET: Joi.string().required(),
       }),
     }),
   ],

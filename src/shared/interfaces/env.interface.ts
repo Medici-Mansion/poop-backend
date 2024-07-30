@@ -33,4 +33,6 @@ export interface Env {
   readonly AWS_S3_ACCESS_KEY: string
   readonly AWS_S3_ACCESS_SECRET_KEY: string
   readonly SEARCH_API_URL: string
+  readonly GOOGLE_CLIENT_ID: string
+  readonly GOOGLE_CLIENT_SECRET: string
 }

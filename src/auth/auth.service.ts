@@ -1,3 +1,4 @@
+import { GoogleProvider } from './provider/google.provider'
 import bcrypt from 'bcrypt'
 import {
   BadRequestException,
@@ -31,6 +32,10 @@ import { AuthRepository } from '@/auth/auth.repository'
 import { UserException } from '@/users/users.exception'
 import { ChangePasswordCodeResponseDTO } from './dtos/change-password-code-response.dto'
 import { AuthException } from './auth.exception'
+import { SocialDTO } from './dtos/social.dto'
+import { SocialProvider } from '@/shared/constants/strategy.constant'
+import { AppleProvider } from '@/auth/provider/apple.provider'
+import { randomUUID } from 'crypto'
 
 @Injectable()
 export class AuthService {
@@ -41,6 +46,9 @@ export class AuthService {
     private readonly verificationsService: VerificationsService,
     private readonly externalsService: ExternalsService,
     private readonly redisService: RedisService,
+
+    private readonly googleProvider: GoogleProvider,
+    private readonly appleProvider: AppleProvider,
   ) {}
 
   @Transactional()
@@ -57,6 +65,7 @@ export class AuthService {
       ...createUserDTO,
       password: hashedPassword,
     })
+    if (!newUser.phone) throw new BadRequestException()
 
     const newVerification = await this.verificationsService.create({
       userId: newUser.id,
@@ -212,6 +221,43 @@ export class AuthService {
     const newToken = await this.publishToken(foundUser.id)
 
     return newToken
+  }
+
+  async socialAuth(socialDTO: SocialDTO) {
+    let providerClass: 'googleProvider' | 'appleProvider' = 'googleProvider'
+    switch (socialDTO.provider) {
+      case SocialProvider.GOOGLE:
+        providerClass = 'googleProvider'
+        break
+      case SocialProvider.APPLE:
+        providerClass = 'appleProvider'
+        break
+    }
+    const user = await this[providerClass].getUserByToken(socialDTO.token)
+    if (!user || !user.email)
+      throw new BadRequestException(' NO TOKEN EXCEPTION ')
+
+    const foundUser = await this.authRepository.findOne({
+      userId: user.email,
+    })
+    let newVerifyToken: VerifyingCodeResponseDTO
+
+    if (foundUser) {
+      newVerifyToken = await this.publishToken(foundUser.id)
+    } else {
+      const hashedPassword = await this.usersService.hashPassword(randomUUID())
+
+      const newUser = await this.authRepository.create({
+        userId: user.email!,
+        password: hashedPassword,
+        verified: new Date(),
+        provider: socialDTO.provider,
+      })
+
+      newVerifyToken = await this.publishToken(newUser.id)
+    }
+
+    return newVerifyToken
   }
 
   verify(

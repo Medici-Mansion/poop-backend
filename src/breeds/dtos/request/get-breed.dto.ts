@@ -83,6 +83,7 @@ export class GetBreedResponseDTO {
   avatar: string
 
   constructor(breeds: Selectable<Breed>) {
+    console.log(breeds)
     this.id = breeds.id
     this.nameKR = breeds.nameKR
     this.nameEN = breeds.nameEN!

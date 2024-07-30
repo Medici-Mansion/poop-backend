@@ -15,3 +15,10 @@ export const Gender = {
     NONE: "NONE"
 } as const;
 export type Gender = (typeof Gender)[keyof typeof Gender];
+export const SocialProvier = {
+    APPLE: "APPLE",
+    GOOGLE: "GOOGLE",
+    KAKAO: "KAKAO",
+    CREDENTIAL: "CREDENTIAL"
+} as const;
+export type SocialProvier = (typeof SocialProvier)[keyof typeof SocialProvier];

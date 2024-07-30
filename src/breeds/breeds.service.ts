@@ -63,9 +63,12 @@ export class BreedsService {
     }
   }
   async getAllBreeds() {
-    const foundBreeds = await this.breedsRepository.findAllBreeds()
+    const re = await this.esService.getIndex({ target: 'poop-breeds' })
 
-    return foundBreeds.map((breed) => new GetBreedResponseDTO(breed))
+    return {
+      ...re.data,
+      list: re.data.list.map((breed) => new GetBreedResponseDTO(breed as any)),
+    }
   }
 
   /**

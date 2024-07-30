@@ -33,11 +33,12 @@ erDiagram
   DateTime updatedAt
   DateTime deletedAt "nullable"
   String password
-  String nickname UK
-  String phone UK
-  DateTime birthday
+  String userId UK
+  String phone UK "nullable"
+  DateTime birthday "nullable"
   DateTime verified "nullable"
   String latestToken "nullable"
+  SocialProvier provider
   String latestProfileId UK "nullable"
 }
 "verification" {
@@ -96,11 +97,12 @@ erDiagram
   - `updatedAt`: 
   - `deletedAt`: 
   - `password`: 
-  - `nickname`: 
+  - `userId`: 
   - `phone`: 
   - `birthday`: 
   - `verified`: 
   - `latestToken`: 
+  - `provider`: 
   - `latestProfileId`: 
 
 ### `verification`

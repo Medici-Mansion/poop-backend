@@ -22,7 +22,7 @@ interface CreateUserArgs {
   deletedAt: Date
   accountId: string
   password: string
-  nickname: string
+  userId: string
   email: string
   phone: string
   birthday: Date
@@ -51,9 +51,9 @@ export class CreateUserDTO {
     description: '사용자 성명',
     example: '댕댕이',
   })
-  @IsString({ message: '닉네임은 필수에요.' })
-  @MaxLength(16, { message: '닉네임은 16글자 이상으로 작성할 수 없어요.' })
-  nickname: string
+  @IsString({ message: '아이디는 필수에요.' })
+  @MaxLength(16, { message: '아이디는 16글자 이상으로 작성할 수 없어요.' })
+  userId: string
 
   @ApiProperty({
     description: '사용자 전화번호',
@@ -95,14 +95,14 @@ export class CreateUserResponseDTO {
     minLength: 6,
   })
   @IsNotEmpty({ message: '닉네임은 필수에요.' })
-  nickname: string
+  userId: string
 
   @IsYYYYMMDD()
   birthday: Date
 
   constructor(user: CreateUserArgs) {
     this.id = user.id
-    this.nickname = user.nickname
+    this.userId = user.userId
     this.birthday = user.birthday
   }
 }

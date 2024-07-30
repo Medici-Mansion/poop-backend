@@ -6,10 +6,83 @@ import { SearchIndexResponseDto } from './dtos/response/search-index-response.dt
 import { SearchUpdateRequestDto } from './dtos/request/search-update-request.dto'
 import { ApiException } from '@/shared/exceptions/exception.interface'
 import { SearchDeleteRequestDto } from './dtos/request/search-delete-request.dto'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { Direction } from '@/breeds/dtos/request/get-breed.dto'
+
+type IndexTarget = 'poop-ranks' | 'poop-breeds' | 'poop-profiles'
+
+enum OrderKey {
+  CREATED_AT = 'createdAt',
+  NAME_KR = 'nameKR',
+  NAME_EN = 'nameEN',
+}
+
+class GetIndexDTO {
+  @ApiProperty()
+  target!: IndexTarget
+
+  @ApiPropertyOptional()
+  keyword?: string
+
+  @ApiPropertyOptional()
+  pageSize?: number
+
+  @ApiPropertyOptional()
+  page?: number
+
+  @ApiPropertyOptional()
+  sortKey?: OrderKey
+
+  @ApiPropertyOptional({
+    enum: Direction,
+    description: 'Order direction',
+    default: Direction.DESC,
+  })
+  order?: Direction
+}
+
+export interface GetIndexResponseDTO {
+  statusCode: number
+  message: string
+  data: Data
+  timestamp: string
+  path: string
+}
+
+export interface Data {
+  took: number
+  page: number
+  total: number
+  totalPage: number
+  list: List[]
+}
+
+export interface List {
+  id: string
+  createdAt: string
+  updatedAt: string
+  nameKR: string
+  nameEN: string
+  avatar: any
+}
 
 @Injectable()
 export class EsService {
   constructor(@Inject(ES_API) private readonly esApi: AxiosInstance) {}
+
+  async getIndex(getIndexDTO: GetIndexDTO) {
+    const { keyword, order, page, pageSize, sortKey, target } = getIndexDTO
+    const { data } = await this.esApi.get<GetIndexResponseDTO>('/search', {
+      params: {
+        target,
+        keyword,
+        pageSize,
+        page,
+        sort: sortKey && order ? `${sortKey}:${order}` : undefined,
+      },
+    })
+    return data
+  }
 
   async createIndex(
     searchIndexRequestDto: SearchIndexRequestDto,

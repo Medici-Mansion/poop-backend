@@ -4,7 +4,7 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   : ColumnType<T, T | undefined, T>;
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
-import type { GraphicsCategory, GraphicType, Gender } from "./enums";
+import type { GraphicsCategory, GraphicType, Gender, SocialProvier } from "./enums";
 
 export type Breed = {
     id: Generated<string>;
@@ -43,11 +43,12 @@ export type User = {
     updatedAt: Generated<Timestamp>;
     deletedAt: Timestamp | null;
     password: string;
-    nickname: string;
-    phone: string;
-    birthday: Timestamp;
+    userId: string;
+    phone: string | null;
+    birthday: Timestamp | null;
     verified: Timestamp | null;
     latestToken: string | null;
+    provider: Generated<SocialProvier>;
     latestProfileId: string | null;
 };
 export type verification = {

@@ -31,12 +31,12 @@ export class GetMeResponseDTO {
   birthday: string
 
   @ApiProperty({
-    description: '사용자 성명',
-    example: '댕댕이',
+    description: '사용자 아이디',
+    example: 'akdfhr2',
   })
-  @IsString({ message: '닉네임은 필수에요.' })
-  @MaxLength(16, { message: '닉네임은 16글자 이상으로 작성할 수 없어요.' })
-  nickname: string
+  @IsString({ message: '아이디는 필수에요.' })
+  @MaxLength(16, { message: '아이디는 16글자 이상으로 작성할 수 없어요.' })
+  userId: string
 
   @ApiProperty({
     description: '사용자 성별',
@@ -77,7 +77,7 @@ export class GetMeResponseDTO {
   constructor(user: Selectable<User>) {
     this.id = user.id
     this.birthday = dayjs(user.birthday).format('YYYY-MM-DD')
-    this.nickname = user.nickname
+    this.userId = user.userId
     this.phone = user.phone
     this.verified = user.verified
     this.latestProfileId = user.latestProfileId

@@ -28,10 +28,10 @@ export class UsersService {
   }
 
   async checkNicknameDuplicated(CheckNicknameDTO: CheckNicknameDTO) {
-    const hasNickname = await this.usersRepository.findOneByNickname(
+    const hasNickname = await this.usersRepository.findOneByUserId(
       CheckNicknameDTO.nickname,
     )
-    if (hasNickname?.nickname) {
+    if (hasNickname?.userId) {
       throw ApiException.CONFLICT
     }
 
