@@ -24,11 +24,12 @@ export class GetMeResponseDTO {
   @ApiProperty({
     description: '사용자 생일',
     example: '1995-01-04',
+    nullable: true,
   })
   @IsOnlyDate({
     message: '잘못된 날짜에요.',
   })
-  birthday: string
+  birthday: string | null
 
   @ApiProperty({
     description: '사용자 아이디',
@@ -42,9 +43,10 @@ export class GetMeResponseDTO {
     description: '사용자 성별',
     type: Gender,
     enum: Gender,
+    nullable: true,
   })
   @IsEnum(Gender, { message: '유효하지 않은 성별이에요.' })
-  gender: Gender
+  gender: Gender | null
 
   @ApiProperty({
     description: '사용자 전화번호',
@@ -76,7 +78,9 @@ export class GetMeResponseDTO {
 
   constructor(user: Selectable<User>) {
     this.id = user.id
-    this.birthday = dayjs(user.birthday).format('YYYY-MM-DD')
+    this.birthday = user.birthday
+      ? dayjs(user.birthday).format('YYYY-MM-DD')
+      : null
     this.userId = user.userId
     this.phone = user.phone
     this.verified = user.verified
