@@ -110,7 +110,8 @@ export class EsService {
       )
 
       return data
-    } catch {
+    } catch (err) {
+      console.log(err.response.data, '!!!err')
       return null
     }
   }
@@ -123,7 +124,8 @@ export class EsService {
       if (!id || !target) throw ApiException.PLAIN_BAD_REQUEST()
       const { data } = await this.esApi.delete(`/search/${target}/${id}`)
       return data
-    } catch {
+    } catch (err) {
+      console.log('[deleteIndex]', err)
       return false
     }
   }

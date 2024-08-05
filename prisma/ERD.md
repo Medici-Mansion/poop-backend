@@ -49,6 +49,36 @@ erDiagram
   String code
   String userId FK
 }
+"toons" {
+  String id PK
+  DateTime createdAt
+  DateTime updatedAt
+  DateTime deletedAt "nullable"
+  String title
+  String toonImage
+  String profileId FK
+  ToonType type
+  String challengeId FK "nullable"
+}
+"Challenge" {
+  String id PK
+  DateTime createdAt
+  DateTime updatedAt
+  DateTime deletedAt "nullable"
+  String category
+  String thumbnail
+  String title
+  DateTime startDate
+  DateTime endDate
+}
+"toon_assets" {
+  String id PK
+  DateTime createdAt
+  DateTime updatedAt
+  DateTime deletedAt "nullable"
+  String toonId FK
+  String graphicId FK
+}
 "graphics" {
   String id PK
   DateTime createdAt
@@ -62,6 +92,10 @@ erDiagram
 "profiles" }o--|| "breeds" : breed
 "profiles" }o--|| "users" : user
 "verification" |o--|| "users" : user
+"toons" }o--|| "profiles" : profile
+"toons" }o--o| "Challenge" : challenge
+"toon_assets" }o--|| "toons" : toon
+"toon_assets" }o--|| "graphics" : graphic
 ```
 
 ### `breeds`
@@ -114,6 +148,42 @@ erDiagram
   - `deletedAt`: 
   - `code`: 
   - `userId`: 
+
+### `toons`
+
+**Properties**
+  - `id`: 
+  - `createdAt`: 
+  - `updatedAt`: 
+  - `deletedAt`: 
+  - `title`: 
+  - `toonImage`: 
+  - `profileId`: 
+  - `type`: 
+  - `challengeId`: 
+
+### `Challenge`
+
+**Properties**
+  - `id`: 
+  - `createdAt`: 
+  - `updatedAt`: 
+  - `deletedAt`: 
+  - `category`: 
+  - `thumbnail`: 
+  - `title`: 
+  - `startDate`: 
+  - `endDate`: 
+
+### `toon_assets`
+
+**Properties**
+  - `id`: 
+  - `createdAt`: 
+  - `updatedAt`: 
+  - `deletedAt`: 
+  - `toonId`: 
+  - `graphicId`: 
 
 ### `graphics`
 

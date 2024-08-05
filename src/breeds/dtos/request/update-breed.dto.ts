@@ -20,7 +20,6 @@ export class UpdateBreedDTO {
   })
   @IsOptional()
   @IsFile()
-
   // FIXME
   // @MaxFileSize(1e6)
   // @MaxImageSize({ height: 400, width: 400 })

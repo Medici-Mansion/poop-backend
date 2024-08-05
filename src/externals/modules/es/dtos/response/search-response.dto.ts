@@ -1,11 +1,8 @@
-import { Exclude, Expose } from 'class-transformer';
-import { ApiExtraModels, ApiProperty, getSchemaPath } from '@nestjs/swagger';
-import { PoopProfileDataDto } from '../../../es/dto/data/poop-profile-data.dto';
-import { PoopBreedDataDto } from '../../../es/dto/data/poop-breed-data.dto';
+import { Exclude, Expose } from 'class-transformer'
+import { ApiProperty } from '@nestjs/swagger'
 
-@ApiExtraModels(PoopProfileDataDto, PoopBreedDataDto)
 @Exclude()
-export class SearchResponseDto {
+export class SearchResponseBaseDto {
   @ApiProperty({
     type: Number,
     description: '검색 소요 시간 (ms)',
@@ -13,7 +10,7 @@ export class SearchResponseDto {
     required: true,
   })
   @Expose()
-  took!: number;
+  took!: number
 
   @ApiProperty({
     type: Number,
@@ -22,7 +19,7 @@ export class SearchResponseDto {
     required: true,
   })
   @Expose()
-  total!: number;
+  total!: number
 
   @ApiProperty({
     type: Number,
@@ -31,7 +28,7 @@ export class SearchResponseDto {
     required: true,
   })
   @Expose()
-  totalPage!: number;
+  totalPage!: number
 
   @ApiProperty({
     type: Number,
@@ -40,19 +37,5 @@ export class SearchResponseDto {
     required: true,
   })
   @Expose()
-  page!: number;
-
-  @ApiProperty({
-    description: '검색 결과',
-    type: PoopProfileDataDto,
-    isArray: true,
-    oneOf: [
-      { $ref: getSchemaPath(PoopProfileDataDto) },
-      {
-        $ref: getSchemaPath(PoopBreedDataDto),
-      },
-    ],
-  })
-  @Expose()
-  list!: PoopProfileDataDto[] | PoopBreedDataDto[];
+  page!: number
 }

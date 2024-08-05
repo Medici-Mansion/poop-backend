@@ -1,12 +1,6 @@
-import { MaxImageSize } from '@/shared/validators/max-image-size.validator'
 import { ApiProperty } from '@nestjs/swagger'
 import { IsString } from 'class-validator'
-import {
-  HasMimeType,
-  IsFile,
-  MaxFileSize,
-  MemoryStoredFile,
-} from 'nestjs-form-data'
+import { HasMimeType, IsFile, MemoryStoredFile } from 'nestjs-form-data'
 
 export class CreateBreedDTO {
   @ApiProperty({

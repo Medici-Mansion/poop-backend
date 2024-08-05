@@ -22,3 +22,8 @@ export const SocialProvier = {
     CREDENTIAL: "CREDENTIAL"
 } as const;
 export type SocialProvier = (typeof SocialProvier)[keyof typeof SocialProvier];
+export const ToonType = {
+    CHALLENGE: "CHALLENGE",
+    NORMAL: "NORMAL"
+} as const;
+export type ToonType = (typeof ToonType)[keyof typeof ToonType];

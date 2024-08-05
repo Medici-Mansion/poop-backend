@@ -25,12 +25,14 @@ export class GraphicsService {
 
   async getAllGraphicsByCategorOrType(
     getGraphicsRequestDTO: GetGraphicsRequestDTO,
-  ): Promise<GetGraphicsResponseDTO[]> {
+  ) {
     const allGraphics = await this.graphicsRepository.findAllByCategoryOrType(
       getGraphicsRequestDTO,
     )
-
-    return allGraphics.map((item) => new GetGraphicsResponseDTO(item))
+    return {
+      ...allGraphics,
+      list: allGraphics.list.map((item) => new GetGraphicsResponseDTO(item)),
+    }
   }
 
   async getGraphicById(

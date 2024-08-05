@@ -4,7 +4,7 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   : ColumnType<T, T | undefined, T>;
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
-import type { GraphicsCategory, GraphicType, Gender, SocialProvier } from "./enums";
+import type { GraphicsCategory, GraphicType, Gender, SocialProvier, ToonType } from "./enums";
 
 export type Breed = {
     id: Generated<string>;
@@ -15,7 +15,18 @@ export type Breed = {
     nameEN: string | null;
     avatar: string | null;
 };
-export type Graphics = {
+export type Challenge = {
+    id: Generated<string>;
+    createdAt: Generated<Timestamp>;
+    updatedAt: Generated<Timestamp>;
+    deletedAt: Timestamp | null;
+    category: string;
+    thumbnail: string;
+    title: string;
+    startDate: Timestamp;
+    endDate: Timestamp;
+};
+export type Graphic = {
     id: Generated<string>;
     createdAt: Generated<Timestamp>;
     updatedAt: Generated<Timestamp>;
@@ -36,6 +47,25 @@ export type Profile = {
     gender: Generated<Gender>;
     breedId: string;
     userId: string;
+};
+export type Toon = {
+    id: Generated<string>;
+    createdAt: Generated<Timestamp>;
+    updatedAt: Generated<Timestamp>;
+    deletedAt: Timestamp | null;
+    title: string;
+    toonImage: string;
+    profileId: string;
+    type: ToonType;
+    challengeId: string | null;
+};
+export type ToonGraphic = {
+    id: Generated<string>;
+    createdAt: Generated<Timestamp>;
+    updatedAt: Generated<Timestamp>;
+    deletedAt: Timestamp | null;
+    toonId: string;
+    graphicId: string;
 };
 export type User = {
     id: Generated<string>;
@@ -61,8 +91,11 @@ export type verification = {
 };
 export type DB = {
     breeds: Breed;
-    graphics: Graphics;
+    Challenge: Challenge;
+    graphics: Graphic;
     profiles: Profile;
+    toon_assets: ToonGraphic;
+    toons: Toon;
     users: User;
     verification: verification;
 };

@@ -1,5 +1,5 @@
 import { GraphicType, GraphicsCategory } from '@/database/enums'
-import { Graphics } from '@/database/types'
+import { Graphic } from '@/database/types'
 import { ApiProperty } from '@nestjs/swagger'
 import { Selectable } from 'kysely'
 
@@ -28,7 +28,7 @@ export class GetGraphicsResponseDTO {
   })
   url!: string | null
 
-  constructor(graphic: Selectable<Graphics>) {
+  constructor(graphic: Selectable<Graphic>) {
     this.category = graphic.category
     this.id = graphic.id
     this.name = graphic.name

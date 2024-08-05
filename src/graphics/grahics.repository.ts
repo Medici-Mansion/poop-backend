@@ -1,11 +1,12 @@
 import { Database } from '@/database/database.class'
 import { Order } from '@/shared/dtos/common.dto'
 import { Inject } from '@nestjs/common'
-import { GetGraphicsRequestDTO } from './dtos/get-graphics-request.dto'
-import { Insertable, Updateable } from 'kysely'
+
+import { Insertable, sql, Updateable } from 'kysely'
 import { DB } from '@/database/types'
 import { ApiException } from '@/shared/exceptions/exception.interface'
 import { GraphicsException } from '@/graphics/graphics.exception'
+import { GetGraphicsRequestDTO } from './dtos/get-graphics-request.dto'
 
 export class GraphicsRepository {
   constructor(@Inject(Database) private readonly database: Database) {}
@@ -58,10 +59,21 @@ export class GraphicsRepository {
       )
   }
 
-  async findAllByCategoryOrType(
-    getGraphicsRequestDTO: GetGraphicsRequestDTO & { order?: Order },
-  ) {
-    return this.database
+  async findAllByCategoryOrType(getGraphicsRequestDTO: GetGraphicsRequestDTO) {
+    const count = await this.database
+      .selectFrom('graphics')
+      .select(sql<number>`count(*)`.as('count'))
+      .where('deletedAt', 'is', null)
+      .$if(!!getGraphicsRequestDTO.category, (qb) =>
+        qb.where('category', '=', getGraphicsRequestDTO.category),
+      )
+      .$if(!!getGraphicsRequestDTO.graphicType, (qb) =>
+        qb.where('type', '=', getGraphicsRequestDTO.graphicType),
+      )
+      .where('url', 'is not', null)
+      .executeTakeFirst()
+
+    const data = await this.database
       .selectFrom('graphics')
       .where('deletedAt', 'is', null)
       .$if(!!getGraphicsRequestDTO.category, (qb) =>
@@ -72,11 +84,21 @@ export class GraphicsRepository {
       )
       .where('url', 'is not', null)
       .orderBy(
-        'graphics.name',
+        getGraphicsRequestDTO.orderKey ?? 'graphics.createdAt',
         getGraphicsRequestDTO.order === Order.ASC ? 'asc' : 'desc',
       )
       .selectAll()
+      .offset(getGraphicsRequestDTO.page * getGraphicsRequestDTO.pageSize)
+      .limit(getGraphicsRequestDTO.pageSize)
       .execute()
+    return {
+      page: getGraphicsRequestDTO.page,
+      total: parseInt((count?.count ?? 0) + ''),
+      totalPage: Math.ceil(
+        parseInt((count?.count ?? 0) + '') / getGraphicsRequestDTO.pageSize,
+      ),
+      list: data,
+    }
   }
 
   async removeGraphic(ids: string[]) {

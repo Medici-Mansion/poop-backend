@@ -49,6 +49,7 @@ model Profile {
 
   user   User   @relation("profile", fields: [userId], references: [id])
   userId String @db.Uuid
+  Toon   Toon[]
 
   @@unique([name])
   @@index([breedId])
@@ -89,29 +90,74 @@ model verification {
   userId String @unique @db.Uuid
 }
 
-// view SearchBreeds {
-//   id            String    @id @db.Uuid
-//   createdAt     DateTime  @db.Timestamp(6)
-//   updatedAt     DateTime  @updatedAt @db.Timestamp(6)
-//   deletedAt     DateTime? @db.Timestamp(6)
-//   nameKR        String    @db.VarChar
-//   nameEN        String?   @db.VarChar
-//   avatar        String?   @db.VarChar
-//   searchKey     String
-//   searchKeyCode Int?
+model Toon {
+  id        String    @id @default(dbgenerated("uuid_generate_v4()"))
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt DateTime  @default(now()) @updatedAt @db.Timestamp(6)
+  deletedAt DateTime? @db.Timestamp(6)
 
-//   @@map("search_breeds")
-// }
+  title     String
+  toonImage String
+  profile   Profile @relation(fields: [profileId], references: [id])
+  profileId String  @db.Uuid
 
-model Graphics {
-  id        String            @id @default(dbgenerated("uuid_generate_v4()"))
-  createdAt DateTime          @default(now()) @db.Timestamp(6)
-  updatedAt DateTime          @default(now()) @updatedAt @db.Timestamp(6)
-  deletedAt DateTime?         @db.Timestamp(6)
-  name      String            @unique @db.VarChar
-  url       String            @unique @db.VarChar
-  type      GraphicType
-  category  GraphicsCategory?
+  type        ToonType
+  challenge   Challenge?    @relation(fields: [challengeId], references: [id])
+  challengeId String?
+  ToonGraphic ToonGraphic[]
+
+  @@index([profileId])
+  @@index([challengeId])
+  @@map("toons")
+}
+
+model Challenge {
+  id        String    @id @default(dbgenerated("uuid_generate_v4()"))
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt DateTime  @default(now()) @updatedAt @db.Timestamp(6)
+  deletedAt DateTime? @db.Timestamp(6)
+
+  //TODO: 단독 테이블로 관리
+  category  String
+  thumbnail String
+  title     String
+  startDate DateTime
+  endDate   DateTime
+  Toon      Toon[]
+}
+
+model ToonGraphic {
+  id        String    @id @default(dbgenerated("uuid_generate_v4()"))
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt DateTime  @default(now()) @updatedAt @db.Timestamp(6)
+  deletedAt DateTime? @db.Timestamp(6)
+  toon      Toon      @relation(fields: [toonId], references: [id])
+  toonId    String
+  graphic   Graphic   @relation(fields: [graphicId], references: [id])
+  graphicId String
+
+  // TODO
+  // 리소스 트랜스폼 값
+  // 리소스 스케일 값
+  // 제스쳐 값
+  // 사이즈 값
+  // 말풍선일 경우, 택스트 내용
+
+  @@index([toonId])
+  @@index([graphicId])
+  @@map("toon_assets")
+}
+
+model Graphic {
+  id          String            @id @default(dbgenerated("uuid_generate_v4()"))
+  createdAt   DateTime          @default(now()) @db.Timestamp(6)
+  updatedAt   DateTime          @default(now()) @updatedAt @db.Timestamp(6)
+  deletedAt   DateTime?         @db.Timestamp(6)
+  name        String            @unique @db.VarChar
+  url         String            @unique @db.VarChar
+  type        GraphicType
+  category    GraphicsCategory?
+  ToonGraphic ToonGraphic[]
 
   @@map("graphics")
 }
@@ -140,4 +186,9 @@ enum SocialProvier {
   GOOGLE
   KAKAO
   CREDENTIAL
+}
+
+enum ToonType {
+  CHALLENGE
+  NORMAL
 }

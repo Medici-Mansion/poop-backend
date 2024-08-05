@@ -56,9 +56,7 @@ export class GraphicsController {
       },
     },
   ])
-  async getAllGraphics(
-    @Query() getGraphicsRequestDTO: GetGraphicsRequestDTO,
-  ): Promise<Api<GetGraphicsResponseDTO[]>> {
+  async getAllGraphics(@Query() getGraphicsRequestDTO: GetGraphicsRequestDTO) {
     const getGraphicsResponseDTO =
       await this.graphicsService.getAllGraphicsByCategorOrType(
         getGraphicsRequestDTO,

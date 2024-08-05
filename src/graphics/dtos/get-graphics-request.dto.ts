@@ -1,9 +1,17 @@
+import { Direction } from '@/breeds/dtos/request/get-breed.dto'
 import { GraphicType, GraphicsCategory } from '@/database/enums'
+import { BaseGetSearchDTO } from '@/externals/modules/es/dtos/request/search-request.dto'
 import { Order } from '@/shared/dtos/common.dto'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { IsEnum, IsOptional, IsUUID } from 'class-validator'
 
-export class GetGraphicsRequestDTO {
+export enum GraphicOrderKey {
+  CREATED_AT = 'createdAt',
+  UPDATED_AT = 'updatedAt',
+  NAME = 'name',
+}
+
+export class GetGraphicsRequestDTO extends BaseGetSearchDTO {
   @ApiPropertyOptional({
     enum: GraphicType,
     nullable: true,
@@ -11,6 +19,27 @@ export class GetGraphicsRequestDTO {
   @IsOptional()
   @IsEnum(GraphicType)
   graphicType: GraphicType
+
+  @ApiPropertyOptional({
+    enum: GraphicOrderKey,
+    description: '정렬할 필드 명',
+    example: GraphicOrderKey.CREATED_AT,
+    default: GraphicOrderKey.CREATED_AT,
+  })
+  @IsOptional()
+  @IsEnum(GraphicOrderKey, {
+    message: '정렬할 필드명이 올바르지 않아요.',
+  })
+  orderKey?: GraphicOrderKey
+
+  @ApiPropertyOptional({
+    enum: Direction,
+    description: 'Order direction',
+    default: Direction.DESC,
+  })
+  @IsOptional()
+  @IsEnum(Direction, { message: 'direction must be one of asc, desc' })
+  direction?: Direction
 
   @ApiPropertyOptional({
     enum: GraphicsCategory,
