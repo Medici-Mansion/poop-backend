@@ -88,9 +88,10 @@ export class GraphicsRepository {
         getGraphicsRequestDTO.order === Order.ASC ? 'asc' : 'desc',
       )
       .selectAll()
-      .offset(getGraphicsRequestDTO.page * getGraphicsRequestDTO.pageSize)
+      .offset((getGraphicsRequestDTO.page - 1) * getGraphicsRequestDTO.pageSize)
       .limit(getGraphicsRequestDTO.pageSize)
       .execute()
+
     return {
       page: getGraphicsRequestDTO.page,
       total: parseInt((count?.count ?? 0) + ''),
