@@ -65,7 +65,7 @@ export class BreedsRepository {
     return this.database
       .deleteFrom('breeds')
       .where('id', 'in', ids)
-      .returning('id')
-      .executeTakeFirst()
+      .returningAll()
+      .execute()
   }
 }

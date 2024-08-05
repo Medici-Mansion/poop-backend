@@ -97,7 +97,6 @@ export class BreedsService {
           avatar: createBreed.avatar || '',
           createdAt: dayjs(createBreed.createdAt).format(),
           updatedAt: dayjs(createBreed.updatedAt).format(),
-          ['@timestamp']: dayjs().format(),
         },
       })
     }
@@ -138,7 +137,6 @@ export class BreedsService {
       id: updatedBreed.id,
       targetData: {
         ...updatedBreed,
-        ['@timestamp']: dayjs().format(),
         nameKR: updatedBreed?.nameKR || '',
         nameEN: updatedBreed.nameEN || '',
         avatar: updatedBreed.avatar || '',
@@ -153,6 +151,15 @@ export class BreedsService {
   @Transactional()
   async removeBreeds(removeBreedsDTO: RemoveBreedsDTO) {
     const response = await this.breedsRepository.removeMany(removeBreedsDTO.ids)
+    const removePromises = response.map((breed) => {
+      return this.esService.deleteIndex({
+        target: 'poop-breeds',
+        ...breed,
+      })
+    })
+
+    await Promise.all(removePromises)
+
     return !!response
   }
 }

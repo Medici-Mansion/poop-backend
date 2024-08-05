@@ -41,15 +41,5 @@ export class EsBaseDataDto {
   })
   @IsOptional()
   @Expose()
-  deletedAt?: string;
-
-  @ApiProperty({
-    description: '색인 시간',
-    type: 'string',
-    required: true,
-  })
-  @IsString()
-  @IsNotEmpty()
-  @Expose()
-  [`@timestamp`]!: string
+  deletedAt?: string
 }

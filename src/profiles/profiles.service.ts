@@ -50,7 +50,6 @@ export class ProfilesService {
         target: 'poop-profiles',
         targetData: {
           ...newProfile,
-          ['@timestamp']: dayjs().format(),
           createdAt: dayjs(newProfile.createdAt).format(),
           updatedAt: dayjs(newProfile.updatedAt).format(),
           avatarUrl: newProfile.avatarUrl || '',
