@@ -11,6 +11,7 @@ import { ApiResult } from '@/shared/decorators/swagger/response.decorator'
 import { CommonCodes } from '@/shared/errors/code/common.code'
 import {
   GetBreedResponseDTO,
+  GetBreedsSearchDto,
   OrderBreedDTO,
 } from './dtos/request/get-breed.dto'
 import { Api } from '@/shared/dtos/api.dto'
@@ -39,8 +40,8 @@ export class BreedsController {
       exampleTitle: '조회 성공',
     },
   ])
-  async getBreeds() {
-    const allBreeds = await this.breedsService.getAllBreeds()
+  async getBreeds(@Query() getBreedsSearchDto: GetBreedsSearchDto) {
+    const allBreeds = await this.breedsService.getAllBreeds(getBreedsSearchDto)
     return Api.OK(allBreeds)
   }
 

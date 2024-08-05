@@ -1,10 +1,11 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional, OmitType } from '@nestjs/swagger'
 import { IsEnum, IsOptional, IsString, IsUUID } from 'class-validator'
 
 import { CursorOption } from '@/shared/dtos/common.dto'
 
 import { Selectable } from 'kysely'
 import { Breed } from '@/database/types'
+import { SearchRequestDto } from '@/externals/modules/es/dtos/request/search-request.dto'
 
 export enum OrderKey {
   CREATED_AT = 'createdAt',
@@ -15,6 +16,35 @@ export enum OrderKey {
 export enum Direction {
   ASC = 'asc',
   DESC = 'desc',
+}
+
+export enum SortKey {
+  UPDATED_AT = 'updatedAt',
+  CREATED_AT = 'createdAt',
+  NAME_EN = 'nameEN',
+}
+
+export class GetBreedsSearchDto extends OmitType(SearchRequestDto, ['target']) {
+  @ApiPropertyOptional({
+    enum: SortKey,
+    description: '정렬할 필드 명',
+    example: SortKey.UPDATED_AT,
+    default: SortKey.UPDATED_AT,
+  })
+  @IsOptional()
+  @IsEnum(SortKey, {
+    message: '정렬할 필드명이 올바르지 않아요.',
+  })
+  orderKey?: SortKey
+
+  @ApiPropertyOptional({
+    enum: Direction,
+    description: 'Order direction',
+    default: Direction.DESC,
+  })
+  @IsOptional()
+  @IsEnum(Direction, { message: 'direction must be one of asc, desc' })
+  direction?: Direction
 }
 
 export class OrderBreedDTO {

@@ -3,6 +3,7 @@ import { Injectable, NotFoundException } from '@nestjs/common'
 
 import {
   GetBreedResponseDTO,
+  GetBreedsSearchDto,
   OrderBreedDTO,
 } from '@/breeds/dtos/request/get-breed.dto'
 
@@ -62,8 +63,11 @@ export class BreedsService {
       hasPrevPage: !!hasPrevPage,
     }
   }
-  async getAllBreeds() {
-    const re = await this.esService.getIndex({ target: 'poop-breeds' })
+  async getAllBreeds(getBreedsSearchDto: GetBreedsSearchDto) {
+    const re = await this.esService.getIndex({
+      target: 'poop-breeds',
+      ...getBreedsSearchDto,
+    })
 
     return {
       ...re.data,
