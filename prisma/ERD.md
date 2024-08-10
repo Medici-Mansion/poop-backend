@@ -60,7 +60,22 @@ erDiagram
   ToonType type
   String challengeId FK "nullable"
 }
-"Challenge" {
+"hashtag_mapper" {
+  String id PK
+  DateTime createdAt
+  DateTime updatedAt
+  DateTime deletedAt "nullable"
+  String relatedId
+  String hashtagId
+}
+"hashtag" {
+  String id PK
+  DateTime createdAt
+  DateTime updatedAt
+  DateTime deletedAt "nullable"
+  String content
+}
+"challenge" {
   String id PK
   DateTime createdAt
   DateTime updatedAt
@@ -77,6 +92,7 @@ erDiagram
   DateTime updatedAt
   DateTime deletedAt "nullable"
   String toonId FK
+  String message "nullable"
   String graphicId FK
 }
 "graphics" {
@@ -93,7 +109,7 @@ erDiagram
 "profiles" }o--|| "users" : user
 "verification" |o--|| "users" : user
 "toons" }o--|| "profiles" : profile
-"toons" }o--o| "Challenge" : challenge
+"toons" }o--o| "challenge" : challenge
 "toon_assets" }o--|| "toons" : toon
 "toon_assets" }o--|| "graphics" : graphic
 ```
@@ -162,7 +178,26 @@ erDiagram
   - `type`: 
   - `challengeId`: 
 
-### `Challenge`
+### `hashtag_mapper`
+
+**Properties**
+  - `id`: 
+  - `createdAt`: 
+  - `updatedAt`: 
+  - `deletedAt`: 
+  - `relatedId`: 
+  - `hashtagId`: 
+
+### `hashtag`
+
+**Properties**
+  - `id`: 
+  - `createdAt`: 
+  - `updatedAt`: 
+  - `deletedAt`: 
+  - `content`: 
+
+### `challenge`
 
 **Properties**
   - `id`: 
@@ -183,6 +218,7 @@ erDiagram
   - `updatedAt`: 
   - `deletedAt`: 
   - `toonId`: 
+  - `message`: GraphicType이 Message일 경우 내용
   - `graphicId`: 
 
 ### `graphics`

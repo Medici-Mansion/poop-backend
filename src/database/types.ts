@@ -36,6 +36,21 @@ export type Graphic = {
     type: GraphicType;
     category: GraphicsCategory | null;
 };
+export type Hashtag = {
+    id: Generated<string>;
+    createdAt: Generated<Timestamp>;
+    updatedAt: Generated<Timestamp>;
+    deletedAt: Timestamp | null;
+    content: string;
+};
+export type HashtagRelation = {
+    id: Generated<string>;
+    createdAt: Generated<Timestamp>;
+    updatedAt: Generated<Timestamp>;
+    deletedAt: Timestamp | null;
+    relatedId: string;
+    hashtagId: string;
+};
 export type Profile = {
     id: Generated<string>;
     createdAt: Generated<Timestamp>;
@@ -65,6 +80,10 @@ export type ToonGraphic = {
     updatedAt: Generated<Timestamp>;
     deletedAt: Timestamp | null;
     toonId: string;
+    /**
+     * GraphicType이 Message일 경우 내용
+     */
+    message: string | null;
     graphicId: string;
 };
 export type User = {
@@ -91,8 +110,10 @@ export type verification = {
 };
 export type DB = {
     breeds: Breed;
-    Challenge: Challenge;
+    challenge: Challenge;
     graphics: Graphic;
+    hashtag: Hashtag;
+    hashtag_mapper: HashtagRelation;
     profiles: Profile;
     toon_assets: ToonGraphic;
     toons: Toon;
