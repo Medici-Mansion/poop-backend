@@ -29,7 +29,11 @@ export class BreedsRepository {
   }
 
   async findAllBreeds() {
-    return this.database.selectFrom('breeds').selectAll().execute()
+    return this.database
+      .selectFrom('breeds')
+      .orderBy('breeds.nameKR asc')
+      .selectAll()
+      .execute()
   }
 
   async findOne(id: string) {

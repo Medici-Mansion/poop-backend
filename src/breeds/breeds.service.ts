@@ -63,6 +63,7 @@ export class BreedsService {
       hasPrevPage: !!hasPrevPage,
     }
   }
+
   async getAllBreeds(getBreedsSearchDto: GetBreedsSearchDto) {
     const re = await this.esService.getIndex({
       target: 'poop-breeds',
@@ -73,6 +74,22 @@ export class BreedsService {
       ...re.data,
       list: re.data.list.map((breed) => new GetBreedResponseDTO(breed as any)),
     }
+  }
+
+  async getAllBreedsByConsonant() {
+    const allBreeds = await this.breedsRepository.findAllBreeds()
+
+    const breedsObj = allBreeds.reduce((acc, cur) => {
+      const curSearchKey = extractInitialConsonant(cur.nameKR || '')
+      if (!curSearchKey) return acc
+      if (!acc[curSearchKey]) {
+        acc[curSearchKey] = []
+      }
+
+      acc[curSearchKey].push(new GetBreedResponseDTO(cur))
+      return acc
+    }, {})
+    return breedsObj as { [key: string]: GetBreedResponseDTO[] }
   }
 
   /**
@@ -171,22 +188,22 @@ function extractInitialConsonant(text: string): string | null {
   const HANGUL_SYLLABLES_START = 0xac00
   const HANGUL_SYLLABLES_END = 0xd7a3
 
-  // 초성 리스트
+  // 초성 리스트 (쌍자음을 홀자음으로 매핑)
   const CHO_SUNG_LIST = [
     'ㄱ',
-    'ㄲ',
+    'ㄱ',
     'ㄴ',
     'ㄷ',
-    'ㄸ',
+    'ㄷ',
     'ㄹ',
     'ㅁ',
     'ㅂ',
-    'ㅃ',
+    'ㅂ',
     'ㅅ',
-    'ㅆ',
+    'ㅅ',
     'ㅇ',
     'ㅈ',
-    'ㅉ',
+    'ㅈ',
     'ㅊ',
     'ㅋ',
     'ㅌ',

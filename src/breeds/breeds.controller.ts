@@ -45,6 +45,27 @@ export class BreedsController {
     return Api.OK(allBreeds)
   }
 
+  @Get('consonant')
+  @ApiOperation({
+    summary: '견종정보 조회',
+    description: '견종정보를 조회합니다.',
+  })
+  @ApiResult(CommonCodes.OK, [
+    {
+      model: GetBreedResponseDTO,
+      exampleDescription: '조회 성공',
+      exampleTitle: '조회 성공',
+    },
+  ])
+  async getBreedsByConsonant(): Promise<
+    Api<{
+      [key: string]: GetBreedResponseDTO[]
+    }>
+  > {
+    const allBreeds = await this.breedsService.getAllBreedsByConsonant()
+    return Api.OK(allBreeds)
+  }
+
   @Get('char')
   @ApiOperation({
     summary: '초성기반 견종정보 조회',
