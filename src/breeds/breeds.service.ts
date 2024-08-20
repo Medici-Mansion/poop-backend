@@ -65,14 +65,29 @@ export class BreedsService {
   }
 
   async getAllBreeds(getBreedsSearchDto: GetBreedsSearchDto) {
-    const re = await this.esService.getIndex({
-      target: 'poop-breeds',
-      ...getBreedsSearchDto,
-    })
+    /**
+  
+  현재 시점에서 새로 등록한 정보:
+  수정- 성공이지만 변경 안 됨
+  삭제- 정상
+
+  이전에 등록한 견종 정보들:
+  수정-api 요청 실패. 
+  응답 404 ‘존재하지 않는 서비스에요.’
+  삭제-성공이지만 삭제 안 됨
+     */
+    // const re = await this.esService.getIndex({
+    //   target: 'poop-breeds',
+    //   ...getBreedsSearchDto,
+    // })
+
+    const { rows, hasNextPage, hasPrevPage } =
+      await this.breedsRepository.findBySearchDto(getBreedsSearchDto)
 
     return {
-      ...re.data,
-      list: re.data.list.map((breed) => new GetBreedResponseDTO(breed as any)),
+      hasNextPage,
+      hasPrevPage,
+      data: rows.map((breed) => new GetBreedResponseDTO(breed)),
     }
   }
 

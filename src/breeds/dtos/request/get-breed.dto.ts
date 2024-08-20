@@ -11,6 +11,7 @@ export enum OrderKey {
   CREATED_AT = 'createdAt',
   NAME_KR = 'nameKR',
   NAME_EN = 'nameEN',
+  UPDATED_AT = 'updatedAt',
 }
 
 export enum Direction {
@@ -26,16 +27,16 @@ export enum SortKey {
 
 export class GetBreedsSearchDto extends OmitType(SearchRequestDto, ['target']) {
   @ApiPropertyOptional({
-    enum: SortKey,
+    enum: OrderKey,
     description: '정렬할 필드 명',
-    example: SortKey.UPDATED_AT,
-    default: SortKey.UPDATED_AT,
+    example: OrderKey.UPDATED_AT,
+    default: OrderKey.UPDATED_AT,
   })
   @IsOptional()
-  @IsEnum(SortKey, {
+  @IsEnum(OrderKey, {
     message: '정렬할 필드명이 올바르지 않아요.',
   })
-  orderKey?: SortKey
+  orderKey?: OrderKey
 
   @ApiPropertyOptional({
     enum: Direction,
@@ -113,7 +114,6 @@ export class GetBreedResponseDTO {
   avatar: string
 
   constructor(breeds: Selectable<Breed>) {
-    console.log(breeds)
     this.id = breeds.id
     this.nameKR = breeds.nameKR
     this.nameEN = breeds.nameEN!

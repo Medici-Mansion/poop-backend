@@ -5,11 +5,36 @@ import { Database } from '@/database/database.class'
 import { Insertable, Updateable } from 'kysely'
 import { Breed, DB } from '@/database/types'
 import { ApiException } from '@/shared/exceptions/exception.interface'
-import { executeWithCursorPagination } from 'kysely-paginate'
-import { OrderBreedDTO } from './dtos/request/get-breed.dto'
+import {
+  executeWithCursorPagination,
+  executeWithOffsetPagination,
+} from 'kysely-paginate'
+import { GetBreedsSearchDto, OrderBreedDTO } from './dtos/request/get-breed.dto'
 
 export class BreedsRepository {
   constructor(@Inject(Database) private readonly database: Database) {}
+
+  async findBySearchDto(getBreedsSearchDto: GetBreedsSearchDto) {
+    const { page, pageSize, direction, keyword, orderKey } = getBreedsSearchDto
+    const query = this.database
+      .selectFrom('breeds')
+      .$if(!!keyword, (qb) =>
+        qb.where((eb) =>
+          eb.or([
+            eb('breeds.nameKR', 'like', `%${keyword}%`),
+            eb('breeds.nameEN', 'like', `%${keyword}%`),
+          ]),
+        ),
+      )
+      .$if(!!orderKey, (qb) => qb.orderBy(orderKey!, direction))
+      .selectAll()
+
+    const result = await executeWithOffsetPagination(query, {
+      page,
+      perPage: pageSize,
+    })
+    return result
+  }
 
   async findAllBreedsWithCursor(orderBreedDTO: OrderBreedDTO) {
     const query = this.database.selectFrom('breeds').selectAll()
