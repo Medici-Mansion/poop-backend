@@ -29,11 +29,34 @@ export class BreedsRepository {
       .$if(!!orderKey, (qb) => qb.orderBy(orderKey!, direction))
       .selectAll()
 
-    const result = await executeWithOffsetPagination(query, {
+    const countQuery = this.database
+      .selectFrom('breeds')
+      .$if(!!keyword, (qb) =>
+        qb.where((eb) =>
+          eb.or([
+            eb('breeds.nameKR', 'like', `%${keyword}%`),
+            eb('breeds.nameEN', 'like', `%${keyword}%`),
+          ]),
+        ),
+      )
+      .select((eb) => eb.fn.countAll().as('totalCount'))
+
+    const [result, count] = await Promise.all([
+      executeWithOffsetPagination(query, {
+        page,
+        perPage: pageSize,
+      }),
+      countQuery.executeTakeFirst(),
+    ])
+
+    const totalCount = parseInt((count?.totalCount as string) ?? 0)
+    return {
+      ...result,
+      totalCount,
       page,
       perPage: pageSize,
-    })
-    return result
+      totalPage: Math.ceil(totalCount / pageSize),
+    }
   }
 
   async findAllBreedsWithCursor(orderBreedDTO: OrderBreedDTO) {

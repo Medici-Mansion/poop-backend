@@ -81,12 +81,23 @@ export class BreedsService {
     //   ...getBreedsSearchDto,
     // })
 
-    const { rows, hasNextPage, hasPrevPage } =
-      await this.breedsRepository.findBySearchDto(getBreedsSearchDto)
+    const {
+      rows,
+      hasNextPage,
+      hasPrevPage,
+      totalCount,
+      totalPage,
+      page,
+      perPage,
+    } = await this.breedsRepository.findBySearchDto(getBreedsSearchDto)
 
     return {
       hasNextPage,
       hasPrevPage,
+      totalCount,
+      totalPage,
+      page,
+      perPage,
       data: rows.map((breed) => new GetBreedResponseDTO(breed)),
     }
   }

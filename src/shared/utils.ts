@@ -1,5 +1,7 @@
+import { DB } from '@/database/types'
 import { STORAGE_BASE_URL } from '@/shared/constants/storage.constant'
 import { ResultCode } from '@/shared/errors/dtos/resultCode.dto'
+import { Kysely } from 'kysely'
 
 interface GetImageOptions {
   width?: number
@@ -33,3 +35,5 @@ export function generateResponse(
     return new ResultCode(status, code, message)
   }
 }
+
+export async function paginatedSearch(db: Kysely<DB>, tableName: string) {}
